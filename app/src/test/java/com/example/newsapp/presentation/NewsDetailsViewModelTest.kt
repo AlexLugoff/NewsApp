@@ -11,7 +11,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -49,9 +48,9 @@ class NewsDetailsViewModelTest {
             viewModel = NewsDetailsViewModel(mockUseCase, savedStateHandle)
 
             // THEN
-            assertEquals(NewsDetailsViewState.Loading, viewModel.uiState.first())
+            assertEquals(NewsDetailsViewState.Loading, viewModel.viewState.value)
             advanceUntilIdle()
-            assertEquals(NewsDetailsViewState.Success(fakeNewsItem), viewModel.uiState.value)
+            assertEquals(NewsDetailsViewState.Success(fakeNewsItem), viewModel.viewState.value)
         }
 
     @Test
@@ -65,12 +64,12 @@ class NewsDetailsViewModelTest {
         viewModel = NewsDetailsViewModel(mockUseCase, savedStateHandle)
 
         // THEN
-        assertEquals(NewsDetailsViewState.Loading, viewModel.uiState.first())
+        assertEquals(NewsDetailsViewState.Loading, viewModel.viewState.value)
         advanceUntilIdle()
         // Проверяем, что ошибка корректно смаплена
         assertEquals(
             NewsDetailsViewState.Error("Новость не найдена в кэше."),
-            viewModel.uiState.value
+            viewModel.viewState.value
         )
     }
 
@@ -90,7 +89,7 @@ class NewsDetailsViewModelTest {
         // Проверяем, что сообщение об ошибке корректно смаплено
         assertEquals(
             NewsDetailsViewState.Error("Неизвестная ошибка: $unknownError"),
-            viewModel.uiState.value
+            viewModel.viewState.value
         )
     }
 

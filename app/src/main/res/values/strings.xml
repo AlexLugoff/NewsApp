@@ -1,16 +1,21 @@
 <resources>
     <string name="app_name">NewsApp</string>
 
-    <string name="error_message_no_internet">No Internet</string>
+    <string name="error_message_no_internet">Нет интернета.</string>
+    <string name="error_message_no_host">Нет интернета.</string>
     <string name="error_message_unknown_host">Ошибка сети: неизвестный хост.</string>
-    <string name="error_message_no_network_connection">No network connection</string>
-    <string name="error_message_connection_time_has_out">Connection time has out. Please try again</string>
-    <string name="error_loading_data_message">Error loading data</string>
-    <string name="news_not_found">Новости не найдены</string>
+    <string name="error_message_connection_timeout">Ошибка сети: превышен таймаут.</string>
+    <string name="error_message_no_network_connection">Нет подключения к сети.</string>
+    <string name="error_message_not_found">Данные не найдены.</string>
+    <string name="error_message_unknown_error">Неизвестная ошибка загрузки данных.</string>
+    <string name="error_message_connection_time_has_out">Время соединения истекло. Пожалуйста, попробуйте еще раз.</string>
+    <string name="error_loading_data_message">Ошибка загрузки данных.</string>
+    <string name="news_not_found">Новости не найдены.</string>
     <string name="title_news_list">News</string>
-    <string name="news_image_description">Описание изображения</string>
-    <string name="open_in_browser">Подробнее</string>
-    <string name="empty_list_message">Пусто</string>
+    <string name="news_image_description">Описание изображения.</string>
+    <string name="open_in_browser">Подробнее.</string>
+    <string name="empty_list_message">Пусто.</string>
+    <string name="failed_to_open_link">Не удалось открыть ссылку: %s</string>
 
 
 </resources>

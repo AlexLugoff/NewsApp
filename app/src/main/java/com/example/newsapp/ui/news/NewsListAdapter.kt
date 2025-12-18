@@ -40,7 +40,7 @@ class NewsListAdapter(private val onItemClicked: (newsLink: String) -> Unit) :
                 if (!item.imageUrl.isNullOrEmpty()) {
                     Glide.with(newsImageView.context)
                         .load(item.imageUrl)
-                        .placeholder(R.drawable.placeholder_image_24) // Предполагаемый ресурс
+                        .placeholder(R.drawable.placeholder_image_24)
                         .into(newsImageView)
                     newsImageView.visibility = View.VISIBLE
                 } else {

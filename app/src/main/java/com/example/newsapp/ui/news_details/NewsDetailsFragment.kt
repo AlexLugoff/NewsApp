@@ -1,48 +1,36 @@
 package com.example.newsapp.ui.news_details
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.example.newsapp.DATE_FORMAT_PATTERN
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentNewsDetailsBinding
-import com.example.newsapp.showLongToast
-import com.example.newsapp.showShortToast
+import com.example.newsapp.setSafeOnClickListener
 import com.example.newsapp.ui.common.BaseFragment
+import com.example.newsapp.ui.common.CommonEvent
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import androidx.core.net.toUri
-import com.example.newsapp.setSafeOnClickListener
 
 @AndroidEntryPoint
-class NewsDetailsFragment : BaseFragment<
-        NewsDetailsViewState,
-        NewsDetailsEvent,
-        NewsDetailsViewModel,
-        FragmentNewsDetailsBinding>() {
+class NewsDetailsFragment :
+    BaseFragment<NewsDetailsViewState, NewsDetailsEvent, NewsDetailsViewModel, FragmentNewsDetailsBinding>() {
 
     override val viewModel: NewsDetailsViewModel by viewModels()
 
-    // Получение аргументов из Navigation Component
-    private val args: NewsDetailsFragmentArgs by navArgs()
-
-    private val dateFormatter = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+    private val dateFormatter = SimpleDateFormat(DATE_FORMAT_PATTERN, Locale.getDefault())
 
     override fun getViewBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
+        inflater: LayoutInflater, container: ViewGroup?
     ): FragmentNewsDetailsBinding {
         return FragmentNewsDetailsBinding.inflate(inflater, container, false)
     }
@@ -52,63 +40,63 @@ class NewsDetailsFragment : BaseFragment<
         observeViewModel()
     }
 
-    override fun observeViewModel() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-                    handleUiState(state)
-                }
-            }
-        }
-    }
-
-    private fun handleUiState(state: NewsDetailsViewState) {
+    override fun handleViewState(viewState: NewsDetailsViewState?) {
         binding.apply {
-            when (state) {
+            when (viewState) {
                 is NewsDetailsViewState.Loading -> {
-                    progressBar.visibility = View.VISIBLE
-                    contentGroup.visibility = View.GONE
+                    progressBar.isVisible = true
+                    contentGroup.isVisible = false
                 }
 
                 is NewsDetailsViewState.Success -> {
-                    progressBar.visibility = View.GONE
-                    contentGroup.visibility = View.VISIBLE
+                    progressBar.isVisible = false
+                    contentGroup.isVisible = true
 
-                    val newsItem = state.newsItem
+                    val newsItem = viewState.newsItem
                     titleTextView.text = newsItem.title
                     openInBrowserButton.setSafeOnClickListener {
-                        openBrowser(newsItem.link)
+                        viewModel.goToBrowser(newsItem.link)
                     }
-                    val description = Html.fromHtml(newsItem.description, Html.FROM_HTML_MODE_COMPACT)
+                    val description =
+                        Html.fromHtml(newsItem.description, Html.FROM_HTML_MODE_COMPACT)
                     if (description.trim().isNotEmpty()) {
-                        descriptionTextView.visibility = View.VISIBLE
+                        descriptionTextView.isVisible = true
                         descriptionTextView.text = description
                     } else {
-                        descriptionTextView.visibility = View.GONE
+                        descriptionTextView.isVisible = false
                     }
                     descriptionTextView.text =
                         Html.fromHtml(newsItem.description, Html.FROM_HTML_MODE_COMPACT)
                     dateTextView.text = dateFormatter.format(Date(newsItem.date))
 
                     if (!newsItem.imageUrl.isNullOrEmpty()) {
-                        Glide.with(newsImageView.context)
-                            .load(newsItem.imageUrl)
-                            .placeholder(R.drawable.placeholder_image_24)
-                            .into(newsImageView)
-                        newsImageView.visibility = View.VISIBLE
+                        Glide.with(newsImageView.context).load(newsItem.imageUrl)
+                            .placeholder(R.drawable.placeholder_image_24).into(newsImageView)
+                        newsImageView.isVisible = true
                     } else {
-                        newsImageView.visibility = View.GONE
+                        newsImageView.isVisible = false
                     }
                 }
 
                 is NewsDetailsViewState.Error -> {
-                    progressBar.visibility = View.GONE
-                    contentGroup.visibility = View.GONE
-                    showLongToast(state.message)
+                    progressBar.isVisible = false
+                    contentGroup.isVisible = false
+                    CommonEvent.ShowLongToast(viewState.message)
                 }
+
+                else -> Unit
             }
         }
+    }
 
+    override fun handleEvent(event: NewsDetailsEvent?) {
+        when (event) {
+            is NewsDetailsEvent.GoToBrowser -> {
+                openBrowser(event.url)
+            }
+
+            else -> Unit
+        }
     }
 
     private fun openBrowser(url: String) {
@@ -116,7 +104,7 @@ class NewsDetailsFragment : BaseFragment<
             val intent = Intent(Intent.ACTION_VIEW, url.toUri())
             startActivity(intent)
         } catch (e: Exception) {
-            showShortToast("Не удалось открыть ссылку: ${e.message}")
+            CommonEvent.ShowShortToast(getString(R.string.failed_to_open_link, e.message))
         }
     }
 }
