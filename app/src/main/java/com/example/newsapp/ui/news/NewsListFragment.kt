@@ -88,8 +88,8 @@ class NewsListFragment : BaseFragment<
                     Timber.e(viewState.message.asString(requireContext()))
 
                     if (isListEmpty) {
-                        binding.errorStatusTextView.isVisible = true
-                        binding.newsRecyclerView.isVisible = false
+                        errorStatusTextView.isVisible = true
+                        newsRecyclerView.isVisible = false
                     } else {
                         CommonEvent.ShowLongToast(viewState.message.asString(requireContext()))
                     }

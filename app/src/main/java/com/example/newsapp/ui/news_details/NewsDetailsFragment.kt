@@ -81,7 +81,7 @@ class NewsDetailsFragment :
                 is NewsDetailsViewState.Error -> {
                     progressBar.isVisible = false
                     contentGroup.isVisible = false
-                    CommonEvent.ShowLongToast(viewState.message)
+                    CommonEvent.ShowLongToast(viewState.message.asString(requireContext()))
                 }
 
                 else -> Unit
