@@ -6,17 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentNewsListBinding
-import com.example.newsapp.showLongToast
 import com.example.newsapp.ui.common.BaseFragment
+import com.example.newsapp.ui.common.CommonEvent
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -40,14 +36,11 @@ class NewsListFragment : BaseFragment<
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUi()
-        setupObservers()
     }
 
     private fun setupUi() {
         binding.apply {
-            newsAdapter = NewsListAdapter { newsLink ->
-                showDetails(newsLink)
-            }
+            newsAdapter = NewsListAdapter(viewModel::onNewsItemClick)
 
             binding.newsRecyclerView.apply {
                 layoutManager = LinearLayoutManager(context)
@@ -59,30 +52,20 @@ class NewsListFragment : BaseFragment<
         }
     }
 
-    private fun setupObservers() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-                    handleUiState(state)
-                }
-            }
-        }
-    }
-
-    private fun handleUiState(state: NewsListViewState) {
+    override fun handleViewState(viewState: NewsListViewState?) {
         binding.apply {
             val isListEmpty = newsAdapter.itemCount == 0
 
-            swipeRefreshLayout.isRefreshing = state is NewsListViewState.Loading
+            swipeRefreshLayout.isRefreshing = viewState is NewsListViewState.Loading
                     && isListEmpty
 
             progressBar.isVisible =
-                state is NewsListViewState.Loading && isListEmpty
+                viewState is NewsListViewState.Loading && isListEmpty
             newsRecyclerView.isVisible =
-                state is NewsListViewState.Success || !isListEmpty
+                viewState is NewsListViewState.Success || !isListEmpty
             errorStatusTextView.isVisible = false
 
-            when (state) {
+            when (viewState) {
                 is NewsListViewState.Loading -> {
                     // Действия не требуются, логика видимости обработана выше.
                     // Если isListEmpty == false, мы видим старые данные + SwipeRefreshIndicator.
@@ -90,9 +73,9 @@ class NewsListFragment : BaseFragment<
 
                 is NewsListViewState.Success -> {
                     errorStatusTextView.isVisible = false
-                    newsAdapter.submitList(state.news)
+                    newsAdapter.submitList(viewState.news)
 
-                    if (state.news.isEmpty()) {
+                    if (viewState.news.isEmpty()) {
                         errorStatusTextView.text =
                             getString(R.string.empty_list_message)
                         errorStatusTextView.isVisible = true
@@ -101,19 +84,30 @@ class NewsListFragment : BaseFragment<
                 }
 
                 is NewsListViewState.Error -> {
-                    errorStatusTextView.text = state.message
-                    Timber.e(state.message)
+                    errorStatusTextView.text = viewState.message.asString(requireContext())
+                    Timber.e(viewState.message.asString(requireContext()))
 
                     if (isListEmpty) {
-                        binding.errorStatusTextView.isVisible = true
-                        binding.newsRecyclerView.isVisible = false
+                        errorStatusTextView.isVisible = true
+                        newsRecyclerView.isVisible = false
                     } else {
-                        showLongToast(state.message)
+                        CommonEvent.ShowLongToast(viewState.message.asString(requireContext()))
                     }
                 }
+
+                else -> Unit
             }
         }
+    }
 
+    override fun handleEvent(event: NewsListEvent?) {
+        when (event) {
+            is NewsListEvent.NavigateToNewsDetails -> {
+                showDetails(event.newsLink)
+            }
+
+            else -> Unit
+        }
     }
 
     private fun showDetails(newsLink: String) {
@@ -121,5 +115,4 @@ class NewsListFragment : BaseFragment<
             NewsListFragmentDirections.actionNewsListFragmentToNewsDetailsFragment(newsLink)
         findNavController().navigate(action)
     }
-
 }
