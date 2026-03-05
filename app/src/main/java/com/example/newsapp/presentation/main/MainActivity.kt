@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.main
+package com.example.newsapp.presentation.main
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -6,7 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.newsapp.R
 import com.example.newsapp.databinding.ActivityMainBinding
-import com.example.newsapp.ui.common.BaseActivity
+import com.example.newsapp.presentation.common.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,12 +24,9 @@ class MainActivity : BaseActivity<MainViewState, MainEvent, MainViewModel, Activ
 //        installSplashScreen()
         setupBindingAndContentView()
 
-        navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        setupObservers()
-    }
-
-    override fun handleEvent(event: MainEvent?) {
     }
 
 }

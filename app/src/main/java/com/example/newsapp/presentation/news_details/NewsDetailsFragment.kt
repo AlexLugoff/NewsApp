@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.news_details
+package com.example.newsapp.presentation.news_details
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,8 +14,8 @@ import com.example.newsapp.DATE_FORMAT_PATTERN
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentNewsDetailsBinding
 import com.example.newsapp.setSafeOnClickListener
-import com.example.newsapp.ui.common.BaseFragment
-import com.example.newsapp.ui.common.CommonEvent
+import com.example.newsapp.presentation.common.BaseFragment
+import com.example.newsapp.presentation.common.CommonEvent
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.Date

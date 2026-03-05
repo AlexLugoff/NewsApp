@@ -1,19 +1,21 @@
-package com.example.newsapp.ui.news
+package com.example.newsapp.presentation.news
 
 import androidx.lifecycle.viewModelScope
+import com.example.newsapp.AppDispatchers
 import com.example.newsapp.R
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.usecases.GetNewsListUseCase
 import com.example.newsapp.fold
-import com.example.newsapp.ui.UniversalText
-import com.example.newsapp.ui.common.BaseViewModel
+import com.example.newsapp.presentation.UniversalText
+import com.example.newsapp.presentation.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NewsListViewModel @Inject constructor(
-    private val getNewsListUseCase: GetNewsListUseCase
+    private val getNewsListUseCase: GetNewsListUseCase,
+    private val dispatchers: AppDispatchers
 ) : BaseViewModel<NewsListViewState, NewsListEvent>() {
 
     init {
@@ -23,7 +25,7 @@ class NewsListViewModel @Inject constructor(
     fun loadNews() {
         NewsListViewState.Loading.setValue()
 
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.io) {
             val sealedResult = getNewsListUseCase()
 
             sealedResult.fold(

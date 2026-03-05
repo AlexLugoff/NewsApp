@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.common
+package com.example.newsapp.presentation.common
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
@@ -32,17 +32,5 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
     override fun postValue(value: T?) {
         isPending.set(true)
         super.postValue(value)
-    }
-
-    /**
-     * Used for cases where T is Void, to make calls cleaner.
-     */
-    @MainThread
-    fun call() {
-        value = null
-    }
-
-    fun postCall() {
-        postValue(null)
     }
 }

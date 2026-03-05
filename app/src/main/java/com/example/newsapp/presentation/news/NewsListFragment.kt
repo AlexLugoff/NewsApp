@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.news
+package com.example.newsapp.presentation.news
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,8 +10,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentNewsListBinding
-import com.example.newsapp.ui.common.BaseFragment
-import com.example.newsapp.ui.common.CommonEvent
+import com.example.newsapp.presentation.common.BaseFragment
+import com.example.newsapp.presentation.common.CommonEvent
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 

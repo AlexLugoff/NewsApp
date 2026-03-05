@@ -1,11 +1,13 @@
 package com.example.newsapp.presentation
 
+import com.example.newsapp.AppDispatchers
+import com.example.newsapp.R
 import com.example.newsapp.SealedResult
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.usecases.GetNewsListUseCase
-import com.example.newsapp.ui.news.NewsListViewModel
-import com.example.newsapp.ui.news.NewsListViewState
+import com.example.newsapp.presentation.news.NewsListViewModel
+import com.example.newsapp.presentation.news.NewsListViewState
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +26,7 @@ import org.junit.Test
 class NewsListViewModelTest {
 
     private val mockUseCase = mockk<GetNewsListUseCase>()
+
     private lateinit var viewModel: NewsListViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -44,7 +47,7 @@ class NewsListViewModelTest {
         advanceUntilIdle()
 
         // THEN
-        assertEquals(NewsListViewState.Success(fakeNews), viewModel.uiState.value)
+        assertEquals(NewsListViewState.Success(fakeNews), viewModel.viewState.value)
     }
 
     @Test
@@ -58,9 +61,9 @@ class NewsListViewModelTest {
         advanceUntilIdle()
 
         // THEN: Проверяем, что сообщение об ошибке корректно смаплено
-        val finalState = viewModel.uiState.value
+        val finalState = viewModel.viewState.value
         assertEquals(
-            NewsListViewState.Error("Ошибка сети: нет подключения к интернету."),
+            NewsListViewState.Error(UniversalText.Resource(id = R.string.error_message_no_network_connection)),
             finalState
         )
     }
@@ -76,8 +79,9 @@ class NewsListViewModelTest {
         advanceUntilIdle()
 
         // THEN
-        val finalState = viewModel.uiState.value
-        assertEquals(NewsListViewState.Error("Данные не найдены, даже в кэше."), finalState)
+        val finalState = viewModel.viewState.value
+
+        assertEquals(NewsListViewState.Error(UniversalText.Resource(id = R.string.news_was_not_found_in_the_cache)), finalState)
     }
 
     @After

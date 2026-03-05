@@ -16,7 +16,7 @@ import com.example.newsapp.SealedResult
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.repository.NewsRepository
-import com.example.newsapp.ui.news_details.NewsDetailsFragment
+import com.example.newsapp.presentation.news_details.NewsDetailsFragment
 import com.example.newsapp.util.launchFragmentInHiltContainer
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
