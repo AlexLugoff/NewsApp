@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.common
+package com.example.newsapp.presentation.common
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,11 +6,6 @@ import androidx.lifecycle.ViewModel
 import timber.log.Timber
 
 abstract class BaseViewModel<ViewState, Event> : ViewModel() {
-
-    protected companion object {
-        const val DELAY_BEFORE_NAVIGATING_BACK = 1500L
-        const val DELAY_BEFORE_HIDING_PROGRESS_DIALOG = 500L
-    }
 
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> = _viewState

@@ -1,4 +1,4 @@
-package com.example.newsapp.ui
+package com.example.newsapp.presentation
 
 import android.os.SystemClock
 import android.view.View

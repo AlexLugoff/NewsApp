@@ -14,7 +14,7 @@ import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.di.TestRepositoryModule
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.repository.NewsRepository
-import com.example.newsapp.ui.news.NewsListFragment
+import com.example.newsapp.presentation.news.NewsListFragment
 import com.example.newsapp.util.launchFragmentInHiltContainer
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

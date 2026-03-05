@@ -1,12 +1,13 @@
 package com.example.newsapp.presentation
 
 import androidx.lifecycle.SavedStateHandle
+import com.example.newsapp.R
 import com.example.newsapp.SealedResult
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.usecases.GetNewsDetailsUseCase
-import com.example.newsapp.ui.news_details.NewsDetailsViewModel
-import com.example.newsapp.ui.news_details.NewsDetailsViewState
+import com.example.newsapp.presentation.news_details.NewsDetailsViewModel
+import com.example.newsapp.presentation.news_details.NewsDetailsViewState
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -68,7 +69,7 @@ class NewsDetailsViewModelTest {
         advanceUntilIdle()
         // Проверяем, что ошибка корректно смаплена
         assertEquals(
-            NewsDetailsViewState.Error("Новость не найдена в кэше."),
+            NewsDetailsViewState.Error(UniversalText.Resource(id = R.string.news_was_not_found_in_the_cache)),
             viewModel.viewState.value
         )
     }
@@ -86,9 +87,10 @@ class NewsDetailsViewModelTest {
 
         // THEN
         advanceUntilIdle()
+
         // Проверяем, что сообщение об ошибке корректно смаплено
         assertEquals(
-            NewsDetailsViewState.Error("Неизвестная ошибка: $unknownError"),
+            NewsDetailsViewState.Error(UniversalText.Resource(id = R.string.unknown_error, unknownError)),
             viewModel.viewState.value
         )
     }

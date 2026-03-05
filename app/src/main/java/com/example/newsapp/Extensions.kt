@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import com.example.newsapp.ui.SafeOnClickListener
+import com.example.newsapp.presentation.SafeOnClickListener
 import kotlin.coroutines.cancellation.CancellationException
 
 fun Context.showShortToast(text: String): Toast {
@@ -67,14 +67,6 @@ fun Fragment.navigate(navDirections: NavDirections) {
 
 fun Fragment.navigate(navDirections: NavDirections, navOptions: NavOptions) {
     findNavController().navigate(navDirections, navOptions)
-}
-
-fun View.hide() {
-    this.isVisible = false
-}
-
-fun View.show() {
-    this.isVisible = true
 }
 
 var View.isAvailable: Boolean

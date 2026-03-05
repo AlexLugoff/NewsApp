@@ -1,15 +1,13 @@
-package com.example.newsapp.ui.common
+package com.example.newsapp.presentation.common
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
-import com.example.newsapp.getRootFragment
 import com.example.newsapp.showLongToast
 import com.example.newsapp.showShortToast
 
@@ -29,7 +27,7 @@ abstract class BaseFragment<VS, E, VM : BaseViewModel<VS, E>, VB : ViewBinding> 
     private val viewStateObserver = Observer<VS> { vs -> vs?.let { handleViewState(it) } }
     private val eventObserver = Observer<E> { e -> e?.let { handleEvent(it) } }
     private val commonEventObserver =
-        Observer<CommonEvent> { ce -> ce?.let { handleCommonEvent(it) } }
+        Observer<CommonEvent> { ce -> handleCommonEvent(ce) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
