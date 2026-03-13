@@ -4,21 +4,28 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.newsapp.data.db.entities.NewsEntity
+import androidx.room.Transaction
+import com.example.newsapp.data.db.entities.NewsItemEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NewsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(news: List<NewsEntity>)
-
-    @Query("SELECT * FROM news ORDER BY pubDate DESC")
-    suspend fun getAllNews(): List<NewsEntity>
-
-    @Query("SELECT * FROM news WHERE link = :newsLink")
-    suspend fun getNewsByLink(newsLink: String): NewsEntity?
+    suspend fun insertNews(news: List<NewsItemEntity>)
 
     @Query("DELETE FROM news")
-    suspend fun clearNews()
+    suspend fun clearAllNews()
+
+    @Query("SELECT * FROM news ORDER BY pubDate DESC")
+    fun getAllNewsFlow(): Flow<List<NewsItemEntity>>
+
+    @Transaction
+    suspend fun updateCache(news: List<NewsItemEntity>) {
+        clearAllNews()
+        insertNews(news)
+    }
+
+    @Query("SELECT * FROM news WHERE link = :newsLink")
+    suspend fun getNewsByLink(newsLink: String): NewsItemEntity
 }

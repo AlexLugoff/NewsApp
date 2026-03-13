@@ -60,6 +60,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.hilt.android)
     implementation(libs.androidx.espresso.contrib)
+    implementation(libs.material)
+    implementation(libs.androidx.recyclerview)
     kapt(libs.hilt.compiler)
 
     implementation(libs.picasso)

@@ -2,6 +2,8 @@ package com.example.newsapp.di.module
 
 import com.example.newsapp.data.datasource.local.NewsLocalDataSource
 import com.example.newsapp.data.datasource.local.NewsLocalDataSourceImpl
+import com.example.newsapp.data.datasource.local.NewsSourceLocalDataSource
+import com.example.newsapp.data.datasource.local.NewsSourceLocalDataSourceImpl
 import com.example.newsapp.data.datasource.remote.NewsRemoteDataSource
 import com.example.newsapp.data.datasource.remote.NewsRemoteDataSourceImpl
 import dagger.Binds
@@ -25,4 +27,10 @@ abstract class DataSourceModule {
     abstract fun bindNewsLocalDataSource(
         impl: NewsLocalDataSourceImpl
     ): NewsLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindNewsSourceLocalDataSource(
+        impl: NewsSourceLocalDataSourceImpl
+    ): NewsSourceLocalDataSource
 }

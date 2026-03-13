@@ -4,44 +4,56 @@ import androidx.lifecycle.viewModelScope
 import com.example.newsapp.AppDispatchers
 import com.example.newsapp.R
 import com.example.newsapp.data.exception.DataError
-import com.example.newsapp.domain.usecases.GetNewsListUseCase
-import com.example.newsapp.fold
+import com.example.newsapp.domain.usecases.GetNewsFlowUseCase
+import com.example.newsapp.domain.usecases.RefreshNewsUseCase
+import com.example.newsapp.onFailure
 import com.example.newsapp.presentation.UniversalText
 import com.example.newsapp.presentation.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NewsListViewModel @Inject constructor(
-    private val getNewsListUseCase: GetNewsListUseCase,
+    private val getNewsFlowUseCase: GetNewsFlowUseCase,
+    private val refreshNewsUseCase: RefreshNewsUseCase,
     private val dispatchers: AppDispatchers
 ) : BaseViewModel<NewsListViewState, NewsListEvent>() {
 
     init {
-        loadNews()
+        observeNews()
+        refreshNews()
     }
 
-    fun loadNews() {
-        NewsListViewState.Loading.setValue()
+    private fun observeNews() {
+        getNewsFlowUseCase.invoke()
+            .onEach { newsList ->
+                NewsListViewState.Success(newsList).postValue()
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun refreshNews() {
+        if (viewState.value !is NewsListViewState.Success) {
+            NewsListViewState.Loading.setValue()
+        }
 
         viewModelScope.launch(dispatchers.io) {
-            val sealedResult = getNewsListUseCase()
+            refreshNewsUseCase.invoke().onFailure { domainError ->
+                val errorMessage = mapError(domainError)
+                NewsListViewState.Error(errorMessage).postValue()
+            }
+        }
+    }
 
-            sealedResult.fold(
-                onSuccess = { newsList ->
-                    NewsListViewState.Success(newsList).postValue()
-                },
-                onFailure = { domainError ->
-                    val errorMessage = when (domainError) {
-                        DataError.Network.UNKNOWN_HOST -> UniversalText.Resource(id = R.string.error_message_unknown_host)
-                        DataError.Network.CONNECTION_TIMEOUT -> UniversalText.Resource(id = R.string.error_message_connection_timeout)
-                        DataError.Local.NOT_FOUND -> UniversalText.Resource(id = R.string.error_message_not_found)
-                        else -> UniversalText.Resource(id = R.string.error_message_unknown_error)
-                    }
-                    NewsListViewState.Error(errorMessage).postValue()
-                }
-            )
+    private fun mapError(error: DataError): UniversalText {
+        return when (error) {
+            DataError.Network.UNKNOWN_HOST -> UniversalText.Resource(R.string.error_message_unknown_host)
+            DataError.Network.CONNECTION_TIMEOUT -> UniversalText.Resource(R.string.error_message_connection_timeout)
+            DataError.Local.NOT_FOUND -> UniversalText.Resource(id = R.string.error_message_not_found)
+            else -> UniversalText.Resource(R.string.error_message_unknown_error)
         }
     }
 

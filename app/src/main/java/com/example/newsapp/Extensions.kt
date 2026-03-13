@@ -8,13 +8,14 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.newsapp.presentation.SafeOnClickListener
-import kotlin.coroutines.cancellation.CancellationException
+import android.text.Html
+import android.text.Spanned
+import android.os.Build
 
 fun Context.showShortToast(text: String): Toast {
     return Toast.makeText(this, text, Toast.LENGTH_SHORT).also { it.show() }
@@ -43,11 +44,13 @@ fun Activity.getRootFragment(): Fragment? {
 
 fun Fragment.showShortToast(text: String) = requireContext().showShortToast(text)
 
-fun Fragment.showShortToast(@StringRes resId: Int, vararg args: Any) = requireContext().showShortToast(resId, *args)
+fun Fragment.showShortToast(@StringRes resId: Int, vararg args: Any) =
+    requireContext().showShortToast(resId, *args)
 
 fun Fragment.showLongToast(text: String) = requireContext().showLongToast(text)
 
-fun Fragment.showLongToast(@StringRes resId: Int, vararg args: Any) = requireContext().showLongToast(resId, *args)
+fun Fragment.showLongToast(@StringRes resId: Int, vararg args: Any) =
+    requireContext().showLongToast(resId, *args)
 
 fun View.setSafeOnClickListener(onClick: (View) -> Unit) {
     setOnClickListener(SafeOnClickListener { onClick(it) })
@@ -77,47 +80,13 @@ var View.isAvailable: Boolean
         alpha = if (value) 1.0F else 0.4F
     }
 
-/**
- * Like [runCatching], but with proper coroutines cancellation handling. Also only catches [Exception] instead of [Throwable].
- *
- * Cancellation exceptions need to be rethrown. See https://github.com/Kotlin/kotlinx.coroutines/issues/1814.
- */
-inline fun <R> resultOf(block: () -> R): Result<R> {
-    return try {
-        Result.success(block())
-    } catch (e: CancellationException) {
-        throw e
-    } catch (e: Exception) {
-        Result.failure(e)
-    }
-}
+fun String?.toSpannedHtml(): Spanned {
+    if (this == null) return Html.fromHtml("", Html.FROM_HTML_MODE_LEGACY)
 
-/**
- * Like [runCatching], but with proper coroutines cancellation handling. Also only catches [Exception] instead of [Throwable].
- *
- * Cancellation exceptions need to be rethrown. See https://github.com/Kotlin/kotlinx.coroutines/issues/1814.
- */
-inline fun <T, R> T.resultOf(block: T.() -> R): Result<R> {
-    return try {
-        Result.success(block())
-    } catch (e: CancellationException) {
-        throw e
-    } catch (e: Exception) {
-        Result.failure(e)
-    }
-}
-
-sealed interface SealedResult<out T, out E> {
-    data class Success<out T>(val data: T) : SealedResult<T, Nothing>
-    data class Failure<out E>(val error: E) : SealedResult<Nothing, E>
-}
-
-inline fun <T, E, R> SealedResult<T, E>.fold(
-    onSuccess: (T) -> R,
-    onFailure: (E) -> R
-): R {
-    return when (this) {
-        is SealedResult.Success -> onSuccess(data)
-        is SealedResult.Failure -> onFailure(error)
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT)
+    } else {
+        @Suppress("DEPRECATION")
+        Html.fromHtml(this)
     }
 }

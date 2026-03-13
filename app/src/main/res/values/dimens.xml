@@ -11,4 +11,6 @@
     <dimen name="padding_default">16dp</dimen>
     <dimen name="padding_small">8dp</dimen>
     <dimen name="padding_tiny">4dp</dimen>
+    <dimen name="list_item_spacing">16dp</dimen>
+    <dimen name="list_item_spacing_half">8dp</dimen>
 </resources>

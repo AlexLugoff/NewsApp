@@ -12,9 +12,9 @@ import javax.inject.Inject
 class NewsRemoteDataSourceImpl @Inject constructor(
     private val apiService: RssApiService
 ) : NewsRemoteDataSource {
-    override suspend fun getNewsFeed(): SealedResult<RssFeedDto, DataError.Network> {
+    override suspend fun getNewsFeed(url: String): SealedResult<RssFeedDto, DataError.Network> {
         return try {
-            val dto = apiService.getNews()
+            val dto = apiService.getNews(url)
             SealedResult.Success(dto)
         } catch (e: UnknownHostException) {
             SealedResult.Failure(DataError.Network.UNKNOWN_HOST)

@@ -36,6 +36,8 @@ timber = "5.0.1"
 roomCompilerProcessingTesting = "2.8.4"
 glide_version = "4.16.0"
 espressoContrib = "3.7.0"
+material = "1.13.0"
+recyclerview = "1.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -80,6 +82,8 @@ simple-xml = { module = "org.simpleframework:simple-xml", version.ref = "simpleX
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 androidx-room-compiler-processing-testing = { group = "androidx.room", name = "room-compiler-processing-testing", version.ref = "roomCompilerProcessingTesting" }
 androidx-espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "espressoContrib" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

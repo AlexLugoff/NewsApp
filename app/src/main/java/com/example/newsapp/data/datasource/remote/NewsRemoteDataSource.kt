@@ -5,5 +5,5 @@ import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.data.models.RssFeedDto
 
 interface NewsRemoteDataSource {
-    suspend fun getNewsFeed(): SealedResult<RssFeedDto, DataError.Network>
+    suspend fun getNewsFeed(url: String): SealedResult<RssFeedDto, DataError.Network>
 }

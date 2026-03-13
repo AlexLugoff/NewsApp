@@ -1,11 +1,10 @@
 package com.example.newsapp.presentation
 
-import com.example.newsapp.AppDispatchers
 import com.example.newsapp.R
 import com.example.newsapp.SealedResult
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.models.NewsItem
-import com.example.newsapp.domain.usecases.GetNewsListUseCase
+import com.example.newsapp.domain.usecases.RefreshNewsUseCase
 import com.example.newsapp.presentation.news.NewsListViewModel
 import com.example.newsapp.presentation.news.NewsListViewState
 import io.mockk.coEvery
@@ -25,7 +24,7 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class NewsListViewModelTest {
 
-    private val mockUseCase = mockk<GetNewsListUseCase>()
+    private val mockUseCase = mockk<RefreshNewsUseCase>()
 
     private lateinit var viewModel: NewsListViewModel
     private val testDispatcher = UnconfinedTestDispatcher()

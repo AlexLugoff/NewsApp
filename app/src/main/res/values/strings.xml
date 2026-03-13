@@ -16,7 +16,7 @@
     <string name="unknown_error">Неизвестная ошибка: %s</string>
     <string name="title_news_list">News</string>
     <string name="news_image_description">Описание изображения.</string>
-    <string name="open_in_browser">Подробнее.</string>
+    <string name="open_in_browser">Подробнее</string>
     <string name="empty_list_message">Пусто.</string>
     <string name="failed_to_open_link">Не удалось открыть ссылку: %s</string>
 

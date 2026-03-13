@@ -48,7 +48,7 @@ class NewsDetailsFragmentTest {
         description = "Это полное описание тестовой новости.",
         imageUrl = "http://image.url/test",
         link = TEST_LINK,
-        date = TEST_DATE
+        formattedDate = TEST_DATE
     )
 
     @Before

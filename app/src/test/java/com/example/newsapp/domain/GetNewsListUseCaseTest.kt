@@ -4,7 +4,7 @@ import com.example.newsapp.SealedResult
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.repository.NewsRepository
-import com.example.newsapp.domain.usecases.GetNewsListUseCase
+import com.example.newsapp.domain.usecases.RefreshNewsUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -15,7 +15,7 @@ import org.junit.Test
 class GetNewsListUseCaseTest {
 
     private val mockRepository = mockk<NewsRepository>()
-    private lateinit var useCase: GetNewsListUseCase
+    private lateinit var useCase: RefreshNewsUseCase
 
     private val fakeNews = listOf(
         NewsItem("1", "Title 1", "Desc 1", null, "link1", 1L)
@@ -24,7 +24,7 @@ class GetNewsListUseCaseTest {
 
     @Before
     fun setup() {
-        useCase = GetNewsListUseCase(mockRepository)
+        useCase = RefreshNewsUseCase(mockRepository)
     }
 
     @Test

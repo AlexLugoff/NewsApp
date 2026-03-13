@@ -2,16 +2,23 @@ package com.example.newsapp.presentation.news
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentNewsListBinding
 import com.example.newsapp.presentation.common.BaseFragment
 import com.example.newsapp.presentation.common.CommonEvent
+import com.example.newsapp.presentation.source_selection.SourceSelectionBottomSheetFragment
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -35,7 +42,14 @@ class NewsListFragment : BaseFragment<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        parentFragmentManager.setFragmentResultListener("sources_updated", viewLifecycleOwner) { _, bundle ->
+            val isChanged = bundle.getBoolean("isChanged", false)
+            if (isChanged) {
+                viewModel.refreshNews()
+            }
+        }
         setupUi()
+        setupMenu()
     }
 
     private fun setupUi() {
@@ -47,7 +61,7 @@ class NewsListFragment : BaseFragment<
                 adapter = newsAdapter
             }
             swipeRefreshLayout.setOnRefreshListener {
-                viewModel.loadNews()
+                viewModel.refreshNews()
             }
         }
     }
@@ -114,5 +128,32 @@ class NewsListFragment : BaseFragment<
         val action =
             NewsListFragmentDirections.actionNewsListFragmentToNewsDetailsFragment(newsLink)
         findNavController().navigate(action)
+    }
+
+    private fun setupMenu() {
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Очищаем меню, если нужно, чтобы не было дублей, и инфлейтим наше
+                menuInflater.inflate(R.menu.menu_news_list, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_sources -> {
+                        showSourceSelection()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        // State.RESUMED гарантирует, что меню появится только когда фрагмент активен
+    }
+
+    private fun showSourceSelection() {
+        val bottomSheet = SourceSelectionBottomSheetFragment()
+        bottomSheet.show(childFragmentManager, "SourceSelection")
     }
 }

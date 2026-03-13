@@ -19,29 +19,41 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideBaseApi(
-        httpLoggingInterceptor: HttpLoggingInterceptor,
-        simpleXmlConverterFactory: SimpleXmlConverterFactory,
-    ): RssApiService {
-        val okHttpClient = OkHttpClient.Builder()
+    fun provideOkHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
             .connectTimeout(RssApiService.CONNECT_TIMEOUT, RssApiService.timeUnit)
             .writeTimeout(RssApiService.WRITE_TIMEOUT, RssApiService.timeUnit)
             .readTimeout(RssApiService.READ_TIMEOUT, RssApiService.timeUnit)
             .addInterceptor(httpLoggingInterceptor)
             .build()
-        val retrofit = Retrofit.Builder()
+    }
+
+    @Provides
+    @Singleton
+    fun provideBaseApi(
+        okHttpClient: OkHttpClient,
+        simpleXmlConverterFactory: SimpleXmlConverterFactory,
+    ): RssApiService {
+        return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(simpleXmlConverterFactory)
             .client(okHttpClient)
             .build()
-        return retrofit.create(RssApiService::class.java)
+            .create(RssApiService::class.java)
     }
 
     @Provides
     @Singleton
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor()
-            .setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE)
+        return HttpLoggingInterceptor().apply {
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
+        }
     }
 
     @Provides

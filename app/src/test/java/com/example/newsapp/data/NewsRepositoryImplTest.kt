@@ -3,7 +3,7 @@ package com.example.newsapp.data
 import com.example.newsapp.SealedResult
 import com.example.newsapp.data.datasource.local.NewsLocalDataSource
 import com.example.newsapp.data.datasource.remote.NewsRemoteDataSource
-import com.example.newsapp.data.db.entities.NewsEntity
+import com.example.newsapp.data.db.entities.NewsItemEntity
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.data.models.RssChannelDto
 import com.example.newsapp.data.models.RssFeedDto
@@ -26,7 +26,7 @@ class NewsRepositoryImplTest {
 
     private val fakeRss = RssFeedDto(RssChannelDto(emptyList())) // Пустой, но успешный DTO
     private val fakeEntities =
-        listOf(NewsEntity("cache_link", "Cache Title", "Cache Desc", null, 1700000000000L))
+        listOf(NewsItemEntity("cache_link", "Cache Title", "Cache Desc", null, 1700000000000L))
 
     @Before
     fun setup() {
@@ -44,7 +44,7 @@ class NewsRepositoryImplTest {
 
         // THEN
         assertTrue(result is SealedResult.Success)
-        coVerify(exactly = 1) { mockLocalDataSource.saveNews(any()) } // Проверяем кэширование
+        coVerify(exactly = 1) { mockLocalDataSource.insertNews(any()) } // Проверяем кэширование
     }
 
     @Test

@@ -10,24 +10,19 @@ import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
-import com.example.newsapp.DATE_FORMAT_PATTERN
 import com.example.newsapp.R
+import com.example.newsapp.asDateString
 import com.example.newsapp.databinding.FragmentNewsDetailsBinding
-import com.example.newsapp.setSafeOnClickListener
 import com.example.newsapp.presentation.common.BaseFragment
 import com.example.newsapp.presentation.common.CommonEvent
+import com.example.newsapp.setSafeOnClickListener
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @AndroidEntryPoint
 class NewsDetailsFragment :
     BaseFragment<NewsDetailsViewState, NewsDetailsEvent, NewsDetailsViewModel, FragmentNewsDetailsBinding>() {
 
     override val viewModel: NewsDetailsViewModel by viewModels()
-
-    private val dateFormatter = SimpleDateFormat(DATE_FORMAT_PATTERN, Locale.getDefault())
 
     override fun getViewBinding(
         inflater: LayoutInflater, container: ViewGroup?
@@ -57,19 +52,16 @@ class NewsDetailsFragment :
                     openInBrowserButton.setSafeOnClickListener {
                         viewModel.goToBrowser(newsItem.link)
                     }
-                    val description =
-                        Html.fromHtml(newsItem.description, Html.FROM_HTML_MODE_COMPACT)
-                    if (description.trim().isNotEmpty()) {
+                    val description = newsItem.description
+                    if (description.isNotBlank()) {
                         descriptionTextView.isVisible = true
                         descriptionTextView.text = description
                     } else {
                         descriptionTextView.isVisible = false
                     }
-                    descriptionTextView.text =
-                        Html.fromHtml(newsItem.description, Html.FROM_HTML_MODE_COMPACT)
-                    dateTextView.text = dateFormatter.format(Date(newsItem.date))
+                    dateTextView.text = newsItem.formattedDate
 
-                    if (!newsItem.imageUrl.isNullOrEmpty()) {
+                    if (!newsItem.imageUrl.isNullOrBlank()) {
                         Glide.with(newsImageView.context).load(newsItem.imageUrl)
                             .placeholder(R.drawable.placeholder_image_24).into(newsImageView)
                         newsImageView.isVisible = true
