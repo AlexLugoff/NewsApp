@@ -1,11 +1,13 @@
 package com.example.newsapp.data.models
 
-import org.simpleframework.xml.ElementList
-import org.simpleframework.xml.Root
+import com.tickaroo.tikxml.annotation.Element
+import com.tickaroo.tikxml.annotation.PropertyElement
+import com.tickaroo.tikxml.annotation.Xml
 
-@Root(name = "channel", strict = false)
-data class RssChannelDto @JvmOverloads constructor(
-    @field:ElementList(name = "item", inline = true)
-    @param:ElementList(name = "item", inline = true)
+@Xml(name = "channel")
+data class RssChannelDto(
+    @PropertyElement(name = "title")
+    val title: String = "",
+    @Element(name = "item")
     val newsItems: List<NewsItemDto> = emptyList()
 )

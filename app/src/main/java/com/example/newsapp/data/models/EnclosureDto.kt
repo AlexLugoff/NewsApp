@@ -1,11 +1,13 @@
 package com.example.newsapp.data.models
 
-import org.simpleframework.xml.Attribute
-import org.simpleframework.xml.Root
+import com.tickaroo.tikxml.annotation.Attribute
+import com.tickaroo.tikxml.annotation.Xml
 
-@Root(name = "enclosure", strict = false)
-data class EnclosureDto @JvmOverloads constructor(
-    @field:Attribute(name = "url")
-    @param:Attribute(name = "url")
-    val url: String = ""
+@Xml(name = "enclosure")
+data class EnclosureDto(
+    @Attribute(name = "url")
+    val url: String = "",
+
+    @Attribute(name = "type")
+    val type: String = ""
 )

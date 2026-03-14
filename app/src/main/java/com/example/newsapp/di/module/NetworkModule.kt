@@ -3,6 +3,8 @@ package com.example.newsapp.di.module
 import com.example.newsapp.BASE_URL
 import com.example.newsapp.data.RssApiService
 import com.squareup.picasso.BuildConfig
+import com.tickaroo.tikxml.TikXml
+import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,7 +12,6 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -34,11 +35,11 @@ object NetworkModule {
     @Singleton
     fun provideBaseApi(
         okHttpClient: OkHttpClient,
-        simpleXmlConverterFactory: SimpleXmlConverterFactory,
+        tikXmlConverterFactory: TikXmlConverterFactory
     ): RssApiService {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(simpleXmlConverterFactory)
+            .addConverterFactory(tikXmlConverterFactory)
             .client(okHttpClient)
             .build()
             .create(RssApiService::class.java)
@@ -58,7 +59,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideSimpleXmlConverterFactory(): SimpleXmlConverterFactory =
-        SimpleXmlConverterFactory.create()
+    fun provideTikXmlConverterFactory(): TikXmlConverterFactory =
+        TikXmlConverterFactory.create(
+            TikXml.Builder()
+                .exceptionOnUnreadXml(false)
+                .build()
+        )
 
 }
