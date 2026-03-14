@@ -1,5 +1,6 @@
 package com.example.newsapp.presentation.source_selection
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -54,9 +55,13 @@ class SourceSelectionBottomSheetFragment : BottomSheetDialogFragment() {
         }
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        setFragmentResult("sources_updated", bundleOf("isChanged" to true))
+        super.onDismiss(dialog)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        setFragmentResult("sources_updated", bundleOf("isChanged" to true))
         _binding = null
     }
 }

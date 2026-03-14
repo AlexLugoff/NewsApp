@@ -10,6 +10,8 @@ import com.example.newsapp.onFailure
 import com.example.newsapp.presentation.UniversalText
 import com.example.newsapp.presentation.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -29,9 +31,11 @@ class NewsListViewModel @Inject constructor(
 
     private fun observeNews() {
         getNewsFlowUseCase.invoke()
+            .distinctUntilChanged()
             .onEach { newsList ->
                 NewsListViewState.Success(newsList).postValue()
             }
+            .flowOn(dispatchers.io)
             .launchIn(viewModelScope)
     }
 

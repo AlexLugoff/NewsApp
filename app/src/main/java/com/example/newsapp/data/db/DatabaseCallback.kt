@@ -27,8 +27,8 @@ class DatabaseCallback(
                         isEnabled = true
                     ),
                     NewsSourceEntity(
-                        name = "BBC News",
-                        url = "http://feeds.bbci.co.uk/news/rss.xml",
+                        name = "РБК",
+                        url = "https://rssexport.rbc.ru/rbcnews/news/30/full.rss",
                         isEnabled = false
                     )
                 )

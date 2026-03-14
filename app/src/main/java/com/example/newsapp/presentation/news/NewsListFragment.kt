@@ -42,7 +42,7 @@ class NewsListFragment : BaseFragment<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        parentFragmentManager.setFragmentResultListener("sources_updated", viewLifecycleOwner) { _, bundle ->
+        childFragmentManager.setFragmentResultListener("sources_updated", viewLifecycleOwner) { _, bundle ->
             val isChanged = bundle.getBoolean("isChanged", false)
             if (isChanged) {
                 viewModel.refreshNews()
