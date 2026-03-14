@@ -104,8 +104,8 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
 
-    // Glide
-    implementation(libs.glide)
+    // Coil
+    implementation(libs.coil)
 
     // Retrofit
     implementation(libs.retrofit)

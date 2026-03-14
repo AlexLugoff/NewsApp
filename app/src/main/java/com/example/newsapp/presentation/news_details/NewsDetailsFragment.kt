@@ -2,16 +2,14 @@ package com.example.newsapp.presentation.news_details
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import com.bumptech.glide.Glide
+import coil.load
 import com.example.newsapp.R
-import com.example.newsapp.asDateString
 import com.example.newsapp.databinding.FragmentNewsDetailsBinding
 import com.example.newsapp.presentation.common.BaseFragment
 import com.example.newsapp.presentation.common.CommonEvent
@@ -62,9 +60,11 @@ class NewsDetailsFragment :
                     dateTextView.text = newsItem.formattedDate
 
                     if (!newsItem.imageUrl.isNullOrBlank()) {
-                        Glide.with(newsImageView.context).load(newsItem.imageUrl)
-                            .placeholder(R.drawable.placeholder_image_24).into(newsImageView)
                         newsImageView.isVisible = true
+                        newsImageView.load(newsItem.imageUrl) {
+                            crossfade(true)
+                            placeholder(R.drawable.placeholder_image_24)
+                        }
                     } else {
                         newsImageView.isVisible = false
                     }

@@ -1,14 +1,12 @@
 package com.example.newsapp.presentation.news
 
-import android.text.Html
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
 import com.example.newsapp.R
 import com.example.newsapp.databinding.NewsItemBinding
 import com.example.newsapp.domain.models.NewsItem
@@ -40,11 +38,11 @@ class NewsListAdapter(private val onItemClicked: (newsLink: String) -> Unit) :
                     descriptionTextView.isVisible = false
                 }
                 if (!item.imageUrl.isNullOrBlank()) {
-                    Glide.with(newsImageView.context)
-                        .load(item.imageUrl)
-                        .placeholder(R.drawable.placeholder_image_24)
-                        .into(newsImageView)
                     newsImageView.isVisible = true
+                    newsImageView.load(item.imageUrl) {
+                        crossfade(true)
+                        placeholder(R.drawable.placeholder_image_24)
+                    }
                 } else {
                     newsImageView.isVisible = false
                 }
