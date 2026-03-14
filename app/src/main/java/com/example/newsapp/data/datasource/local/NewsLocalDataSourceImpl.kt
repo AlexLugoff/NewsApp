@@ -11,6 +11,8 @@ class NewsLocalDataSourceImpl @Inject constructor(
 
     override fun getAllNewsFlow(): Flow<List<NewsItemEntity>> = newsDao.getAllNewsFlow()
 
+    override suspend fun clearOldNews(timestamp: Long) = newsDao.clearOldNews(timestamp)
+
     override suspend fun updateCache(news: List<NewsItemEntity>) {
         newsDao.updateCache(news)
     }

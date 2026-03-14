@@ -1,6 +1,6 @@
 package com.example.newsapp.data.repository
 
-import android.util.Log
+import com.example.newsapp.NEWS_EXPIRATION_THRESHOLD
 import com.example.newsapp.SealedResult
 import com.example.newsapp.data.datasource.local.NewsLocalDataSource
 import com.example.newsapp.data.datasource.local.NewsSourceLocalDataSource
@@ -21,8 +21,11 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class NewsRepositoryImpl @Inject constructor(
     private val remoteDataSource: NewsRemoteDataSource,
@@ -33,6 +36,20 @@ class NewsRepositoryImpl @Inject constructor(
     override fun getNewsFlow(): Flow<List<NewsItem>> {
         return newsLocalDataSource.getAllNewsFlow().map { entities ->
             entities.toDomainList()
+        }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    override suspend fun clearOldNews() {
+        val threshold = Clock.System.now()
+            .minus(NEWS_EXPIRATION_THRESHOLD)
+            .toEpochMilliseconds()
+
+        try {
+            newsLocalDataSource.clearOldNews(threshold)
+            Timber.d("Old news cleared successfully. Threshold: $threshold")
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to clear old news")
         }
     }
 
@@ -64,7 +81,7 @@ class NewsRepositoryImpl @Inject constructor(
                 SealedResult.Success(allNews)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
-                Log.e("NewsRepository", "Error fetching news", e)
+                Timber.e(e, "Error fetching news")
                 SealedResult.Failure(DataError.Network.UNKNOWN)
             }
         }

@@ -17,6 +17,9 @@ interface NewsDao {
     @Query("DELETE FROM news")
     suspend fun clearAllNews()
 
+    @Query("DELETE FROM news WHERE pubDate < :timestamp")
+    suspend fun clearOldNews(timestamp: Long)
+
     @Query("SELECT * FROM news ORDER BY pubDate DESC")
     fun getAllNewsFlow(): Flow<List<NewsItemEntity>>
 

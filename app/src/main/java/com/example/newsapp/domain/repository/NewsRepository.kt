@@ -10,6 +10,8 @@ interface NewsRepository {
 
     fun getNewsFlow(): Flow<List<NewsItem>>
 
+    suspend fun clearOldNews()
+
     suspend fun refreshNews(): SealedResult<Unit, DataError>
 
     suspend fun getNewsDetails(newsLink: String): SealedResult<NewsItem?, DataError>

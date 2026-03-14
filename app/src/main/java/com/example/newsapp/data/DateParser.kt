@@ -1,13 +1,11 @@
 package com.example.newsapp.data
 
-import android.util.Log
+import timber.log.Timber
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 object DateParser {
-
-    private const val TAG = "DateParser"
     private val formatters = listOf(
         DateTimeFormatter.RFC_1123_DATE_TIME,
         DateTimeFormatter.ISO_DATE_TIME,
@@ -18,7 +16,7 @@ object DateParser {
 
     fun parseToLong(dateString: String?): Long? {
         if (dateString.isNullOrBlank()) {
-            Log.w(TAG, "Empty or null date string received")
+            Timber.w("Empty or null date string received")
             return null
         }
 
@@ -30,11 +28,12 @@ object DateParser {
                     .toInstant()
                     .toEpochMilli()
             } catch (e: Exception) {
+                Timber.e(e.stackTraceToString())
                 continue
             }
         }
 
-        Log.e(TAG, "Failed to parse date: '$dateString'. Please add a new pattern to DateParser.")
+        Timber.e("Failed to parse date: '$dateString'. Please add a new pattern to DateParser.")
         return null
     }
 }
