@@ -62,7 +62,6 @@ class NewsDetailsFragment :
                     if (!newsItem.imageUrl.isNullOrBlank()) {
                         newsImageView.isVisible = true
                         newsImageView.load(newsItem.imageUrl) {
-                            crossfade(true)
                             placeholder(R.drawable.placeholder_image_24)
                         }
                     } else {

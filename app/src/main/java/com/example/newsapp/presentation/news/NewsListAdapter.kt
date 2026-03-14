@@ -40,7 +40,6 @@ class NewsListAdapter(private val onItemClicked: (newsLink: String) -> Unit) :
                 if (!item.imageUrl.isNullOrBlank()) {
                     newsImageView.isVisible = true
                     newsImageView.load(item.imageUrl) {
-                        crossfade(true)
                         placeholder(R.drawable.placeholder_image_24)
                     }
                 } else {
