@@ -12,6 +12,8 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsapp.R
@@ -20,6 +22,7 @@ import com.example.newsapp.presentation.common.BaseFragment
 import com.example.newsapp.presentation.common.CommonEvent
 import com.example.newsapp.presentation.source_selection.SourceSelectionBottomSheetFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -119,7 +122,6 @@ class NewsListFragment : BaseFragment<
             is NewsListEvent.NavigateToNewsDetails -> {
                 showDetails(event.newsLink)
             }
-
             else -> Unit
         }
     }
@@ -149,7 +151,6 @@ class NewsListFragment : BaseFragment<
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-        // State.RESUMED гарантирует, что меню появится только когда фрагмент активен
     }
 
     private fun showSourceSelection() {

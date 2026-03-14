@@ -1,8 +1,8 @@
 package com.example.newsapp.presentation.news
 
 import androidx.lifecycle.viewModelScope
-import com.example.newsapp.AppDispatchers
 import com.example.newsapp.R
+import com.example.newsapp.TIMEOUT_PAUSE_WHEN_FOLDING
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.usecases.GetNewsFlowUseCase
 import com.example.newsapp.domain.usecases.RefreshNewsUseCase
@@ -10,42 +10,41 @@ import com.example.newsapp.onFailure
 import com.example.newsapp.presentation.UniversalText
 import com.example.newsapp.presentation.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NewsListViewModel @Inject constructor(
-    private val getNewsFlowUseCase: GetNewsFlowUseCase,
-    private val refreshNewsUseCase: RefreshNewsUseCase,
-    private val dispatchers: AppDispatchers
+    getNewsFlowUseCase: GetNewsFlowUseCase,
+    private val refreshNewsUseCase: RefreshNewsUseCase
 ) : BaseViewModel<NewsListViewState, NewsListEvent>() {
 
     init {
-        observeNews()
         refreshNews()
     }
 
-    private fun observeNews() {
-        getNewsFlowUseCase.invoke()
+    override val uiStateFlow: StateFlow<NewsListViewState?> =
+        getNewsFlowUseCase()
+            .map { newsList -> NewsListViewState.Success(newsList) }
             .distinctUntilChanged()
-            .onEach { newsList ->
-                NewsListViewState.Success(newsList).postValue()
-            }
-            .flowOn(dispatchers.io)
-            .launchIn(viewModelScope)
-    }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(TIMEOUT_PAUSE_WHEN_FOLDING),     // Пауза при сворачивании
+                initialValue = NewsListViewState.Loading
+            )
 
     fun refreshNews() {
         if (viewState.value !is NewsListViewState.Success) {
             NewsListViewState.Loading.setValue()
         }
 
-        viewModelScope.launch(dispatchers.io) {
-            refreshNewsUseCase.invoke().onFailure { domainError ->
+        viewModelScope.launch(exceptionHandler) {
+            refreshNewsUseCase().onFailure { domainError ->
                 val errorMessage = mapError(domainError)
                 NewsListViewState.Error(errorMessage).postValue()
             }

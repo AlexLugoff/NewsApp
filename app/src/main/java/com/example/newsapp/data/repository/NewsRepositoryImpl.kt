@@ -1,5 +1,6 @@
 package com.example.newsapp.data.repository
 
+import com.example.newsapp.AppDispatchers
 import com.example.newsapp.NEWS_EXPIRATION_THRESHOLD
 import com.example.newsapp.SealedResult
 import com.example.newsapp.data.datasource.local.NewsLocalDataSource
@@ -21,6 +22,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
@@ -31,6 +33,7 @@ class NewsRepositoryImpl @Inject constructor(
     private val remoteDataSource: NewsRemoteDataSource,
     private val newsLocalDataSource: NewsLocalDataSource,
     private val newsSourceLocalDataSource: NewsSourceLocalDataSource,
+    private val dispatchers: AppDispatchers
 ) : NewsRepository {
 
     override fun getNewsFlow(): Flow<List<NewsItem>> {
@@ -40,7 +43,7 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     @OptIn(ExperimentalTime::class)
-    override suspend fun clearOldNews() {
+    override suspend fun clearOldNews() = withContext(dispatchers.io) {
         val threshold = Clock.System.now()
             .minus(NEWS_EXPIRATION_THRESHOLD)
             .toEpochMilliseconds()
@@ -53,49 +56,64 @@ class NewsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun refreshNews(): SealedResult<Unit, DataError> {
-        val sources = newsSourceLocalDataSource.getEnabledSources()
-        if (sources.isEmpty()) return SealedResult.Success(Unit)
-        return fetchFromAllSources(sources).fold(
-            onSuccess = { newsItemEntityList ->
-                newsLocalDataSource.updateCache(newsItemEntityList)
-                SealedResult.Success(Unit)
-            },
-            onFailure = { networkError ->
-                SealedResult.Failure(networkError)
-            }
-        )
-    }
+    override suspend fun refreshNews(): SealedResult<Unit, DataError> =
+        withContext(dispatchers.io) {
+            val sources = newsSourceLocalDataSource.getEnabledSources()
+            if (sources.isEmpty()) return@withContext SealedResult.Success(Unit)
+            fetchFromAllSources(sources).fold(
+                onSuccess = { newsItemEntityList ->
+                    newsLocalDataSource.updateCache(newsItemEntityList)
+                    SealedResult.Success(Unit)
+                },
+                onFailure = { networkError ->
+                    SealedResult.Failure(networkError)
+                }
+            )
+        }
 
     private suspend fun fetchFromAllSources(sources: List<NewsSourceEntity>): SealedResult<List<NewsItemEntity>, DataError> =
         coroutineScope {
             try {
-                val allNews = sources
-                    .map { source -> async { remoteDataSource.getNewsFeed(source.url) } }
-                    .awaitAll()
-                    .filterIsInstance<SealedResult.Success<RssFeedDto>>()
+                val deferredResults = sources.map { source ->
+                    async { remoteDataSource.getNewsFeed(source.url) }
+                }
+                val results = deferredResults.awaitAll()
+                // Проверяем, есть ли хоть один успех
+                val successResults = results.filterIsInstance<SealedResult.Success<RssFeedDto>>()
+
+                if (successResults.isEmpty() && results.isNotEmpty()) {
+                    // Если источников много, а успехов 0 — значит, это общая ошибка сети
+                    val firstError = results.filterIsInstance<SealedResult.Failure<DataError>>()
+                        .firstOrNull()?.error ?: DataError.Network.UNKNOWN
+                    return@coroutineScope SealedResult.Failure(firstError)
+                }
+
+                val allNews = successResults
                     .flatMap { it.data.toEntityList() }
-                    .distinctBy { it.link } // Удаление дубликатов
+                    .distinctBy { it.link }
                     .sortedByDescending { it.pubDate }
 
                 SealedResult.Success(allNews)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
-                Timber.e(e, "Error fetching news")
+                Timber.e(e, "Критическая ошибка при загрузке новостей")
                 SealedResult.Failure(DataError.Network.UNKNOWN)
             }
         }
 
-    override suspend fun getNewsDetails(newsLink: String): SealedResult<NewsItem?, DataError> {
-        val entity = newsLocalDataSource.getNewsByLink(newsLink)
-        return SealedResult.Success(entity.toDomain())
-    }
+    override suspend fun getNewsDetails(newsLink: String): SealedResult<NewsItem?, DataError> =
+        withContext(dispatchers.io) {
+            val entity = newsLocalDataSource.getNewsByLink(newsLink)
+            SealedResult.Success(entity.toDomain())
+        }
 
     override fun getNewsSources(): Flow<List<NewsSourceItem>> =
         newsSourceLocalDataSource.getSourcesFlow().map { list -> list.map { it.toDomain() } }
 
 
     override suspend fun toggleSource(sourceId: Int, isEnabled: Boolean) =
-        newsSourceLocalDataSource.updateSourceStatus(sourceId, isEnabled)
+        withContext(dispatchers.io) {
+            newsSourceLocalDataSource.updateSourceStatus(sourceId, isEnabled)
+        }
 
 }

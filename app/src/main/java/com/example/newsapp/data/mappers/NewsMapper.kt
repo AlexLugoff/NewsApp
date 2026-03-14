@@ -12,7 +12,7 @@ import timber.log.Timber
 fun RssFeedDto.toEntityList(): List<NewsItemEntity> {
     return this.channel?.newsItems?.mapNotNull { itemDto ->
         if (itemDto.link.isBlank()) {
-            Timber.tag(this::class.java.simpleName).w("Skipping item: missing link. Title: ${itemDto.title}")
+            Timber.w("Skipping item: missing link. Title: ${itemDto.title}")
             return@mapNotNull null
         }
         val dateLong = DateParser.parseToLong(itemDto.pubDate) ?: return@mapNotNull null

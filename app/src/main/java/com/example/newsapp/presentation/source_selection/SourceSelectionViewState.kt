@@ -1,0 +1,3 @@
+package com.example.newsapp.presentation.source_selection
+
+class SourceSelectionViewState

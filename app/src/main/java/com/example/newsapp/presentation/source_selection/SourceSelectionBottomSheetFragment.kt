@@ -12,26 +12,25 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.newsapp.databinding.FragmentSourceSelectionBottomSheetBinding
+import com.example.newsapp.presentation.common.BaseBottomSheetDialogFragment
 import com.example.newsapp.showLongToast
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SourceSelectionBottomSheetFragment : BottomSheetDialogFragment() {
+class SourceSelectionBottomSheetFragment : BaseBottomSheetDialogFragment<
+        SourceSelectionViewState,
+        SourceSelectionEvent,
+        SourceSelectionViewModel,
+        FragmentSourceSelectionBottomSheetBinding>() {
 
-    private var _binding: FragmentSourceSelectionBottomSheetBinding? = null
-    private val binding get() = _binding!!
+    override val viewModel: SourceSelectionViewModel by viewModels()
 
-    private val viewModel: SourceSelectionViewModel by viewModels()
-
-    override fun onCreateView(
+    override fun getViewBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentSourceSelectionBottomSheetBinding.inflate(inflater, container, false)
-        return binding.root
+        container: ViewGroup?
+    ): FragmentSourceSelectionBottomSheetBinding {
+        return FragmentSourceSelectionBottomSheetBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,8 +41,12 @@ class SourceSelectionBottomSheetFragment : BottomSheetDialogFragment() {
         }
         binding.rvSources.adapter = adapter
 
-        viewModel.sources.observe(viewLifecycleOwner) { sources ->
-            adapter.submitList(sources)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.sourcesState.collect { sources ->
+                    adapter.submitList(sources)
+                }
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -58,10 +61,5 @@ class SourceSelectionBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onDismiss(dialog: DialogInterface) {
         setFragmentResult("sources_updated", bundleOf("isChanged" to true))
         super.onDismiss(dialog)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
