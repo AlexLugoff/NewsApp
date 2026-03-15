@@ -1,11 +1,11 @@
 package com.example.newsapp.data.mappers
 
-import com.example.newsapp.asDateTimeString
+import com.example.newsapp.extensions.asDateTimeString
 import com.example.newsapp.data.DateParser
 import com.example.newsapp.data.db.entities.NewsItemEntity
 import com.example.newsapp.data.models.RssFeedDto
 import com.example.newsapp.domain.models.NewsItem
-import com.example.newsapp.toSpannedHtml
+import com.example.newsapp.extensions.toSpannedHtml
 import timber.log.Timber
 
 // DTO -> Entity

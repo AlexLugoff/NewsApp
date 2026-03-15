@@ -2,51 +2,69 @@ package com.example.newsapp.presentation.news
 
 import androidx.lifecycle.viewModelScope
 import com.example.newsapp.R
-import com.example.newsapp.TIMEOUT_PAUSE_WHEN_FOLDING
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.usecases.GetNewsFlowUseCase
 import com.example.newsapp.domain.usecases.RefreshNewsUseCase
-import com.example.newsapp.onFailure
+import com.example.newsapp.extensions.onFailure
+import com.example.newsapp.extensions.onSuccess
 import com.example.newsapp.presentation.UniversalText
 import com.example.newsapp.presentation.common.BaseViewModel
+import com.example.newsapp.presentation.common.CommonEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NewsListViewModel @Inject constructor(
-    getNewsFlowUseCase: GetNewsFlowUseCase,
+    private val getNewsFlowUseCase: GetNewsFlowUseCase,
     private val refreshNewsUseCase: RefreshNewsUseCase
 ) : BaseViewModel<NewsListViewState, NewsListEvent>() {
+
+    private val refreshTrigger = MutableSharedFlow<Unit>(replay = 1)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val uiStateFlow: StateFlow<NewsListViewState> = refreshTrigger
+        .onStart { emit(Unit) }
+        .flatMapLatest {
+            getNewsFlowUseCase()
+        }
+        .map { newsList ->
+            if (newsList.isEmpty()) NewsListViewState.Loading
+            else NewsListViewState.Success(newsList)
+        }
+        .distinctUntilChanged()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = NewsListViewState.Loading
+        )
 
     init {
         refreshNews()
     }
 
-    override val uiStateFlow: StateFlow<NewsListViewState?> =
-        getNewsFlowUseCase()
-            .map { newsList -> NewsListViewState.Success(newsList) }
-            .distinctUntilChanged()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIMEOUT_PAUSE_WHEN_FOLDING),     // Пауза при сворачивании
-                initialValue = NewsListViewState.Loading
-            )
-
     fun refreshNews() {
-        if (viewState.value !is NewsListViewState.Success) {
-            NewsListViewState.Loading.setValue()
-        }
-
         viewModelScope.launch(exceptionHandler) {
-            refreshNewsUseCase().onFailure { domainError ->
-                val errorMessage = mapError(domainError)
-                NewsListViewState.Error(errorMessage).postValue()
+            refreshNewsUseCase().onSuccess {
+                refreshTrigger.emit(Unit)
+            }.onFailure { domainError ->
+                // Если сеть упала, а в базе пусто — тогда показываем экран ошибки
+                val currentNews = getNewsFlowUseCase().first()
+                if (currentNews.isEmpty()) {
+                    NewsListViewState.Error(mapError(domainError)).postValue()
+                } else {
+                    CommonEvent.ShowLongToast(mapError(domainError).toString()).postValue()
+                }
             }
         }
     }

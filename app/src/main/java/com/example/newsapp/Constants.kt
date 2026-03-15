@@ -6,5 +6,5 @@ const val BASE_URL = "https://lenta.ru"
 
 const val DATABASE_NAME = "app_news_database.db"
 
-const val TIMEOUT_PAUSE_WHEN_FOLDING: Long = 5000
+const val TIMEOUT_PAUSE: Long = 5000
 val NEWS_EXPIRATION_THRESHOLD = 3.days

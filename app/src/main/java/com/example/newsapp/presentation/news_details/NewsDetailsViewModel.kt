@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.newsapp.R
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.usecases.GetNewsDetailsUseCase
-import com.example.newsapp.fold
+import com.example.newsapp.extensions.fold
 import com.example.newsapp.presentation.UniversalText
 import com.example.newsapp.presentation.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,12 +30,12 @@ class NewsDetailsViewModel @Inject constructor(
             getNewsDetailsUseCase(newsLink).fold(
                 onSuccess = { newsItem ->
                     if (newsItem != null) {
-                        NewsDetailsViewState.Success(newsItem).postValue()
+                        NewsDetailsViewState.Success(newsItem).update()
                     } else {
                         // Это состояние должно быть поймано как DataError.Local.NOT_FOUND,
                         // но это дополнительная проверка на случай, если UseCase вернёт Success(null)
                         NewsDetailsViewState.Error(UniversalText.Resource(id = R.string.new_not_found))
-                            .postValue()
+                            .update()
                         UniversalText.Resource(id = R.string.unknown_error)
                     }
                 },
@@ -47,7 +47,7 @@ class NewsDetailsViewModel @Inject constructor(
                             domainError.toString()
                         )
                     }
-                    NewsDetailsViewState.Error(errorMessage).postValue()
+                    NewsDetailsViewState.Error(errorMessage).update()
                 }
             )
         }

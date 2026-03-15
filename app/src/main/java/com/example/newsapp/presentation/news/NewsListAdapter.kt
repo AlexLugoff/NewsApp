@@ -10,7 +10,7 @@ import coil.load
 import com.example.newsapp.R
 import com.example.newsapp.databinding.NewsItemBinding
 import com.example.newsapp.domain.models.NewsItem
-import com.example.newsapp.setSafeOnClickListener
+import com.example.newsapp.extensions.setSafeOnClickListener
 
 class NewsListAdapter(private val onItemClicked: (newsLink: String) -> Unit) :
     ListAdapter<NewsItem, NewsListAdapter.NewsViewHolder>(NewsDiffCallback()) {

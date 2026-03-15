@@ -1,4 +1,4 @@
-package com.example.newsapp
+package com.example.newsapp.extensions
 
 import kotlin.coroutines.cancellation.CancellationException
 

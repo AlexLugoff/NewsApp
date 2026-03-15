@@ -1,6 +1,6 @@
 package com.example.newsapp.data
 
-import com.example.newsapp.SealedResult
+import com.example.newsapp.extensions.SealedResult
 import com.example.newsapp.data.datasource.local.NewsLocalDataSource
 import com.example.newsapp.data.datasource.remote.NewsRemoteDataSource
 import com.example.newsapp.data.db.entities.NewsItemEntity

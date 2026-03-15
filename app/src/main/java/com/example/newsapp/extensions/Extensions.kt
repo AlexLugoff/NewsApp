@@ -1,8 +1,11 @@
-package com.example.newsapp
+package com.example.newsapp.extensions
 
 import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.text.Spanned
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.IdRes
@@ -12,10 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import com.example.newsapp.R
 import com.example.newsapp.presentation.SafeOnClickListener
-import android.text.Html
-import android.text.Spanned
-import android.os.Build
 
 fun Context.showShortToast(text: String): Toast {
     return Toast.makeText(this, text, Toast.LENGTH_SHORT).also { it.show() }

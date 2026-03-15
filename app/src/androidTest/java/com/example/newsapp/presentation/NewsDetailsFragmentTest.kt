@@ -12,7 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.newsapp.R
-import com.example.newsapp.SealedResult
+import com.example.newsapp.extensions.SealedResult
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.repository.NewsRepository

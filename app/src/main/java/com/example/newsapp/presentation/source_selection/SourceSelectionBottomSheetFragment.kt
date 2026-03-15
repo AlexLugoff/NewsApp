@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.newsapp.databinding.FragmentSourceSelectionBottomSheetBinding
 import com.example.newsapp.presentation.common.BaseBottomSheetDialogFragment
-import com.example.newsapp.showLongToast
+import com.example.newsapp.extensions.showLongToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

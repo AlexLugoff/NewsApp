@@ -1,9 +1,9 @@
 package com.example.newsapp.data.datasource.remote
 
-import com.example.newsapp.SealedResult
 import com.example.newsapp.data.RssApiService
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.data.models.RssFeedDto
+import com.example.newsapp.extensions.SealedResult
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.UnknownHostException

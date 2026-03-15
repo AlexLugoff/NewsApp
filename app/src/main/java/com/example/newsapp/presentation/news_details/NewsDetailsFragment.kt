@@ -1,9 +1,7 @@
 package com.example.newsapp.presentation.news_details
 
 import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
@@ -13,7 +11,7 @@ import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentNewsDetailsBinding
 import com.example.newsapp.presentation.common.BaseFragment
 import com.example.newsapp.presentation.common.CommonEvent
-import com.example.newsapp.setSafeOnClickListener
+import com.example.newsapp.extensions.setSafeOnClickListener
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,11 +24,6 @@ class NewsDetailsFragment :
         inflater: LayoutInflater, container: ViewGroup?
     ): FragmentNewsDetailsBinding {
         return FragmentNewsDetailsBinding.inflate(inflater, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        observeViewModel()
     }
 
     override fun handleViewState(viewState: NewsDetailsViewState?) {

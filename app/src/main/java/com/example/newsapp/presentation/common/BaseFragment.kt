@@ -11,8 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
-import com.example.newsapp.showLongToast
-import com.example.newsapp.showShortToast
+import com.example.newsapp.extensions.showLongToast
+import com.example.newsapp.extensions.showShortToast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -29,8 +29,6 @@ abstract class BaseFragment<VS, E, VM : BaseViewModel<VS, E>, VB : ViewBinding> 
 
     private var _binding: VB? = null
     protected val binding get() = _binding!!
-
-    private val viewStateObserver = Observer<VS> { vs -> vs?.let { handleViewState(it) } }
     private val eventObserver = Observer<E> { e -> e?.let { handleEvent(it) } }
     private val commonEventObserver =
         Observer<CommonEvent> { ce -> handleCommonEvent(ce) }
@@ -56,7 +54,6 @@ abstract class BaseFragment<VS, E, VM : BaseViewModel<VS, E>, VB : ViewBinding> 
     }
 
     protected open fun observeViewModel() {
-        viewModel.viewState.observe(viewLifecycleOwner, viewStateObserver)
         viewModel.event.observe(viewLifecycleOwner, eventObserver)
         viewModel.commonEvent.observe(viewLifecycleOwner, commonEventObserver)
     }

@@ -12,10 +12,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -25,17 +21,14 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideAppDatabase(
-        @ApplicationContext context: Context,
-        sourceDaoProvider: Provider<NewsSourceDao>
+        @ApplicationContext context: Context
     ): AppDatabase {
-        val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
             DATABASE_NAME
         )
-            .addCallback(DatabaseCallback(scope, sourceDaoProvider))
+            .addCallback(DatabaseCallback())
             .build()
     }
 
