@@ -2,9 +2,9 @@ package com.example.newsapp.di.module
 
 import android.content.Context
 import androidx.room.Room
+import com.example.newsapp.DATABASE_FILE_PATH
 import com.example.newsapp.DATABASE_NAME
 import com.example.newsapp.data.db.AppDatabase
-import com.example.newsapp.data.db.DatabaseCallback
 import com.example.newsapp.data.db.NewsDao
 import com.example.newsapp.data.db.NewsSourceDao
 import dagger.Module
@@ -28,7 +28,7 @@ object DatabaseModule {
             AppDatabase::class.java,
             DATABASE_NAME
         )
-            .addCallback(DatabaseCallback())
+            .createFromAsset(DATABASE_FILE_PATH)
             .build()
     }
 
