@@ -6,7 +6,6 @@ import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.usecases.GetNewsFlowUseCase
 import com.example.newsapp.domain.usecases.RefreshNewsUseCase
 import com.example.newsapp.extensions.onFailure
-import com.example.newsapp.extensions.onSuccess
 import com.example.newsapp.presentation.UniversalText
 import com.example.newsapp.presentation.common.BaseViewModel
 import com.example.newsapp.presentation.common.CommonEvent
@@ -55,9 +54,7 @@ class NewsListViewModel @Inject constructor(
 
     fun refreshNews() {
         viewModelScope.launch(exceptionHandler) {
-            refreshNewsUseCase().onSuccess {
-                refreshTrigger.emit(Unit)
-            }.onFailure { domainError ->
+            refreshNewsUseCase().onFailure { domainError ->
                 // Если сеть упала, а в базе пусто — тогда показываем экран ошибки
                 val currentNews = getNewsFlowUseCase().first()
                 if (currentNews.isEmpty()) {
