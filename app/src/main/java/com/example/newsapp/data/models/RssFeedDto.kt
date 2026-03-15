@@ -1,12 +1,11 @@
 package com.example.newsapp.data.models
 
-import org.simpleframework.xml.Element
-import org.simpleframework.xml.Root
+import com.tickaroo.tikxml.annotation.Element
+import com.tickaroo.tikxml.annotation.Xml
 
 // Корневой элемент документа
-@Root(name = "rss", strict = false)
-data class RssFeedDto @JvmOverloads constructor(
-    @field:Element(name = "channel")
-    @param:Element(name = "channel")
+@Xml(name = "rss")
+data class RssFeedDto(
+    @Element(name = "channel")
     val channel: RssChannelDto? = null
 )

@@ -36,8 +36,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.10"
@@ -60,6 +63,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.hilt.android)
     implementation(libs.androidx.espresso.contrib)
+    implementation(libs.material)
+    implementation(libs.androidx.recyclerview)
     kapt(libs.hilt.compiler)
 
     implementation(libs.picasso)
@@ -83,6 +88,12 @@ dependencies {
     androidTestImplementation(libs.runner)
     androidTestImplementation(libs.androidx.rules)
 
+    // TikXml
+    implementation(libs.tikxml.annotation)
+    implementation(libs.tikxml.core)
+    implementation(libs.tikxml.retrofit.converter)
+    kapt(libs.tikxml.processor)
+
     // Hilt Testing
     androidTestImplementation(libs.dagger.hilt.android.testing)
 
@@ -93,16 +104,12 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
 
-    // Glide
-    implementation(libs.glide)
+    // Coil
+    implementation(libs.coil)
 
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation(libs.converter.simplexml)
-
-    // SimpleXML Runtime
-    implementation(libs.simple.xml)
 
     // Room
     implementation(libs.room.runtime)

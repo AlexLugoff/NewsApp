@@ -2,11 +2,10 @@ package com.example.newsapp.presentation.news_details
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.example.newsapp.AppDispatchers
 import com.example.newsapp.R
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.usecases.GetNewsDetailsUseCase
-import com.example.newsapp.fold
+import com.example.newsapp.extensions.fold
 import com.example.newsapp.presentation.UniversalText
 import com.example.newsapp.presentation.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +14,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewsDetailsViewModel @Inject constructor(
-    private val dispatchers: AppDispatchers,
     private val getNewsDetailsUseCase: GetNewsDetailsUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<NewsDetailsViewState, NewsDetailsEvent>() {
@@ -28,26 +26,28 @@ class NewsDetailsViewModel @Inject constructor(
 
     private fun loadNewsDetails(newsLink: String) {
         NewsDetailsViewState.Loading.setValue()
-        viewModelScope.launch(dispatchers.io) {
-            val sealedResult = getNewsDetailsUseCase(newsLink)
-
-            sealedResult.fold(
+        viewModelScope.launch(exceptionHandler) {
+            getNewsDetailsUseCase(newsLink).fold(
                 onSuccess = { newsItem ->
                     if (newsItem != null) {
-                        NewsDetailsViewState.Success(newsItem).postValue()
+                        NewsDetailsViewState.Success(newsItem).update()
                     } else {
                         // Это состояние должно быть поймано как DataError.Local.NOT_FOUND,
                         // но это дополнительная проверка на случай, если UseCase вернёт Success(null)
-                        NewsDetailsViewState.Error(UniversalText.Resource(id = R.string.new_not_found)).postValue()
+                        NewsDetailsViewState.Error(UniversalText.Resource(id = R.string.new_not_found))
+                            .update()
                         UniversalText.Resource(id = R.string.unknown_error)
                     }
                 },
                 onFailure = { domainError ->
                     val errorMessage = when (domainError) {
                         DataError.Local.NOT_FOUND -> UniversalText.Resource(id = R.string.news_was_not_found_in_the_cache)
-                        else -> UniversalText.Resource(id = R.string.unknown_error, domainError.toString())
+                        else -> UniversalText.Resource(
+                            id = R.string.unknown_error,
+                            domainError.toString()
+                        )
                     }
-                    NewsDetailsViewState.Error(errorMessage).postValue()
+                    NewsDetailsViewState.Error(errorMessage).update()
                 }
             )
         }

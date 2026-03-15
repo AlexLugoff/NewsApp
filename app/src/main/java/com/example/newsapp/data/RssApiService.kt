@@ -2,6 +2,7 @@ package com.example.newsapp.data
 
 import com.example.newsapp.data.models.RssFeedDto
 import retrofit2.http.GET
+import retrofit2.http.Url
 import java.util.concurrent.TimeUnit
 
 interface RssApiService {
@@ -15,10 +16,6 @@ interface RssApiService {
         val timeUnit = TimeUnit.SECONDS
     }
 
-    @GET("/rss")
-    suspend fun getNews(): RssFeedDto
-
-    // TODO использовать динамический URL, чтобы не "зашивать" его в код сервиса, если источников может быть несколько.
-    // @GET
-    // suspend fun getNewsFeed(@Url url: String): RssFeedDto
+     @GET
+     suspend fun getNews(@Url url: String): RssFeedDto
 }

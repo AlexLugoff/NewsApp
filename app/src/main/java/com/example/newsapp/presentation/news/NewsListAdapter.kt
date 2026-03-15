@@ -1,16 +1,16 @@
 package com.example.newsapp.presentation.news
 
-import android.text.Html
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
 import com.example.newsapp.R
 import com.example.newsapp.databinding.NewsItemBinding
 import com.example.newsapp.domain.models.NewsItem
+import com.example.newsapp.extensions.setSafeOnClickListener
 
 class NewsListAdapter(private val onItemClicked: (newsLink: String) -> Unit) :
     ListAdapter<NewsItem, NewsListAdapter.NewsViewHolder>(NewsDiffCallback()) {
@@ -30,24 +30,23 @@ class NewsListAdapter(private val onItemClicked: (newsLink: String) -> Unit) :
         fun bind(item: NewsItem, onItemClicked: (newsLink: String) -> Unit) {
             binding.apply {
                 titleTextView.text = item.title
-                val description = Html.fromHtml(item.description, Html.FROM_HTML_MODE_COMPACT)
-                if (description.trim().isNotEmpty()) {
-                    descriptionTextView.visibility = View.VISIBLE
+                val description = item.description
+                if (description.isNotBlank()) {
+                    descriptionTextView.isVisible = true
                     descriptionTextView.text = description
                 } else {
-                    descriptionTextView.visibility = View.GONE
+                    descriptionTextView.isVisible = false
                 }
-                if (!item.imageUrl.isNullOrEmpty()) {
-                    Glide.with(newsImageView.context)
-                        .load(item.imageUrl)
-                        .placeholder(R.drawable.placeholder_image_24)
-                        .into(newsImageView)
-                    newsImageView.visibility = View.VISIBLE
+                if (!item.imageUrl.isNullOrBlank()) {
+                    newsImageView.isVisible = true
+                    newsImageView.load(item.imageUrl) {
+                        placeholder(R.drawable.placeholder_image_24)
+                    }
                 } else {
-                    newsImageView.visibility = View.GONE
+                    newsImageView.isVisible = false
                 }
 
-                root.setOnClickListener {
+                root.setSafeOnClickListener {
                     onItemClicked(item.link)
                 }
             }

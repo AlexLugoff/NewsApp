@@ -1,26 +1,23 @@
 package com.example.newsapp.data.datasource.local
 
 import com.example.newsapp.data.db.NewsDao
-import com.example.newsapp.data.db.entities.NewsEntity
+import com.example.newsapp.data.db.entities.NewsItemEntity
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class NewsLocalDataSourceImpl @Inject constructor(
     private val newsDao: NewsDao
 ) : NewsLocalDataSource {
 
-    override suspend fun getAllNews(): List<NewsEntity> {
-        return newsDao.getAllNews()
+    override fun getAllNewsFlow(): Flow<List<NewsItemEntity>> = newsDao.getAllNewsFlow()
+
+    override suspend fun clearOldNews(timestamp: Long) = newsDao.clearOldNews(timestamp)
+
+    override suspend fun updateCache(news: List<NewsItemEntity>) {
+        newsDao.updateCache(news)
     }
 
-    override suspend fun getNewsByLink(link: String): NewsEntity? {
+    override suspend fun getNewsByLink(link: String): NewsItemEntity {
         return newsDao.getNewsByLink(link)
-    }
-
-    override suspend fun saveNews(news: List<NewsEntity>) {
-        newsDao.insertAll(news)
-    }
-
-    override suspend fun clearNews() {
-        newsDao.clearNews()
     }
 }

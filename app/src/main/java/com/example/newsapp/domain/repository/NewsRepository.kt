@@ -1,11 +1,22 @@
 package com.example.newsapp.domain.repository
 
-import com.example.newsapp.SealedResult
+import com.example.newsapp.extensions.SealedResult
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.models.NewsItem
+import com.example.newsapp.domain.models.NewsSourceItem
+import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {
-    suspend fun getNews(): SealedResult<List<NewsItem>, DataError>
+
+    fun getNewsFlow(): Flow<List<NewsItem>>
+
+    suspend fun clearOldNews()
+
+    suspend fun refreshNews(): SealedResult<Unit, DataError>
 
     suspend fun getNewsDetails(newsLink: String): SealedResult<NewsItem?, DataError>
+
+    fun getNewsSources(): Flow<List<NewsSourceItem>>
+
+    suspend fun toggleSource(sourceId: Int, isEnabled: Boolean)
 }
