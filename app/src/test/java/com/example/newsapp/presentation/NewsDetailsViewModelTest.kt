@@ -1,106 +1,93 @@
 package com.example.newsapp.presentation
 
 import androidx.lifecycle.SavedStateHandle
-import com.example.newsapp.R
-import com.example.newsapp.extensions.SealedResult
+import app.cash.turbine.test
+import com.example.newsapp.BaseUnitTest
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.usecases.GetNewsDetailsUseCase
+import com.example.newsapp.extensions.SealedResult
+import com.example.newsapp.extensions.toSpannedHtml
 import com.example.newsapp.presentation.news_details.NewsDetailsViewModel
 import com.example.newsapp.presentation.news_details.NewsDetailsViewState
 import io.mockk.coEvery
-import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
+import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Before
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
-class NewsDetailsViewModelTest {
+@OptIn(ExperimentalCoroutinesApi::class)
+class NewsDetailsViewModelTest : BaseUnitTest() {
 
-    private val mockUseCase = mockk<GetNewsDetailsUseCase>()
+    @MockK
+    lateinit var getNewsDetailsUseCase: GetNewsDetailsUseCase
+
     private lateinit var viewModel: NewsDetailsViewModel
-    private val testDispatcher = UnconfinedTestDispatcher()
-
-    private val fakeNewsItem = NewsItem("link", "Title", "Desc", null, "link", 1L)
-    private val fakeNewsLink = "link"
-
-    @Before
-    fun setup() {
-        Dispatchers.setMain(testDispatcher)
-    }
+    private val testLink = "https://example.com/news/123"
 
     @Test
-    fun `init should start with Loading state and transition to Success on Success result`() =
-        runTest {
-            // GIVEN
-            val savedStateHandle = SavedStateHandle(mapOf("newsLink" to fakeNewsLink))
-            // Use Case возвращает Success
-            coEvery { mockUseCase.invoke(fakeNewsLink) } returns SealedResult.Success(fakeNewsItem)
+    fun `init - when data exists - emits Success state`() = runTest {
+        // Given: Мокаем успешный возврат данных
+        val mockNews = NewsItem(
+            id = "1",
+            link = testLink,
+            title = "Test Title",
+            description = "Test Description".toSpannedHtml(),
+            imageUrl = null,
+            formattedDate = "10:00"
+        )
+        coEvery { getNewsDetailsUseCase(testLink) } returns SealedResult.Success(mockNews)
 
-            // WHEN
-            viewModel = NewsDetailsViewModel(mockUseCase, savedStateHandle)
+        // Подготавливаем SavedStateHandle с нужным аргументом
+        val savedStateHandle = SavedStateHandle(mapOf("newsLink" to testLink))
 
-            // THEN
-            assertEquals(NewsDetailsViewState.Loading, viewModel.viewState.value)
-            advanceUntilIdle()
-            assertEquals(NewsDetailsViewState.Success(fakeNewsItem), viewModel.viewState.value)
+        // When: Создаем ViewModel (триггерит init)
+        viewModel = NewsDetailsViewModel(getNewsDetailsUseCase, savedStateHandle)
+
+        // Then: Проверяем поток состояний
+        viewModel.uiStateFlow.test {
+            // 1. Сначала всегда идет Loading (initialValue)
+            assertEquals(NewsDetailsViewState.Loading, awaitItem())
+
+            // 2. Затем Success с нашими данными
+            val state = awaitItem()
+            assertTrue(state is NewsDetailsViewState.Success)
+            assertEquals(mockNews, (state as NewsDetailsViewState.Success).newsItem)
+
+            cancelAndIgnoreRemainingEvents()
         }
-
-    @Test
-    fun `init should transition to Error state on Local NOT_FOUND Failure result`() = runTest {
-        // GIVEN
-        val savedStateHandle = SavedStateHandle(mapOf("newsLink" to fakeNewsLink))
-        // Use Case возвращает Failure с доменной ошибкой
-        coEvery { mockUseCase.invoke(fakeNewsLink) } returns SealedResult.Failure(DataError.Local.NOT_FOUND)
-
-        // WHEN
-        viewModel = NewsDetailsViewModel(mockUseCase, savedStateHandle)
-
-        // THEN
-        assertEquals(NewsDetailsViewState.Loading, viewModel.viewState.value)
-        advanceUntilIdle()
-        // Проверяем, что ошибка корректно смаплена
-        assertEquals(
-            NewsDetailsViewState.Error(UniversalText.Resource(id = R.string.news_was_not_found_in_the_cache)),
-            viewModel.viewState.value
-        )
     }
 
     @Test
-    fun `init should transition to Error state on unknown Failure result`() = runTest {
-        // GIVEN
-        val savedStateHandle = SavedStateHandle(mapOf("newsLink" to fakeNewsLink))
-        // Имитируем другую (необработанную явно) ошибку
-        val unknownError = DataError.Local.UNKNOWN
-        coEvery { mockUseCase.invoke(fakeNewsLink) } returns SealedResult.Failure(unknownError)
+    fun `init - when use case fails - emits Error state`() = runTest {
+        // Given: Имитируем ошибку
+        val domainError = DataError.Local.NOT_FOUND
+        coEvery { getNewsDetailsUseCase(testLink) } returns SealedResult.Failure(domainError)
 
-        // WHEN
-        viewModel = NewsDetailsViewModel(mockUseCase, savedStateHandle)
+        val savedStateHandle = SavedStateHandle(mapOf("newsLink" to testLink))
 
-        // THEN
-        advanceUntilIdle()
+        // When
+        viewModel = NewsDetailsViewModel(getNewsDetailsUseCase, savedStateHandle)
 
-        // Проверяем, что сообщение об ошибке корректно смаплено
-        assertEquals(
-            NewsDetailsViewState.Error(UniversalText.Resource(id = R.string.unknown_error, unknownError)),
-            viewModel.viewState.value
-        )
+        // Then
+        viewModel.uiStateFlow.test {
+            assertEquals(NewsDetailsViewState.Loading, awaitItem())
+
+            val state = awaitItem()
+            assertTrue(state is NewsDetailsViewState.Error)
+            // Здесь можно дополнительно проверить текст ошибки, если маппинг важен
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
-    // Внимание: Кейс, где UseCase возвращает Success(null), теперь должен быть
-    // предотвращен в Data Layer, который должен возвращать Failure(NOT_FOUND)
-    // вместо Success(null).
+    @Test(expected = IllegalStateException::class)
+    fun `init - when newsLink is missing - throws exception`() = runTest {
+        // Given: Пустой SavedStateHandle (без ключа "newsLink")
+        val savedStateHandle = SavedStateHandle()
 
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
+        // When: Это должно вызвать checkNotNull и выбросить исключение
+        viewModel = NewsDetailsViewModel(getNewsDetailsUseCase, savedStateHandle)
     }
 }

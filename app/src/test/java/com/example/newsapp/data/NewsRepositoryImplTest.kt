@@ -1,80 +1,168 @@
 package com.example.newsapp.data
 
+import app.cash.turbine.test
+import com.example.newsapp.AppDispatchers
+import com.example.newsapp.BaseUnitTest
+import com.example.newsapp.MainDispatcherRule
 import com.example.newsapp.extensions.SealedResult
 import com.example.newsapp.data.datasource.local.NewsLocalDataSource
+import com.example.newsapp.data.datasource.local.NewsSourceLocalDataSource
 import com.example.newsapp.data.datasource.remote.NewsRemoteDataSource
+import com.example.newsapp.data.db.NewsDao
+import com.example.newsapp.data.db.NewsSourceDao
 import com.example.newsapp.data.db.entities.NewsItemEntity
+import com.example.newsapp.data.db.entities.NewsSourceEntity
 import com.example.newsapp.data.exception.DataError
+import com.example.newsapp.data.mappers.toEntityList
+import com.example.newsapp.data.models.NewsItemDto
 import com.example.newsapp.data.models.RssChannelDto
 import com.example.newsapp.data.models.RssFeedDto
 import com.example.newsapp.data.repository.NewsRepositoryImpl
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import kotlin.time.Clock
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
-class NewsRepositoryImplTest {
+@OptIn(ExperimentalCoroutinesApi::class)
+class NewsRepositoryImplTest : BaseUnitTest() {
 
-    private val mockRemoteDataSource = mockk<NewsRemoteDataSource>()
-    private val mockLocalDataSource = mockk<NewsLocalDataSource>(relaxed = true)
+    // Мокаем зависимости
+    @MockK
+    lateinit var remoteDataSource: NewsRemoteDataSource
+    @MockK
+    lateinit var newsLocalDataSource: NewsLocalDataSource
+    @MockK
+    lateinit var newsSourceLocalDataSource: NewsSourceLocalDataSource
+
     private lateinit var repository: NewsRepositoryImpl
 
-    private val fakeRss = RssFeedDto(RssChannelDto(emptyList())) // Пустой, но успешный DTO
-    private val fakeEntities =
-        listOf(NewsItemEntity("cache_link", "Cache Title", "Cache Desc", null, 1700000000000L))
-
     @Before
-    fun setup() {
-        MockKAnnotations.init(this)
-        repository = NewsRepositoryImpl(mockRemoteDataSource, mockLocalDataSource)
+    override fun setup() {
+        super.setup()
+        // testDispatchers берется из BaseUnitTest (содержит тестовые диспетчеры)
+        repository = NewsRepositoryImpl(
+            remoteDataSource = remoteDataSource,
+            newsLocalDataSource = newsLocalDataSource,
+            newsSourceLocalDataSource = newsSourceLocalDataSource,
+            dispatchers = testDispatchers
+        )
     }
 
     @Test
-    fun `getNews returns data from network and caches when remote is Success`() = runTest {
-        // GIVEN
-        coEvery { mockRemoteDataSource.getNewsFeed() } returns SealedResult.Success(fakeRss)
+    fun `refreshNews - when no enabled sources - returns success early`() = runTest {
+        // Given: База возвращает пустой список источников
+        coEvery { newsSourceLocalDataSource.getEnabledSources() } returns emptyList()
 
-        // WHEN
-        val result = repository.getNews()
+        // When
+        val result = repository.refreshNews()
 
-        // THEN
+        // Then
         assertTrue(result is SealedResult.Success)
-        coVerify(exactly = 1) { mockLocalDataSource.insertNews(any()) } // Проверяем кэширование
+        // Проверяем, что запрос в сеть даже не пытался уйти
+        coVerify(exactly = 0) { remoteDataSource.getNewsFeed(any()) }
     }
 
     @Test
-    fun `getNews returns cache when remote is Failure but local data exists`() = runTest {
-        // GIVEN: Сеть падает, но кэш доступен
-        coEvery { mockRemoteDataSource.getNewsFeed() } returns SealedResult.Failure(DataError.Network.UNKNOWN_HOST)
-        coEvery { mockLocalDataSource.getAllNews() } returns fakeEntities
+    fun `refreshNews - when multiple sources - fetches in parallel and updates cache`() = runTest {
+        // Given: Два активных источника
+        val sources = listOf(
+            NewsSourceEntity(1, "Source 1", "url1", true),
+            NewsSourceEntity(2, "Source 2", "url2", true)
+        )
+        val mockDto = mockk<RssFeedDto> {
+            every { toEntityList() } returns listOf(
+                NewsItemEntity("link1", "Title", "Desc", null, 1000L)
+            )
+        }
 
-        // WHEN
-        val result = repository.getNews()
+        coEvery { newsSourceLocalDataSource.getEnabledSources() } returns sources
+        coEvery { remoteDataSource.getNewsFeed(any()) } returns SealedResult.Success(mockDto)
+        coEvery { newsLocalDataSource.updateCache(any()) } returns Unit
 
-        // THEN
+        // When
+        val result = repository.refreshNews()
+
+        // Then
         assertTrue(result is SealedResult.Success)
-        val newsList = (result as SealedResult.Success).data
-        assertEquals("Cache Title", newsList.first().title)
-        coVerify(exactly = 1) { mockLocalDataSource.getAllNews() }
+        // Проверяем, что сеть была вызвана для КАЖДОГО URL
+        coVerify(exactly = 1) { remoteDataSource.getNewsFeed("url1") }
+        coVerify(exactly = 1) { remoteDataSource.getNewsFeed("url2") }
+        // Проверяем, что кэш обновился итоговым списком
+        coVerify { newsLocalDataSource.updateCache(any()) }
     }
 
     @Test
-    fun `getNews returns network error when remote fails and local is empty`() = runTest {
-        // GIVEN: Сеть падает, и кэш пуст
-        val networkError = DataError.Network.CONNECTION_TIMEOUT
-        coEvery { mockRemoteDataSource.getNewsFeed() } returns SealedResult.Failure(networkError)
-        coEvery { mockLocalDataSource.getAllNews() } returns emptyList()
+    fun `refreshNews - when all sources fail - returns failure`() = runTest {
+        // Given
+        val sources = listOf(NewsSourceEntity(1, "S1", "url", true))
+        coEvery { newsSourceLocalDataSource.getEnabledSources() } returns sources
+        coEvery { remoteDataSource.getNewsFeed(any()) } returns SealedResult.Failure(DataError.Network.UNKNOWN)
 
-        // WHEN
-        val result = repository.getNews()
+        // When
+        val result = repository.refreshNews()
 
-        // THEN
+        // Then
         assertTrue(result is SealedResult.Failure)
-        assertEquals(networkError, (result as SealedResult.Failure).error)
+        assertEquals(DataError.Network.UNKNOWN, (result as SealedResult.Failure).error)
+    }
+
+    @Test
+    fun `clearOldNews - calculates threshold and calls local data source`() = runTest {
+        // Given
+        coEvery { newsLocalDataSource.clearOldNews(any()) } returns Unit
+
+        // When
+        repository.clearOldNews()
+
+        // Then
+        // Проверяем, что метод был вызван. Точное время проверить сложно из-за Clock.System.now(),
+        // но можно проверить сам факт взаимодействия.
+        coVerify { newsLocalDataSource.clearOldNews(any()) }
+    }
+
+    @Test
+    fun `getNewsDetails - returns mapped domain model`() = runTest {
+        // Given
+        val link = "test_link"
+        val mockEntity = NewsItemEntity(link, "Title", "Desc", null, 123L)
+        coEvery { newsLocalDataSource.getNewsByLink(link) } returns mockEntity
+
+        // When
+        val result = repository.getNewsDetails(link)
+
+        // Then
+        assertTrue(result is SealedResult.Success)
+        val data = (result as SealedResult.Success).data
+        assertNotNull(data)
+        assertEquals("Title", data?.title)
+    }
+
+    @Test
+    fun `toggleSource - updates status in local source`() = runTest {
+        // Given
+        coEvery { newsSourceLocalDataSource.updateSourceStatus(any(), any()) } returns Unit
+
+        // When
+        repository.toggleSource(1, true)
+
+        // Then
+        coVerify { newsSourceLocalDataSource.updateSourceStatus(1, true) }
     }
 }

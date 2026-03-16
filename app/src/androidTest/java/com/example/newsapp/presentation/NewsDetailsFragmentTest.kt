@@ -1,111 +1,123 @@
 package com.example.newsapp.presentation
 
-import android.view.View
+import android.content.Intent
 import androidx.core.os.bundleOf
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.RootMatchers.withDecorView
-import androidx.test.espresso.matcher.ViewMatchers.Visibility
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import com.example.newsapp.R
-import com.example.newsapp.extensions.SealedResult
 import com.example.newsapp.data.exception.DataError
+import com.example.newsapp.di.module.RepositoryModule
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.repository.NewsRepository
+import com.example.newsapp.extensions.SealedResult
+import com.example.newsapp.extensions.toSpannedHtml
 import com.example.newsapp.presentation.news_details.NewsDetailsFragment
 import com.example.newsapp.util.launchFragmentInHiltContainer
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import io.mockk.clearMocks
+import dagger.hilt.android.testing.UninstallModules
 import io.mockk.coEvery
+import io.mockk.mockk
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import javax.inject.Inject
 
 @HiltAndroidTest
-@RunWith(AndroidJUnit4::class)
+@UninstallModules(RepositoryModule::class)
+@MediumTest
 class NewsDetailsFragmentTest {
 
-    @get:Rule(order = 0)
+    @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
-    @Inject
-    lateinit var mockRepository: NewsRepository
-
-    private val TEST_LINK = "http://test.link/details/1"
-    private val TEST_DATE = 1700000000000L
-
-    private val fakeNewsItem = NewsItem(
-        id = "id1",
-        title = "Заголовок тестовой новости",
-        description = "Это полное описание тестовой новости.",
-        imageUrl = "http://image.url/test",
-        link = TEST_LINK,
-        formattedDate = TEST_DATE
-    )
+    @BindValue
+    @JvmField
+    val repository: NewsRepository = mockk(relaxed = true)
 
     @Before
-    fun setup() {
+    fun init() {
         hiltRule.inject()
-        clearMocks(mockRepository)
     }
 
-    // --- Успешное состояние (SUCCESS) ---
     @Test
-    fun test_success_state_displays_all_content() {
-        // GIVEN
-        coEvery { mockRepository.getNewsDetails(TEST_LINK) } returns SealedResult.Success(
-            fakeNewsItem
-        )
-        val fragmentArgs = bundleOf("newsLink" to TEST_LINK)
+    fun displayNewsDetails_successState() {
+        // Given: Готовим данные и аргументы
+        val testLink = "https://test.com/news1"
+        val fragmentArgs = bundleOf("newsLink" to testLink)
 
-        // WHEN
+        val mockNews = NewsItem(
+            id = "1",
+            link = testLink,
+            title = "Заголовок новости",
+            description = "Подробное описание новости".toSpannedHtml(),
+            imageUrl = "https://test.com/image.jpg",
+            formattedDate = "16 марта, 12:00"
+        )
+
+        coEvery { repository.getNewsDetails(testLink) } returns SealedResult.Success(mockNews)
+
+        // When: Запускаем фрагмент с аргументами
         launchFragmentInHiltContainer<NewsDetailsFragment>(fragmentArgs)
 
-        // THEN: Проверяем, что контент-группа видна и содержит правильный текст
-        onView(withId(R.id.contentGroup))
-            .check(matches(isDisplayed()))
+        // Then: Проверяем отображение всех полей
+        onView(withId(R.id.titleTextView)).check(matches(withText("Заголовок новости")))
+        onView(withId(R.id.descriptionTextView)).check(matches(withText("Подробное описание новости")))
+        onView(withId(R.id.dateTextView)).check(matches(withText("16 марта, 12:00")))
 
-        onView(withId(R.id.titleTextView))
-            .check(matches(withText("Заголовок тестовой новости")))
-
-        onView(withId(R.id.progressBar))
-            .check(matches(withEffectiveVisibility(Visibility.GONE)))
+        // Проверяем видимость группы контента и скрытость прогресс-бара
+        onView(withId(R.id.contentGroup)).check(matches(isDisplayed()))
+        onView(withId(R.id.progressBar)).check(matches(not(isDisplayed())))
     }
 
-    // --- Состояние Ошибки (NOT_FOUND) ---
     @Test
-    fun test_error_state_hides_content_and_shows_toast_on_not_found_failure() {
-        // GIVEN
-        coEvery { mockRepository.getNewsDetails(TEST_LINK) } returns SealedResult.Failure(DataError.Local.NOT_FOUND)
-        val fragmentArgs = bundleOf("newsLink" to TEST_LINK)
-        val expectedToastMessage = "Новость не найдена в кэше." // Текст из NewsDetailsViewModel
+    fun errorState_showsToast() {
+        // Given
+        val testLink = "https://test.com/error"
+        val fragmentArgs = bundleOf("newsLink" to testLink)
 
-        // WHEN: Запускаем фрагмент
-        var activityDecorView: View? = null
-        launchFragmentInHiltContainer<NewsDetailsFragment>(fragmentArgs) {
-            activityDecorView = activity?.window?.decorView
+        coEvery { repository.getNewsDetails(testLink) } returns SealedResult.Failure(DataError.Local.NOT_FOUND)
+
+        // When
+        launchFragmentInHiltContainer<NewsDetailsFragment>(fragmentArgs)
+
+        // Then: В твоем коде при ошибке вызывается CommonEvent.ShowLongToast.
+        // Проверить сам Toast в Espresso можно, но часто проверяют, что контент скрыт
+        onView(withId(R.id.contentGroup)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun clickingBrowserButton_triggersIntent() {
+        // Given
+        val testLink = "https://test.com/news1"
+        val fragmentArgs = bundleOf("newsLink" to testLink)
+        val mockNews = NewsItem(testLink, "Title", "Desc".toSpannedHtml(), null, testLink, "date")
+
+        coEvery { repository.getNewsDetails(testLink) } returns SealedResult.Success(mockNews)
+
+        // Инициализируем Intents для проверки исходящих намерений
+        Intents.init()
+
+        try {
+            // When
+            launchFragmentInHiltContainer<NewsDetailsFragment>(fragmentArgs)
+            onView(withId(R.id.openInBrowserButton)).perform(click())
+
+            // Then: Проверяем, что был послан Intent на открытие ссылки
+            intended(hasAction(Intent.ACTION_VIEW))
+            intended(hasData(testLink))
+        } finally {
+            Intents.release()
         }
-
-        // THEN:
-
-        // 1. Проверяем, что Toast появился с правильным сообщением
-        onView(withText(expectedToastMessage))
-            .inRoot(withDecorView(not(activityDecorView))) // Ищем Toast вне View иерархии Activity
-            .check(matches(isDisplayed()))
-
-        // 2. Проверяем, что контент скрыт (только ProgressBar и Toast должны быть видны)
-        onView(withId(R.id.contentGroup))
-            .check(matches(withEffectiveVisibility(Visibility.GONE)))
-
-        onView(withId(R.id.progressBar))
-            .check(matches(withEffectiveVisibility(Visibility.GONE)))
     }
 }

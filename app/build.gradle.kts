@@ -70,8 +70,13 @@ dependencies {
     implementation(libs.picasso)
 
     // Test
+    androidTestImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockk)
+
+    androidTestImplementation(libs.turbine)
+    testImplementation(libs.turbine)
+    testImplementation(libs.kotlinx.datetime)
 
     // Mocking for Instrumented Tests
     androidTestImplementation(libs.mockk.android)
@@ -85,6 +90,7 @@ dependencies {
     androidTestImplementation(libs.androidx.navigation.testing)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation (libs.androidx.espresso.intents)
     androidTestImplementation(libs.runner)
     androidTestImplementation(libs.androidx.rules)
 
