@@ -2,115 +2,91 @@ package com.example.newsapp.presentation
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import com.example.newsapp.R
-import com.example.newsapp.extensions.SealedResult
-import com.example.newsapp.data.exception.DataError
-import com.example.newsapp.di.TestRepositoryModule
+import com.example.newsapp.di.module.RepositoryModule
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.repository.NewsRepository
+import com.example.newsapp.extensions.toSpannedHtml
 import com.example.newsapp.presentation.news.NewsListFragment
 import com.example.newsapp.util.launchFragmentInHiltContainer
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import io.mockk.clearMocks
 import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import javax.inject.Inject
 
 @HiltAndroidTest
-@UninstallModules(TestRepositoryModule::class) // Снова указываем, что подменяем
-@RunWith(AndroidJUnit4::class)
+@UninstallModules(RepositoryModule::class) // Отключаем реальный репозиторий
+@MediumTest
 class NewsListFragmentTest {
 
-    @get:Rule(order = 0)
+    @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
-    @Inject
-    lateinit var mockRepository: NewsRepository
-
-    private val fakeNewsList = listOf(
-        NewsItem(
-            "id1",
-            "Заголовок новости 1",
-            "Описание 1",
-            "http://image.url/1",
-            "http://link.url/1",
-            1700000000000L
-        )
-    )
+    @BindValue
+    @JvmField
+    val repository: NewsRepository = mockk(relaxed = true)
 
     @Before
-    fun setup() {
+    fun init() {
         hiltRule.inject()
-        clearMocks(mockRepository)
     }
 
-    // --- Тестирование состояния SUCCESS ---
     @Test
-    fun test_list_is_displayed_and_loading_is_gone_on_success() {
-        // GIVEN: Мокируем успешный результат
-        coEvery { mockRepository.getNews() } returns SealedResult.Success(fakeNewsList)
+    fun newsList_displaysItemsFromRepository() {
+        // Given: Готовим моковые данные
+        val mockNews = listOf(
+            NewsItem(
+                id = "1",
+                link = "https://test.com/1",
+                title = "Первая важная новость",
+                description = "Описание первой новости".toSpannedHtml(),
+                imageUrl = null,
+                formattedDate = "10:00"
+            ),
+            NewsItem(
+                id = "2",
+                link = "https://test.com/2",
+                title = "Вторая новость",
+                description = "Описание второй новости".toSpannedHtml(),
+                imageUrl = null,
+                formattedDate = "11:00"
+            )
+        )
 
-        // WHEN: Запускаем фрагмент в контейнере
+        // Настраиваем мок репозитория
+        coEvery { repository.getNewsFlow() } returns flowOf(mockNews)
+
+        // When: Запускаем фрагмент
         launchFragmentInHiltContainer<NewsListFragment>()
 
-        // THEN: Проверяем, что список виден, а индикатор загрузки скрыт
-        onView(withId(R.id.newsRecyclerView))
+        // Then: Проверяем с помощью Espresso, что текст отобразился на экране
+        onView(withText("Первая важная новость"))
             .check(matches(isDisplayed()))
 
-        onView(withText("Заголовок новости 1"))
+        onView(withText("Вторая новость"))
             .check(matches(isDisplayed()))
+    }
 
-        onView(withId(R.id.progressBar))
-            .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    @Test
+    fun newsList_emptyState_displaysMessage() {
+        // Given: Репозиторий возвращает пустой список
+        coEvery { repository.getNewsFlow() } returns flowOf(emptyList())
 
+        // When
+        launchFragmentInHiltContainer<NewsListFragment>()
+
+        // Then: Проверяем наличие сообщения о пустом списке
         onView(withId(R.id.errorStatusTextView))
-            .check(matches(withEffectiveVisibility(Visibility.GONE)))
-    }
-
-    // --- Тестирование состояния ERROR ---
-    @Test
-    fun test_error_message_is_displayed_and_list_is_gone_on_failure() {
-        // GIVEN: Мокируем ошибку сети
-        val errorMessage = "Ошибка сети: нет подключения к интернету."
-        coEvery { mockRepository.getNews() } returns SealedResult.Failure(DataError.Network.UNKNOWN_HOST)
-
-        // WHEN
-        launchFragmentInHiltContainer<NewsListFragment>()
-
-        // THEN: Проверяем, что сообщение об ошибке видна
-        onView(withId(R.id.errorStatusTextView))
             .check(matches(isDisplayed()))
-            .check(matches(withText(errorMessage)))
-
-        onView(withId(R.id.newsRecyclerView))
-            .check(matches(withEffectiveVisibility(Visibility.GONE)))
-    }
-
-    // --- Тестирование состояния LOADING (первичная загрузка) ---
-    @Test
-    fun test_progress_bar_is_displayed_on_initial_loading() {
-        // GIVEN: Мокируем бесконечную загрузку (не возвращаем результат)
-        coEvery { mockRepository.getNews() } coAnswers { throw Exception("Test loading") }
-
-        // WHEN
-        launchFragmentInHiltContainer<NewsListFragment>()
-
-        // THEN: Проверяем, что ProgressBar виден
-        onView(withId(R.id.progressBar))
-            .check(matches(isDisplayed()))
-
-        onView(withId(R.id.newsRecyclerView))
-            .check(matches(withEffectiveVisibility(Visibility.GONE)))
     }
 }

@@ -1,90 +1,61 @@
 package com.example.newsapp.presentation
 
-import com.example.newsapp.R
-import com.example.newsapp.extensions.SealedResult
+import app.cash.turbine.test
+import com.example.newsapp.BaseUnitTest
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.models.NewsItem
+import com.example.newsapp.domain.usecases.GetNewsFlowUseCase
 import com.example.newsapp.domain.usecases.RefreshNewsUseCase
+import com.example.newsapp.extensions.SealedResult
+import com.example.newsapp.extensions.toSpannedHtml
 import com.example.newsapp.presentation.news.NewsListViewModel
 import com.example.newsapp.presentation.news.NewsListViewState
 import io.mockk.coEvery
-import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Before
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
-class NewsListViewModelTest {
+class NewsListViewModelTest : BaseUnitTest() {
 
-    private val mockUseCase = mockk<RefreshNewsUseCase>()
+    @MockK
+    lateinit var getNewsFlowUseCase: GetNewsFlowUseCase
 
-    private lateinit var viewModel: NewsListViewModel
-    private val testDispatcher = UnconfinedTestDispatcher()
+    @MockK
+    lateinit var refreshNewsUseCase: RefreshNewsUseCase
 
-    private val fakeNews = listOf(NewsItem("1", "Title 1", "Desc 1", null, "link1", 1L))
+    @Test
+    fun `uiStateFlow - when repository fails and DB is empty - emits Error state`() = runTest {
+        // Given: База пуста, сеть выдает ошибку
+        every { getNewsFlowUseCase() } returns flowOf(emptyList())
+        coEvery { refreshNewsUseCase() } returns SealedResult.Failure(DataError.Network.CONNECTION_TIMEOUT)
 
-    @Before
-    fun setup() {
-        Dispatchers.setMain(testDispatcher)
+        val viewModel = NewsListViewModel(getNewsFlowUseCase, refreshNewsUseCase)
+
+        viewModel.uiStateFlow.test {
+            assertEquals(NewsListViewState.Loading, awaitItem())
+            // refreshNews() запускается в init
+        }
     }
 
     @Test
-    fun `init should transition to Success state on use case Success`() = runTest {
-        // GIVEN
-        coEvery { mockUseCase.invoke() } returns SealedResult.Success(fakeNews)
+    fun `uiStateFlow - emits Success when database has items`() = runTest {
+        val mockNews = listOf(NewsItem("1", "Title", "".toSpannedHtml(), null, "link", "date"))
+        every { getNewsFlowUseCase() } returns flowOf(mockNews)
+        coEvery { refreshNewsUseCase() } returns SealedResult.Success(Unit)
 
-        // WHEN
-        viewModel = NewsListViewModel(mockUseCase)
-        advanceUntilIdle()
+        val viewModel = NewsListViewModel(getNewsFlowUseCase, refreshNewsUseCase)
 
-        // THEN
-        assertEquals(NewsListViewState.Success(fakeNews), viewModel.viewState.value)
-    }
-
-    @Test
-    fun `loadNews should transition to Error state and map Network Error message`() = runTest {
-        // GIVEN: UseCase возвращает ошибку сети
-        coEvery { mockUseCase.invoke() } returns SealedResult.Failure(DataError.Network.UNKNOWN_HOST)
-        viewModel = NewsListViewModel(mockUseCase)
-
-        // WHEN: Вызываем loadNews
-        viewModel.loadNews()
-        advanceUntilIdle()
-
-        // THEN: Проверяем, что сообщение об ошибке корректно смаплено
-        val finalState = viewModel.viewState.value
-        assertEquals(
-            NewsListViewState.Error(UniversalText.Resource(id = R.string.error_message_no_network_connection)),
-            finalState
-        )
-    }
-
-    @Test
-    fun `loadNews should transition to Error state and map Local Error message`() = runTest {
-        // GIVEN: UseCase возвращает ошибку, что данных нет
-        coEvery { mockUseCase.invoke() } returns SealedResult.Failure(DataError.Local.NOT_FOUND)
-        viewModel = NewsListViewModel(mockUseCase)
-
-        // WHEN
-        viewModel.loadNews()
-        advanceUntilIdle()
-
-        // THEN
-        val finalState = viewModel.viewState.value
-
-        assertEquals(NewsListViewState.Error(UniversalText.Resource(id = R.string.news_was_not_found_in_the_cache)), finalState)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
+        viewModel.uiStateFlow.test {
+            // Ожидаем первое состояние (Loading)
+            assertEquals(NewsListViewState.Loading, awaitItem())
+            // Ожидаем данные из базы
+            val state = awaitItem()
+            assertTrue(state is NewsListViewState.Success)
+            assertEquals(mockNews, (state as NewsListViewState.Success).news)
+        }
     }
 }

@@ -16,7 +16,7 @@ data class NewsItemDto(
     val description: String = "",
 
     @Element(name = "enclosure")
-    val enclosure: EnclosureDto?,
+    val enclosure: EnclosureDto? = null,
 
     @PropertyElement(name = "pubDate")
     val pubDate: String = "",

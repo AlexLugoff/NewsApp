@@ -1,9 +1,9 @@
 package com.example.newsapp.domain.usecases
 
-import com.example.newsapp.extensions.SealedResult
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.repository.NewsRepository
+import com.example.newsapp.extensions.SealedResult
 import javax.inject.Inject
 
 class GetNewsDetailsUseCase @Inject constructor(
