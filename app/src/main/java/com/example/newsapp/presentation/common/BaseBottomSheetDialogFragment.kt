@@ -5,9 +5,13 @@ import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.launch
 
 abstract class BaseBottomSheetDialogFragment<VS, E, VM : BaseViewModel<VS, E>, VB : ViewBinding> :
     BottomSheetDialogFragment() {
@@ -18,7 +22,7 @@ abstract class BaseBottomSheetDialogFragment<VS, E, VM : BaseViewModel<VS, E>, V
 
     protected open fun handleEvent(event: E) = Unit
 
-    protected open fun handleViewState(viewState: VS) = Unit
+    protected open fun handleViewState(viewState: VS?) = Unit
 
     private var _binding: VB? = null
     protected val binding get() = _binding!!
@@ -39,7 +43,7 @@ abstract class BaseBottomSheetDialogFragment<VS, E, VM : BaseViewModel<VS, E>, V
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeViewModel()
+        observeStateFlow()
     }
 
     override fun onDestroyView() {
@@ -47,8 +51,12 @@ abstract class BaseBottomSheetDialogFragment<VS, E, VM : BaseViewModel<VS, E>, V
         _binding = null
     }
 
-    protected open fun observeViewModel() {
-        viewModel.viewState.observe(viewLifecycleOwner, viewStateObserver)
-        viewModel.event.observe(viewLifecycleOwner, eventObserver)
+    private fun observeStateFlow() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch { viewModel.uiStateFlow.collect { handleViewState(it) } }
+                launch { viewModel.eventFlow.collect { handleEvent(it) } }
+            }
+        }
     }
 }

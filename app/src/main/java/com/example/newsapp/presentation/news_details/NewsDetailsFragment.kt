@@ -1,11 +1,14 @@
 package com.example.newsapp.presentation.news_details
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import coil.load
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentNewsDetailsBinding
@@ -20,10 +23,17 @@ class NewsDetailsFragment :
 
     override val viewModel: NewsDetailsViewModel by viewModels()
 
+    private val args: NewsDetailsFragmentArgs by navArgs()
+
     override fun getViewBinding(
         inflater: LayoutInflater, container: ViewGroup?
     ): FragmentNewsDetailsBinding {
         return FragmentNewsDetailsBinding.inflate(inflater, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.loadNewsDetails(args.newsLink)
     }
 
     override fun handleViewState(viewState: NewsDetailsViewState?) {

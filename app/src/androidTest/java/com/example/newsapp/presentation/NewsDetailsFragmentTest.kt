@@ -62,7 +62,8 @@ class NewsDetailsFragmentTest {
             title = "Заголовок новости",
             description = "Подробное описание новости".toSpannedHtml(),
             imageUrl = "https://test.com/image.jpg",
-            formattedDate = "16 марта, 12:00"
+            formattedDate = "16 марта, 12:00",
+            category = "Категория"
         )
 
         coEvery { repository.getNewsDetails(testLink) } returns SealedResult.Success(mockNews)
@@ -86,7 +87,7 @@ class NewsDetailsFragmentTest {
         val testLink = "https://test.com/error"
         val fragmentArgs = bundleOf("newsLink" to testLink)
 
-        coEvery { repository.getNewsDetails(testLink) } returns SealedResult.Failure(DataError.Local.NOT_FOUND)
+        coEvery { repository.getNewsDetails(testLink) } returns SealedResult.Failure(DataError.Local.NotFound())
 
         // When
         launchFragmentInHiltContainer<NewsDetailsFragment>(fragmentArgs)
@@ -101,7 +102,7 @@ class NewsDetailsFragmentTest {
         // Given
         val testLink = "https://test.com/news1"
         val fragmentArgs = bundleOf("newsLink" to testLink)
-        val mockNews = NewsItem(testLink, "Title", "Desc".toSpannedHtml(), null, testLink, "date")
+        val mockNews = NewsItem(testLink, "Title", "Desc".toSpannedHtml(), null, testLink, "date", "Категория")
 
         coEvery { repository.getNewsDetails(testLink) } returns SealedResult.Success(mockNews)
 

@@ -1,19 +1,23 @@
 <resources>
     <string name="app_name">NewsApp</string>
 
-    <string name="error_message_no_internet">Нет интернета.</string>
-    <string name="error_message_no_host">Нет интернета.</string>
-    <string name="error_message_unknown_host">Ошибка сети: неизвестный хост.</string>
+    <string name="error_no_internet">Нет соединения с сервером. Проверьте интернет.</string>
+    <string name="error_http_code">Ошибка http %1$d: %2$s</string>
+    <string name="error_message_unknown_host">Проблемы с соединением: %1$s</string>
+    <string name="error_unknown_host">Хост не найден: %1$s</string>
+    <string name="error_parser">Ошибка обработки данных: %1$s</string>
+    <string name="error_local_not_found">Информация не найдена в базе данных.</string>
+    <string name="error_unknown_message">Произошла непредвиденная ошибка: %1$s</string>
+
     <string name="error_message_connection_timeout">Ошибка сети: превышен таймаут.</string>
     <string name="error_message_no_network_connection">Нет подключения к сети.</string>
     <string name="error_message_not_found">Данные не найдены.</string>
-    <string name="error_message_unknown_error">Неизвестная ошибка загрузки данных.</string>
     <string name="error_message_connection_time_has_out">Время соединения истекло. Пожалуйста, попробуйте еще раз.</string>
     <string name="error_loading_data_message">Ошибка загрузки данных.</string>
     <string name="news_not_found">Новости не найдены.</string>
     <string name="new_not_found">Новость не найдена.</string>
     <string name="news_was_not_found_in_the_cache">Новость не найдена в кэше.</string>
-    <string name="unknown_error">Неизвестная ошибка: %s</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
     <string name="title_news_list">News</string>
     <string name="news_image_description">Описание изображения.</string>
     <string name="open_in_browser">Подробнее</string>

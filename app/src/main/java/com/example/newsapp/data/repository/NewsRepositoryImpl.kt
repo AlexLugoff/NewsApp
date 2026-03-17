@@ -78,15 +78,7 @@ class NewsRepositoryImpl @Inject constructor(
                     async { remoteDataSource.getNewsFeed(source.url) }
                 }
                 val results = deferredResults.awaitAll()
-                // Проверяем, есть ли хоть один успех
                 val successResults = results.filterIsInstance<SealedResult.Success<RssFeedDto>>()
-
-                if (successResults.isEmpty() && results.isNotEmpty()) {
-                    // Если источников много, а успехов 0 — значит, это общая ошибка сети
-                    val firstError = results.filterIsInstance<SealedResult.Failure<DataError>>()
-                        .firstOrNull()?.error ?: DataError.Network.UNKNOWN
-                    return@coroutineScope SealedResult.Failure(firstError)
-                }
 
                 val allNews = successResults
                     .flatMap { it.data.toEntityList() }
@@ -96,8 +88,8 @@ class NewsRepositoryImpl @Inject constructor(
                 SealedResult.Success(allNews)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
-                Timber.e(e, "Критическая ошибка при загрузке новостей")
-                SealedResult.Failure(DataError.Network.UNKNOWN)
+                Timber.e(e, e.localizedMessage)
+                SealedResult.Failure(DataError.Network.Unknown(e.localizedMessage))
             }
         }
 

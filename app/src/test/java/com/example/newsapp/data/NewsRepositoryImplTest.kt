@@ -88,7 +88,7 @@ class NewsRepositoryImplTest : BaseUnitTest() {
         )
         val mockDto = mockk<RssFeedDto> {
             every { toEntityList() } returns listOf(
-                NewsItemEntity("link1", "Title", "Desc", null, 1000L)
+                NewsItemEntity("link1", "Title", "Desc", null, 1000L, "Category")
             )
         }
 
@@ -113,14 +113,14 @@ class NewsRepositoryImplTest : BaseUnitTest() {
         // Given
         val sources = listOf(NewsSourceEntity(1, "S1", "url", true))
         coEvery { newsSourceLocalDataSource.getEnabledSources() } returns sources
-        coEvery { remoteDataSource.getNewsFeed(any()) } returns SealedResult.Failure(DataError.Network.UNKNOWN)
+        coEvery { remoteDataSource.getNewsFeed(any()) } returns SealedResult.Failure(DataError.Network.Unknown())
 
         // When
         val result = repository.refreshNews()
 
         // Then
         assertTrue(result is SealedResult.Failure)
-        assertEquals(DataError.Network.UNKNOWN, (result as SealedResult.Failure).error)
+        assertEquals(DataError.Network.Unknown(), (result as SealedResult.Failure).error)
     }
 
     @Test
@@ -141,7 +141,7 @@ class NewsRepositoryImplTest : BaseUnitTest() {
     fun `getNewsDetails - returns mapped domain model`() = runTest {
         // Given
         val link = "test_link"
-        val mockEntity = NewsItemEntity(link, "Title", "Desc", null, 123L)
+        val mockEntity = NewsItemEntity(link, "Title", "Desc", null, 123L, "Category")
         coEvery { newsLocalDataSource.getNewsByLink(link) } returns mockEntity
 
         // When

@@ -29,6 +29,7 @@ object DatabaseModule {
             DATABASE_NAME
         )
             .createFromAsset(DATABASE_FILE_PATH)
+            .fallbackToDestructiveMigration(true)
             .build()
     }
 

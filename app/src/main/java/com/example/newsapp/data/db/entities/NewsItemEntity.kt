@@ -9,5 +9,6 @@ data class NewsItemEntity(
     val title: String,
     val description: String,
     val imageUrl: String?,
-    val pubDate: Long
+    val pubDate: Long,
+    val category: String
 )

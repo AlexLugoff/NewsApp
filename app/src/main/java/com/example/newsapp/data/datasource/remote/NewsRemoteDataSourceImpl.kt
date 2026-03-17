@@ -14,16 +14,16 @@ class NewsRemoteDataSourceImpl @Inject constructor(
 ) : NewsRemoteDataSource {
     override suspend fun getNewsFeed(url: String): SealedResult<RssFeedDto, DataError.Network> {
         return try {
-            val dto = apiService.getNews(url)
-            SealedResult.Success(dto)
+            val response = apiService.getNews(url)
+            SealedResult.Success(response)
         } catch (e: UnknownHostException) {
-            SealedResult.Failure(DataError.Network.UNKNOWN_HOST)
+            SealedResult.Failure(DataError.Network.UnknownHost(e.localizedMessage))
         } catch (e: IOException) {
-            SealedResult.Failure(DataError.Network.CONNECTION_TIMEOUT)
+            SealedResult.Failure(DataError.Network.ConnectionTimeout(e.localizedMessage))
         } catch (e: HttpException) {
-            SealedResult.Failure(DataError.Network.UNKNOWN)
+            SealedResult.Failure(DataError.Network.HttpError(e.code(), e.localizedMessage ?: "Http Error"))
         } catch (e: Exception) {
-            SealedResult.Failure(DataError.Network.UNKNOWN)
+            SealedResult.Failure(DataError.Network.Unknown(e.localizedMessage))
         }
     }
 }
