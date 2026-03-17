@@ -1,59 +1,52 @@
 package com.example.newsapp.presentation.news_details
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.newsapp.R
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.usecases.GetNewsDetailsUseCase
 import com.example.newsapp.extensions.fold
-import com.example.newsapp.presentation.UniversalText
+import com.example.newsapp.presentation.UiText
 import com.example.newsapp.presentation.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NewsDetailsViewModel @Inject constructor(
-    private val getNewsDetailsUseCase: GetNewsDetailsUseCase,
-    savedStateHandle: SavedStateHandle
+    private val getNewsDetailsUseCase: GetNewsDetailsUseCase
 ) : BaseViewModel<NewsDetailsViewState, NewsDetailsEvent>() {
 
-    private val newsLink: String = checkNotNull(savedStateHandle["newsLink"])
+    private val _uiState = MutableStateFlow<NewsDetailsViewState>(NewsDetailsViewState.Loading)
+    override val uiStateFlow: StateFlow<NewsDetailsViewState> = _uiState.asStateFlow()
 
-    init {
-        loadNewsDetails(newsLink)
-    }
-
-    private fun loadNewsDetails(newsLink: String) {
-        NewsDetailsViewState.Loading.setValue()
+    fun loadNewsDetails(newsLink: String) {
+        _uiState.value = NewsDetailsViewState.Loading
         viewModelScope.launch(exceptionHandler) {
             getNewsDetailsUseCase(newsLink).fold(
                 onSuccess = { newsItem ->
-                    if (newsItem != null) {
-                        NewsDetailsViewState.Success(newsItem).update()
+                    _uiState.value = if (newsItem != null) {
+                        NewsDetailsViewState.Success(newsItem)
                     } else {
-                        // Это состояние должно быть поймано как DataError.Local.NOT_FOUND,
+                        // Это состояние должно быть поймано как DataError.Local.NotFound,
                         // но это дополнительная проверка на случай, если UseCase вернёт Success(null)
-                        NewsDetailsViewState.Error(UniversalText.Resource(id = R.string.new_not_found))
-                            .update()
-                        UniversalText.Resource(id = R.string.unknown_error)
+                        NewsDetailsViewState.Error(UiText.StringResource(id = R.string.new_not_found))
                     }
                 },
                 onFailure = { domainError ->
                     val errorMessage = when (domainError) {
-                        DataError.Local.NOT_FOUND -> UniversalText.Resource(id = R.string.news_was_not_found_in_the_cache)
-                        else -> UniversalText.Resource(
-                            id = R.string.unknown_error,
-                            domainError.toString()
-                        )
+                        is DataError.Local.NotFound -> UiText.StringResource(R.string.news_was_not_found_in_the_cache)
+                        else -> UiText.StringResource(R.string.error_unknown)
                     }
-                    NewsDetailsViewState.Error(errorMessage).update()
+                    _uiState.value = NewsDetailsViewState.Error(errorMessage)
                 }
             )
         }
     }
 
     fun goToBrowser(url: String) {
-        NewsDetailsEvent.GoToBrowser(url = url).setValue()
+        NewsDetailsEvent.GoToBrowser(url = url).send()
     }
 }

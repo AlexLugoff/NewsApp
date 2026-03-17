@@ -1,81 +1,82 @@
 package com.example.newsapp.presentation.news
 
 import androidx.lifecycle.viewModelScope
-import com.example.newsapp.R
-import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.usecases.GetNewsFlowUseCase
 import com.example.newsapp.domain.usecases.RefreshNewsUseCase
 import com.example.newsapp.extensions.onFailure
-import com.example.newsapp.presentation.UniversalText
+import com.example.newsapp.extensions.toReadableText
+import com.example.newsapp.presentation.UiText
 import com.example.newsapp.presentation.common.BaseViewModel
 import com.example.newsapp.presentation.common.CommonEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NewsListViewModel @Inject constructor(
-    private val getNewsFlowUseCase: GetNewsFlowUseCase,
+    getNewsFlowUseCase: GetNewsFlowUseCase,
     private val refreshNewsUseCase: RefreshNewsUseCase
 ) : BaseViewModel<NewsListViewState, NewsListEvent>() {
 
-    private val refreshTrigger = MutableSharedFlow<Unit>(replay = 1)
+    private val _isRefreshing = MutableStateFlow(false)
+    private val _errorState = MutableStateFlow<UiText?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override val uiStateFlow: StateFlow<NewsListViewState> = refreshTrigger
-        .onStart { emit(Unit) }
-        .flatMapLatest {
-            getNewsFlowUseCase()
+    override val uiStateFlow: StateFlow<NewsListViewState> = combine(
+        getNewsFlowUseCase(),
+        _isRefreshing,
+        _errorState
+    ) { newsList, refreshing, error ->
+        when {
+            newsList.isEmpty() && !refreshing && error != null ->
+                NewsListViewState.Error(error)
+
+            newsList.isEmpty() && refreshing ->
+                NewsListViewState.Loading
+
+            else -> NewsListViewState.Success(
+                news = newsList,
+                isRefreshing = refreshing
+            )
         }
-        .map { newsList ->
-            if (newsList.isEmpty()) NewsListViewState.Loading
-            else NewsListViewState.Success(newsList)
-        }
-        .distinctUntilChanged()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = NewsListViewState.Loading
-        )
+    }.distinctUntilChanged().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = NewsListViewState.Loading
+    )
 
     init {
         refreshNews()
     }
 
     fun refreshNews() {
+        if (_isRefreshing.value) return
+
         viewModelScope.launch(exceptionHandler) {
+            _errorState.value = null
+            _isRefreshing.value = true
+
             refreshNewsUseCase().onFailure { domainError ->
-                // Если сеть упала, а в базе пусто — тогда показываем экран ошибки
-                val currentNews = getNewsFlowUseCase().first()
-                if (currentNews.isEmpty()) {
-                    NewsListViewState.Error(mapError(domainError)).postValue()
+                val errorText = domainError.toReadableText()
+
+                if (uiStateFlow.value.currentNews.isEmpty()) {
+                    _errorState.value = errorText
                 } else {
-                    CommonEvent.ShowLongToast(mapError(domainError).toString()).postValue()
+                    CommonEvent.ShowLongToast(uiText = errorText).send()
                 }
             }
-        }
-    }
-
-    private fun mapError(error: DataError): UniversalText {
-        return when (error) {
-            DataError.Network.UNKNOWN_HOST -> UniversalText.Resource(R.string.error_message_unknown_host)
-            DataError.Network.CONNECTION_TIMEOUT -> UniversalText.Resource(R.string.error_message_connection_timeout)
-            DataError.Local.NOT_FOUND -> UniversalText.Resource(id = R.string.error_message_not_found)
-            else -> UniversalText.Resource(R.string.error_message_unknown_error)
+            _isRefreshing.value = false
         }
     }
 
     fun onNewsItemClick(newsLink: String) {
-        NewsListEvent.NavigateToNewsDetails(newsLink).setValue()
+        NewsListEvent.NavigateToNewsDetails(newsLink).send()
     }
 }

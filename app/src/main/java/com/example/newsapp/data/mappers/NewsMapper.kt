@@ -21,9 +21,10 @@ fun RssFeedDto.toEntityList(): List<NewsItemEntity> {
             NewsItemEntity(
                 link = link,
                 title = title,
-                description = description,
+                description = description ?: "",
                 imageUrl = enclosure?.url,
-                pubDate = dateLong
+                pubDate = dateLong,
+                category = category ?: ""
             )
         }
     } ?: emptyList()
@@ -37,7 +38,8 @@ fun NewsItemEntity.toDomain(): NewsItem {
         description = this.description.toSpannedHtml(),
         imageUrl = this.imageUrl,
         link = this.link,
-        formattedDate = this.pubDate.asDateTimeString
+        formattedDate = this.pubDate.asDateTimeString,
+        category = this.category
     )
 }
 

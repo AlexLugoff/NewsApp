@@ -16,7 +16,9 @@ import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.newsapp.R
+import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.presentation.SafeOnClickListener
+import com.example.newsapp.presentation.UiText
 
 fun Context.showShortToast(text: String): Toast {
     return Toast.makeText(this, text, Toast.LENGTH_SHORT).also { it.show() }
@@ -89,5 +91,41 @@ fun String?.toSpannedHtml(): Spanned {
     } else {
         @Suppress("DEPRECATION")
         Html.fromHtml(this)
+    }
+}
+
+fun DataError.toReadableText(): UiText {
+    return when (this) {
+        is DataError.Network.HttpError -> UiText.StringResource(
+            R.string.error_http_code,
+            this.code,
+            this.message
+        )
+
+        is DataError.Network.UnknownHost -> message?.let {
+            UiText.StringResource(
+                R.string.error_message_unknown_host,
+                this.message
+            )
+        } ?: UiText.StringResource(R.string.error_unknown_host)
+
+        is DataError.Parser.InvalidFormat -> UiText.StringResource(
+            R.string.error_parser,
+            this.message
+        )
+
+        is DataError.Network.Unknown -> message?.let {
+            UiText.StringResource(
+                R.string.error_unknown_message,
+                this.message
+            )
+        } ?: UiText.StringResource(R.string.error_unknown)
+
+        is DataError.Network.ConnectionTimeout -> UiText.StringResource(
+            R.string.error_message_connection_timeout
+        )
+
+        is DataError.Local.NotFound -> UiText.StringResource(R.string.error_local_not_found)
+        else -> UiText.StringResource(R.string.error_unknown)
     }
 }

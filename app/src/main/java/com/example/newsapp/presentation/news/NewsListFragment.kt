@@ -45,7 +45,10 @@ class NewsListFragment : BaseFragment<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        childFragmentManager.setFragmentResultListener("sources_updated", viewLifecycleOwner) { _, bundle ->
+        childFragmentManager.setFragmentResultListener(
+            "sources_updated",
+            viewLifecycleOwner
+        ) { _, bundle ->
             val isChanged = bundle.getBoolean("isChanged", false)
             if (isChanged) {
                 viewModel.refreshNews()
@@ -73,22 +76,15 @@ class NewsListFragment : BaseFragment<
         binding.apply {
             val isListEmpty = newsAdapter.itemCount == 0
 
-            swipeRefreshLayout.isRefreshing = viewState is NewsListViewState.Loading
-                    && isListEmpty
-
-            progressBar.isVisible =
-                viewState is NewsListViewState.Loading && isListEmpty
-            newsRecyclerView.isVisible =
-                viewState is NewsListViewState.Success || !isListEmpty
-            errorStatusTextView.isVisible = false
-
             when (viewState) {
                 is NewsListViewState.Loading -> {
-                    // Действия не требуются, логика видимости обработана выше.
-                    // Если isListEmpty == false, мы видим старые данные + SwipeRefreshIndicator.
+                    swipeRefreshLayout.isRefreshing = true
+                    progressBar.isVisible = isListEmpty
                 }
 
                 is NewsListViewState.Success -> {
+                    swipeRefreshLayout.isRefreshing = viewState.isRefreshing
+                    progressBar.isVisible = false
                     errorStatusTextView.isVisible = false
                     newsAdapter.submitList(viewState.news)
 
@@ -96,17 +92,17 @@ class NewsListFragment : BaseFragment<
                         errorStatusTextView.text =
                             getString(R.string.empty_list_message)
                         errorStatusTextView.isVisible = true
-                        newsRecyclerView.isVisible = false
                     }
                 }
 
                 is NewsListViewState.Error -> {
+                    swipeRefreshLayout.isRefreshing = false
+                    progressBar.isVisible = false
                     errorStatusTextView.text = viewState.message.asString(requireContext())
                     Timber.e(viewState.message.asString(requireContext()))
 
                     if (isListEmpty) {
                         errorStatusTextView.isVisible = true
-                        newsRecyclerView.isVisible = false
                     } else {
                         CommonEvent.ShowLongToast(viewState.message.asString(requireContext()))
                     }
@@ -122,6 +118,7 @@ class NewsListFragment : BaseFragment<
             is NewsListEvent.NavigateToNewsDetails -> {
                 showDetails(event.newsLink)
             }
+
             else -> Unit
         }
     }
@@ -147,6 +144,7 @@ class NewsListFragment : BaseFragment<
                         showSourceSelection()
                         true
                     }
+
                     else -> false
                 }
             }

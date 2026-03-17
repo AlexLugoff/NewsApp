@@ -36,7 +36,8 @@ class NewsDetailsViewModelTest : BaseUnitTest() {
             title = "Test Title",
             description = "Test Description".toSpannedHtml(),
             imageUrl = null,
-            formattedDate = "10:00"
+            formattedDate = "10:00",
+            category = "Категория"
         )
         coEvery { getNewsDetailsUseCase(testLink) } returns SealedResult.Success(mockNews)
 
@@ -44,7 +45,7 @@ class NewsDetailsViewModelTest : BaseUnitTest() {
         val savedStateHandle = SavedStateHandle(mapOf("newsLink" to testLink))
 
         // When: Создаем ViewModel (триггерит init)
-        viewModel = NewsDetailsViewModel(getNewsDetailsUseCase, savedStateHandle)
+        viewModel = NewsDetailsViewModel(getNewsDetailsUseCase)
 
         // Then: Проверяем поток состояний
         viewModel.uiStateFlow.test {
@@ -63,13 +64,13 @@ class NewsDetailsViewModelTest : BaseUnitTest() {
     @Test
     fun `init - when use case fails - emits Error state`() = runTest {
         // Given: Имитируем ошибку
-        val domainError = DataError.Local.NOT_FOUND
+        val domainError = DataError.Local.NotFound()
         coEvery { getNewsDetailsUseCase(testLink) } returns SealedResult.Failure(domainError)
 
         val savedStateHandle = SavedStateHandle(mapOf("newsLink" to testLink))
 
         // When
-        viewModel = NewsDetailsViewModel(getNewsDetailsUseCase, savedStateHandle)
+        viewModel = NewsDetailsViewModel(getNewsDetailsUseCase)
 
         // Then
         viewModel.uiStateFlow.test {
@@ -88,6 +89,6 @@ class NewsDetailsViewModelTest : BaseUnitTest() {
         val savedStateHandle = SavedStateHandle()
 
         // When: Это должно вызвать checkNotNull и выбросить исключение
-        viewModel = NewsDetailsViewModel(getNewsDetailsUseCase, savedStateHandle)
+        viewModel = NewsDetailsViewModel(getNewsDetailsUseCase)
     }
 }

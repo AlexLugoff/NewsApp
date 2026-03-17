@@ -13,7 +13,7 @@ data class NewsItemDto(
     val link: String = "",
 
     @PropertyElement(name = "description")
-    val description: String = "",
+    val description: String? = null,
 
     @Element(name = "enclosure")
     val enclosure: EnclosureDto? = null,
@@ -22,5 +22,5 @@ data class NewsItemDto(
     val pubDate: String = "",
 
     @PropertyElement(name = "category")
-    val category: String = ""
+    val category: String? = null
 )
