@@ -20,8 +20,15 @@
 Проект построен по принципам **SOLID** и **Clean Architecture**:
 1. **Data layer:** Репозитории, Room DAO и сетевые сервисы.
 2. **Domain layer:** Use Cases для бизнес-логики (получение списка новостей, фильтрация).
-3. **Presentation layer:** ViewModels с использованием StateFlow/LiveData для обновления UI.
+3. **Presentation layer:** ViewModels с использованием StateFlow для обновления UI.
 
 ## 🚀 Особенности реализации
 * Обработка ошибок сети через кастомный Result.
 * Unit-тесты для UseCases и ViewModel.
+
+## 📸 Как это выглядит
+<p align="left">
+  <img src="screenshots/Screenshot_20260317_201331.png" width="250" />
+  <img src="screenshots/Screenshot_20260317_201355.png" width="250" />
+  <img src="screenshots/Screenshot_20260317_201411.png" width="250" />
+</p>
