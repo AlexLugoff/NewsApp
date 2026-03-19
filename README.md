@@ -10,7 +10,7 @@
 ## 🛠 Стек технологий и библиотеки
 * **Language:** Kotlin (Coroutines + Flow)
 * **UI:** XML + ViewBinding
-* **Architecture:** MVVM + Clean Architecture (Data, Domain, Presentation)
+* **Architecture:** MVVM + MVI + Clean Architecture (Data, Domain, Presentation)
 * **DI:** Hilt (Dagger-Hilt) для внедрения зависимостей
 * **Database:** Room (хранение выбранных источников и статей)
 * **Network:** Retrofit 2 + OkHttp + XML Parsing
