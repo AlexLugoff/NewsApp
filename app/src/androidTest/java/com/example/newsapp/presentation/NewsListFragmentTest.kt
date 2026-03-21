@@ -11,7 +11,6 @@ import com.example.newsapp.di.module.RepositoryModule
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.repository.NewsRepository
 import com.example.newsapp.extensions.toSpannedHtml
-import com.example.newsapp.presentation.news.NewsListFragment
 import com.example.newsapp.util.launchFragmentInHiltContainer
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule

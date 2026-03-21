@@ -25,7 +25,7 @@ class NewsListViewModel @Inject constructor(
     private val refreshNewsUseCase: RefreshNewsUseCase
 ) : BaseViewModel<NewsListViewState, NewsListEvent>() {
 
-    private val _isRefreshing = MutableStateFlow(false)
+    val _isRefreshing = MutableStateFlow(false)
     private val _errorState = MutableStateFlow<UiText?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)

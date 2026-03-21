@@ -3,6 +3,9 @@ package com.example.newsapp.presentation
 import android.content.Context
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 
 sealed class UiText {
 
@@ -20,6 +23,16 @@ sealed class UiText {
             is Dynamic -> value
             is StringResource -> context.getString(id, *args)
             is PluralResource -> context.resources.getQuantityString(id, quantity, quantity)
+            Empty -> EMPTY
+        }
+    }
+
+    @Composable
+    fun asString(): String {
+        return when (this) {
+            is Dynamic -> value
+            is StringResource -> stringResource(id, *args)
+            is PluralResource -> pluralStringResource(id, quantity, quantity)
             Empty -> EMPTY
         }
     }

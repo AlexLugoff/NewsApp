@@ -10,7 +10,6 @@ import androidx.test.filters.MediumTest
 import com.example.newsapp.di.module.RepositoryModule
 import com.example.newsapp.domain.models.NewsSourceItem
 import com.example.newsapp.domain.repository.NewsRepository
-import com.example.newsapp.presentation.source_selection.SourceSelectionBottomSheetFragment
 import com.example.newsapp.util.launchFragmentInHiltContainer
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule

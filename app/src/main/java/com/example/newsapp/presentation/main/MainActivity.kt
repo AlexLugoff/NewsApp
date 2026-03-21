@@ -1,32 +1,34 @@
 package com.example.newsapp.presentation.main
 
 import android.os.Bundle
-import androidx.activity.viewModels
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import com.example.newsapp.R
-import com.example.newsapp.databinding.ActivityMainBinding
-import com.example.newsapp.presentation.common.BaseActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.LaunchedEffect
+import com.example.composetraining.ui.theme.NewsTheme
+import com.example.newsapp.domain.usecases.ClearOldNewsUseCase
 import dagger.hilt.android.AndroidEntryPoint
+import jakarta.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity<MainViewState, MainEvent, MainViewModel, ActivityMainBinding>() {
+class MainActivity : ComponentActivity() {
 
-    private lateinit var navHostFragment: NavHostFragment
-    private lateinit var navController: NavController
-
-    override val viewModel by viewModels<MainViewModel>()
-
-    override fun getViewBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+    @Inject
+    lateinit var clearOldNewsUseCase: ClearOldNewsUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        installSplashScreen()
-        setupBindingAndContentView()
 
-        navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController = navHostFragment.navController
+        enableEdgeToEdge()
+        setContent {
+            LaunchedEffect(Unit) {
+                clearOldNewsUseCase()
+            }
+
+            NewsTheme {
+                AppNavigation()
+            }
+        }
     }
 
 }

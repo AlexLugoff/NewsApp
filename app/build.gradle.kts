@@ -1,10 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-    kotlin("kapt")
     alias(libs.plugins.safeargs.kotlin)
 }
 
@@ -42,6 +42,10 @@ android {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
+    ksp {
+        arg("dagger.fastInit", "enabled")
+        arg("dagger.hilt.disableModulesHaveInstallInCheck", "false")
+    }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.10"
     }
@@ -60,10 +64,13 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.material3)
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.espresso.contrib)
     implementation(libs.material)
     implementation(libs.androidx.recyclerview)
-    kapt(libs.hilt.compiler)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.picasso)
 
@@ -78,6 +85,7 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation(libs.androidx.compose.material.icons.extended)
 
     // Test
     androidTestImplementation(libs.kotlinx.coroutines.test)
@@ -100,15 +108,18 @@ dependencies {
     androidTestImplementation(libs.androidx.navigation.testing)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation (libs.androidx.espresso.intents)
+    androidTestImplementation(libs.androidx.espresso.intents)
     androidTestImplementation(libs.runner)
     androidTestImplementation(libs.androidx.rules)
+
+    // RSS Parser
+    implementation(libs.rssparser)
 
     // TikXml
     implementation(libs.tikxml.annotation)
     implementation(libs.tikxml.core)
     implementation(libs.tikxml.retrofit.converter)
-    kapt(libs.tikxml.processor)
+    ksp(libs.tikxml.processor)
 
     // Hilt Testing
     androidTestImplementation(libs.dagger.hilt.android.testing)
@@ -122,6 +133,8 @@ dependencies {
 
     // Coil
     implementation(libs.coil)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     // Retrofit
     implementation(libs.retrofit)

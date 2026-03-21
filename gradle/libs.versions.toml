@@ -1,10 +1,12 @@
 [versions]
 agp = "8.13.0"
 coil-version = "2.7.0"
+coilCompose = "3.4.0"
 coreTesting = "2.2.0"
 fragmentTesting = "1.6.2"
 hiltAndroidCompiler = "2.48"
 hiltAndroidTestingVersion = "2.48"
+hiltNavigationCompose = "1.3.0"
 jetbrainsKotlinxCoroutinesTest = "1.7.3"
 kotlin = "2.2.20"
 coreKtx = "1.17.0"
@@ -18,6 +20,7 @@ activityCompose = "1.12.0"
 composeBom = "2024.09.00"
 ksp-version = "2.2.20-2.0.4"
 hilt-version = "2.57.2"
+rssparser = "6.1.4"
 rules = "1.5.0"
 runnerVersion = "1.5.2"
 saveargs-version = "2.7.5"
@@ -40,17 +43,24 @@ material = "1.13.0"
 recyclerview = "1.4.0"
 tikxml-version = "0.8.13"
 turbine = "1.2.1"
+navigationCompose = "2.9.7"
+lifecycleViewmodelCompose = "2.10.0"
+materialIconsExtended = "1.7.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
 androidx-espresso-intents = { module = "androidx.test.espresso:espresso-intents", version.ref = "espresso-version" }
 androidx-fragment-testing = { module = "androidx.fragment:fragment-testing", version.ref = "fragmentTesting" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navigation_version" }
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "room_version" }
 androidx-rules = { module = "androidx.test:rules", version.ref = "rules" }
 coil = { module = "io.coil-kt:coil", version.ref = "coil-version" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+rssparser = { module = "com.prof18.rssparser:rssparser", version.ref = "rssparser" }
 tikxml-annotation = { module = "com.tickaroo.tikxml:annotation", version.ref = "tikxml-version" }
 tikxml-core = { module = "com.tickaroo.tikxml:core", version.ref = "tikxml-version" }
 core-ktx = { module = "androidx.test:core-ktx", version.ref = "rules" }
@@ -99,10 +109,14 @@ androidx-espresso-contrib = { group = "androidx.test.espresso", name = "espresso
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-version" }

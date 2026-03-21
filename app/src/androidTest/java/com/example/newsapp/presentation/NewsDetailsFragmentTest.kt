@@ -20,7 +20,6 @@ import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.repository.NewsRepository
 import com.example.newsapp.extensions.SealedResult
 import com.example.newsapp.extensions.toSpannedHtml
-import com.example.newsapp.presentation.news_details.NewsDetailsFragment
 import com.example.newsapp.util.launchFragmentInHiltContainer
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
