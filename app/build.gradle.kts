@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     ksp(libs.hilt.compiler)
+    implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.picasso)
 
@@ -86,6 +87,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.compose.scrollbar)
 
     // Test
     androidTestImplementation(libs.kotlinx.coroutines.test)
@@ -114,12 +116,6 @@ dependencies {
 
     // RSS Parser
     implementation(libs.rssparser)
-
-    // TikXml
-    implementation(libs.tikxml.annotation)
-    implementation(libs.tikxml.core)
-    implementation(libs.tikxml.retrofit.converter)
-    ksp(libs.tikxml.processor)
 
     // Hilt Testing
     androidTestImplementation(libs.dagger.hilt.android.testing)

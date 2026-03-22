@@ -16,9 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.example.newsapp.R
 import com.example.newsapp.domain.models.NewsItem
 
 @Composable
@@ -37,6 +39,8 @@ fun NewsItemCard(
             AsyncImage(
                 model = news.imageUrl,
                 contentDescription = null,
+                placeholder = painterResource(R.drawable.placeholder_image_24),
+                error = painterResource(R.drawable.placeholder_image_24),
                 modifier = Modifier
                     .size(100.dp)
                     .clip(RoundedCornerShape(8.dp)),

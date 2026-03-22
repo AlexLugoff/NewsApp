@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Filter
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -42,6 +46,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.newsapp.R
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.presentation.source_selection.SourceSelectionBottomSheet
+import my.nanihadesuka.compose.LazyColumnScrollbar
+import my.nanihadesuka.compose.ScrollbarSettings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,6 +58,8 @@ fun NewsListScreen(
     val uiState by viewModel.uiStateFlow.collectAsStateWithLifecycle()
     val isRefreshing by viewModel._isRefreshing.collectAsStateWithLifecycle()
     var isSheetOpen by remember { mutableStateOf(false) }
+
+    val lazyListState = rememberLazyListState()
     val pullToRefreshState = rememberPullToRefreshState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
@@ -66,10 +74,11 @@ fun NewsListScreen(
                         fontWeight = FontWeight.Bold
                     )
                 },
+                scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(onClick = { isSheetOpen = true }) {
                         Icon(
-                            imageVector = Icons.Default.Settings,
+                            imageVector = Icons.Default.FilterList,
                             contentDescription = "Выбор источников"
                         )
                     }
@@ -104,7 +113,7 @@ fun NewsListScreen(
                     if (state.news.isEmpty()) {
                         ErrorMessage(stringResource(R.string.empty_list_message))
                     } else {
-                        NewsList(state.news, onNavigateToDetails)
+                        NewsList(state.news, onNavigateToDetails, lazyListState)
                     }
                 }
 
@@ -128,22 +137,33 @@ fun NewsListScreen(
 fun NewsList(
     news: List<NewsItem>,
     onNavigateToDetails: (String) -> Unit,
+    state: LazyListState,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 16.dp)
+    LazyColumnScrollbar(
+        state = state, // ваш LazyListState
+        settings = ScrollbarSettings.Default.copy(
+            thumbUnselectedColor = MaterialTheme.colorScheme.primary,
+            scrollbarPadding = 4.dp
+        )
     ) {
-        items(
-            items = news,
-            key = { it.link }
-        ) { item ->
-            NewsItemCard(
-                news = item,
-                onClick = { onNavigateToDetails(item.link) }
-            )
+        LazyColumn(
+            state = state,
+            modifier = modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 16.dp)
+        ) {
+            items(
+                items = news,
+                key = { it.link }
+            ) { item ->
+                NewsItemCard(
+                    news = item,
+                    onClick = { onNavigateToDetails(item.link) }
+                )
+            }
         }
     }
+
 }
 
 @Composable

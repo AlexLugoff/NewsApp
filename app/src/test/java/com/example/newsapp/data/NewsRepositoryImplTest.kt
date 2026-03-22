@@ -14,9 +14,6 @@ import com.example.newsapp.data.db.entities.NewsItemEntity
 import com.example.newsapp.data.db.entities.NewsSourceEntity
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.data.mappers.toEntityList
-import com.example.newsapp.data.models.NewsItemDto
-import com.example.newsapp.data.models.RssChannelDto
-import com.example.newsapp.data.models.RssFeedDto
 import com.example.newsapp.data.repository.NewsRepositoryImpl
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

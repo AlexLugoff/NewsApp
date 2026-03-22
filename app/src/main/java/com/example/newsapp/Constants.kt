@@ -1,8 +1,15 @@
 package com.example.newsapp
 
+import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.days
 
 const val BASE_URL = "https://lenta.ru"
+
+const val CONNECT_TIMEOUT = 30L
+const val READ_TIMEOUT = 30L
+const val WRITE_TIMEOUT = 30L
+
+val timeUnit = TimeUnit.SECONDS
 
 const val DATABASE_NAME = "app_news_database.db"
 

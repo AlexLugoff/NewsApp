@@ -1,10 +1,6 @@
 package com.example.newsapp
 
 import com.example.newsapp.data.mappers.toEntityList
-import com.example.newsapp.data.models.EnclosureDto
-import com.example.newsapp.data.models.NewsItemDto
-import com.example.newsapp.data.models.RssChannelDto
-import com.example.newsapp.data.models.RssFeedDto
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 
