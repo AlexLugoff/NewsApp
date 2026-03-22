@@ -10,15 +10,13 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class SourceSelectionViewModelTest : BaseUnitTest() {
 
     @MockK
@@ -28,68 +26,62 @@ class SourceSelectionViewModelTest : BaseUnitTest() {
     lateinit var toggleSourceUseCase: ToggleSourceUseCase
 
     private lateinit var viewModel: SourceSelectionViewModel
+    
+    private val sourcesFlow = MutableStateFlow<List<NewsSourceItem>>(emptyList())
 
     @Before
     override fun setup() {
         super.setup()
+        every { getNewsSourcesUseCase() } returns sourcesFlow
+        viewModel = SourceSelectionViewModel(getNewsSourcesUseCase, toggleSourceUseCase)
     }
 
     @Test
-    fun `sourcesState - initially emits empty list and then updates from use case`() = runTest {
-        // Given
+    fun `sourcesState - reflects data from use case flow`() = runTest {
         val mockSources = listOf(
             NewsSourceItem(1, "Habr", "link", true),
             NewsSourceItem(2, "Lenta", "link", false)
         )
-        // Имитируем поток данных из репозитория/базы
-        every { getNewsSourcesUseCase() } returns flowOf(mockSources)
 
-        // When
-        viewModel = SourceSelectionViewModel(getNewsSourcesUseCase, toggleSourceUseCase)
-
-        // Then
         viewModel.sourcesState.test {
-            // StateFlow всегда сначала отдает initialValue (в коде это emptyList())
+            // Начальное значение StateFlow
             assertEquals(emptyList<NewsSourceItem>(), awaitItem())
 
-            // Затем получаем данные из UseCase
+            // Эмулируем обновление данных в БД
+            sourcesFlow.value = mockSources
             assertEquals(mockSources, awaitItem())
         }
     }
 
     @Test
-    fun `toggleSource - when success - calls toggleSourceUseCase with inverted status`() = runTest {
+    fun `toggleSource - calls use case with inverted isEnabled value`() = runTest {
         // Given
-        every { getNewsSourcesUseCase() } returns flowOf(emptyList())
+        val source = NewsSourceItem(1, "Habr", "link", isEnabled = true)
         coEvery { toggleSourceUseCase(any(), any()) } returns Unit
-
-        viewModel = SourceSelectionViewModel(getNewsSourcesUseCase, toggleSourceUseCase)
-        val source = NewsSourceItem(10, "Test", "link", isEnabled = true)
 
         // When
         viewModel.toggleSource(source)
 
         // Then
-        // Проверяем, что в UseCase ушел id=10 и статус false (инверсия true)
-        coVerify { toggleSourceUseCase(10, false) }
+        coVerify { toggleSourceUseCase(1, false) }
     }
 
     @Test
-    fun `toggleSource - when failure - emits error message to errorEvent`() = runTest {
+    fun `toggleSource - when use case throws - emits error event`() = runTest {
         // Given
-        every { getNewsSourcesUseCase() } returns flowOf(emptyList())
-        val errorMessage = "Database Error"
-        coEvery { toggleSourceUseCase(any(), any()) } throws Exception(errorMessage)
-
-        viewModel = SourceSelectionViewModel(getNewsSourcesUseCase, toggleSourceUseCase)
-        val source = NewsSourceItem(1, "Test", "link", isEnabled = true)
+        val source = NewsSourceItem(1, "Habr", "link", isEnabled = true)
+        val exceptionMessage = "Test Error"
+        coEvery { toggleSourceUseCase(any(), any()) } throws Exception(exceptionMessage)
 
         // When & Then
         viewModel.errorEvent.test {
             viewModel.toggleSource(source)
-
-            val receivedError = awaitItem()
-            assertTrue(receivedError.contains(errorMessage))
+            
+            val error = awaitItem()
+            assertTrue(error is UiText.StringResource)
+            assertEquals(com.example.newsapp.R.string.error_source_parser, (error as UiText.StringResource).id)
+            // Проверяем, что сообщение об ошибке передано в аргументы UiText
+            assertEquals(exceptionMessage, error.args[0])
         }
     }
 }
