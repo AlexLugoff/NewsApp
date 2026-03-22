@@ -1,4 +1,4 @@
-package com.example.newsapp.presentation.source_selection
+package com.example.newsapp.presentation.source_selection.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -24,11 +24,15 @@ fun SourceItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onToggle() }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = 24.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = source.name, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = source.name,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
             Text(
                 text = source.url,
                 style = MaterialTheme.typography.bodySmall,
@@ -39,7 +43,7 @@ fun SourceItem(
         }
         Checkbox(
             checked = source.isEnabled,
-            onCheckedChange = { onToggle() }
+            onCheckedChange = null
         )
     }
 }

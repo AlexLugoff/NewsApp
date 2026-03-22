@@ -13,47 +13,81 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.newsapp.R
+import com.example.newsapp.domain.models.NewsSourceItem
+import com.example.newsapp.extensions.showLongToast
+import com.example.newsapp.presentation.source_selection.components.SourceItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SourceSelectionBottomSheet(
+fun SourceSelectionBottomSheetScreen(
     onDismiss: () -> Unit,
     viewModel: SourceSelectionViewModel = hiltViewModel()
 ) {
     val sources by viewModel.sourcesState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.errorEvent.collect { errorMessage ->
+            context.showLongToast(errorMessage.asString(context))
+        }
+    }
+
+    SourceSelectionContent(
+        sources = sources,
+        onDismiss = onDismiss,
+        onToggleSource = viewModel::toggleSource
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SourceSelectionContent(
+    sources: List<NewsSourceItem>,
+    onDismiss: () -> Unit,
+    onToggleSource: (NewsSourceItem) -> Unit
+) {
     val sheetState = rememberModalBottomSheetState()
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        dragHandle = { BottomSheetDefaults.DragHandle() }, // Тот самый "хвостик" сверху
+        dragHandle = { BottomSheetDefaults.DragHandle() },
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 32.dp)
+                .padding(bottom = 24.dp)
         ) {
             Text(
-                text = "Источники новостей",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(16.dp)
+                text = stringResource(R.string.news_sources_title),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
             )
 
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 400.dp)
+                    .heightIn(max = 450.dp)
             ) {
-                items(sources, key = { it.id }) { source ->
+                items(
+                    items = sources,
+                    key = { it.id }
+                ) { source ->
                     SourceItem(
                         source = source,
-                        onToggle = { viewModel.toggleSource(source) }
+                        onToggle = { onToggleSource(source) }
                     )
                 }
             }

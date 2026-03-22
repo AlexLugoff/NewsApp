@@ -1,4 +1,4 @@
-package com.example.newsapp.presentation.news
+package com.example.newsapp.presentation.news.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -39,8 +39,8 @@ fun NewsItemCard(
             AsyncImage(
                 model = news.imageUrl,
                 contentDescription = null,
-                placeholder = painterResource(R.drawable.placeholder_image_24),
-                error = painterResource(R.drawable.placeholder_image_24),
+                placeholder = painterResource(R.drawable.ic_placeholder),
+                error = painterResource(R.drawable.ic_placeholder),
                 modifier = Modifier
                     .size(100.dp)
                     .clip(RoundedCornerShape(8.dp)),
