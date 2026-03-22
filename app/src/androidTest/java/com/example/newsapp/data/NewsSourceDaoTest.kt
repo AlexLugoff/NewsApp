@@ -1,4 +1,4 @@
-package com.example.newsapp
+package com.example.newsapp.data
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test

@@ -28,6 +28,7 @@
     <string name="news_title">Новость</string>
     <string name="read_in_source">Читать в источнике</string>
     <string name="share">Поделиться</string>
+    <string name="back">Назад</string>
     <string name="failed_to_open_link">Не удалось открыть ссылку: %s</string>
 
 
