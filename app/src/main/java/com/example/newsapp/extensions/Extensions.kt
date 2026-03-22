@@ -54,13 +54,13 @@ var View.isAvailable: Boolean
     }
 
 fun String?.toSpannedHtml(): Spanned {
-    if (this == null) return Html.fromHtml("", Html.FROM_HTML_MODE_LEGACY)
+    val source = this.orEmpty()
 
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT)
+        Html.fromHtml(source, Html.FROM_HTML_MODE_COMPACT)
     } else {
         @Suppress("DEPRECATION")
-        Html.fromHtml(this)
+        Html.fromHtml(source)
     }
 }
 
@@ -100,16 +100,16 @@ fun DataError.toReadableText(): UiText {
     }
 }
 
-fun Spanned.toAnnotatedString(): AnnotatedString {
+fun String.toAnnotatedString(): AnnotatedString {
+    val spanned = this.toSpannedHtml()
     return buildAnnotatedString {
-        val rawString = this@toAnnotatedString.toString()
-        append(rawString)
+        append(spanned.toString())
 
-        val spans = getSpans(0, length, Any::class.java)
+        val spans = spanned.getSpans(0, spanned.length, Any::class.java)
 
         spans.forEach { span ->
-            val start = getSpanStart(span)
-            val end = getSpanEnd(span)
+            val start = spanned.getSpanStart(span)
+            val end = spanned.getSpanEnd(span)
 
             when (span) {
                 is StyleSpan -> {

@@ -33,7 +33,7 @@ fun AppNavigation() {
                 navArgument("url") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val url = backStackEntry.arguments?.getString("url") ?: ""
+            val url = backStackEntry.arguments?.getString("url").orEmpty()
             NewsDetailsScreen(
                 newsLink = url,
                 onBackClick = { navController.popBackStack() }

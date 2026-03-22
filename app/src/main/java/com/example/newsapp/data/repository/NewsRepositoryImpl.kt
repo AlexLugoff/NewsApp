@@ -96,7 +96,7 @@ class NewsRepositoryImpl @Inject constructor(
     override suspend fun getNewsDetails(newsLink: String): SealedResult<NewsItem?, DataError> =
         withContext(dispatchers.io) {
             val entity = newsLocalDataSource.getNewsByLink(newsLink)
-            SealedResult.Success(entity.toDomain())
+            SealedResult.Success(entity?.toDomain())
         }
 
     override fun getNewsSources(): Flow<List<NewsSourceItem>> =
