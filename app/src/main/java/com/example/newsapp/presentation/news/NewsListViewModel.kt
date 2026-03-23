@@ -1,6 +1,7 @@
 package com.example.newsapp.presentation.news
 
 import androidx.lifecycle.viewModelScope
+import com.example.newsapp.TIMEOUT_PAUSE
 import com.example.newsapp.domain.usecases.GetNewsFlowUseCase
 import com.example.newsapp.domain.usecases.RefreshNewsUseCase
 import com.example.newsapp.extensions.onFailure
@@ -25,7 +26,7 @@ class NewsListViewModel @Inject constructor(
     private val refreshNewsUseCase: RefreshNewsUseCase
 ) : BaseViewModel<NewsListViewState, NewsListEvent>() {
 
-    private val _isRefreshing = MutableStateFlow(false)
+    val _isRefreshing = MutableStateFlow(false)
     private val _errorState = MutableStateFlow<UiText?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -48,7 +49,7 @@ class NewsListViewModel @Inject constructor(
         }
     }.distinctUntilChanged().stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(TIMEOUT_PAUSE),
         initialValue = NewsListViewState.Loading
     )
 

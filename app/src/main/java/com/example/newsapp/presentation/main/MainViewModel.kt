@@ -1,19 +1,23 @@
 package com.example.newsapp.presentation.main
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newsapp.domain.usecases.ClearOldNewsUseCase
-import com.example.newsapp.presentation.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
-    private val clearOldNewsUseCase: ClearOldNewsUseCase
-) : BaseViewModel<MainViewState, MainEvent>() {
+class MainViewModel @Inject constructor() : ViewModel() {
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading = _isLoading.asStateFlow()
+
     init {
-        viewModelScope.launch(exceptionHandler) {
-            clearOldNewsUseCase.invoke()
+        viewModelScope.launch {
+            delay(1500)
+            _isLoading.value = false
         }
     }
 }

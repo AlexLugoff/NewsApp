@@ -1,9 +1,12 @@
 package com.example.newsapp.presentation.source_selection
 
 import androidx.lifecycle.viewModelScope
+import com.example.newsapp.R
+import com.example.newsapp.TIMEOUT_PAUSE
 import com.example.newsapp.domain.models.NewsSourceItem
 import com.example.newsapp.domain.usecases.GetNewsSourcesFlowUseCase
 import com.example.newsapp.domain.usecases.ToggleSourceUseCase
+import com.example.newsapp.presentation.UiText
 import com.example.newsapp.presentation.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,11 +26,11 @@ class SourceSelectionViewModel @Inject constructor(
     val sourcesState: StateFlow<List<NewsSourceItem>> = getNewsSourcesUseCase()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.WhileSubscribed(TIMEOUT_PAUSE),
             initialValue = emptyList()
         )
 
-    private val _errorEvent = MutableSharedFlow<String>()
+    private val _errorEvent = MutableSharedFlow<UiText>()
     val errorEvent = _errorEvent.asSharedFlow()
 
     fun toggleSource(source: NewsSourceItem) {
@@ -35,7 +38,12 @@ class SourceSelectionViewModel @Inject constructor(
             try {
                 toggleSourceUseCase(source.id, !source.isEnabled)
             } catch (e: Exception) {
-                _errorEvent.emit("Ошибка при обновлении источника: ${e.localizedMessage}")
+                _errorEvent.emit(
+                    UiText.StringResource(
+                        R.string.error_source_parser,
+                        e.localizedMessage
+                    )
+                )
             }
         }
     }

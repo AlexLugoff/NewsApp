@@ -1,24 +1,22 @@
 package com.example.newsapp.presentation
 
-import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.example.newsapp.BaseUnitTest
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.usecases.GetNewsDetailsUseCase
 import com.example.newsapp.extensions.SealedResult
-import com.example.newsapp.extensions.toSpannedHtml
+import com.example.newsapp.presentation.news_details.NewsDetailsEvent
 import com.example.newsapp.presentation.news_details.NewsDetailsViewModel
 import com.example.newsapp.presentation.news_details.NewsDetailsViewState
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class NewsDetailsViewModelTest : BaseUnitTest() {
 
     @MockK
@@ -27,50 +25,49 @@ class NewsDetailsViewModelTest : BaseUnitTest() {
     private lateinit var viewModel: NewsDetailsViewModel
     private val testLink = "https://example.com/news/123"
 
+    @Before
+    override fun setup() {
+        super.setup()
+        viewModel = NewsDetailsViewModel(getNewsDetailsUseCase)
+    }
+
     @Test
-    fun `init - when data exists - emits Success state`() = runTest {
-        // Given: Мокаем успешный возврат данных
+    fun `loadNewsDetails - when data exists - emits Success state`() = runTest {
+        // Given
         val mockNews = NewsItem(
             id = "1",
             link = testLink,
             title = "Test Title",
-            description = "Test Description".toSpannedHtml(),
+            description = "Test Description",
             imageUrl = null,
-            formattedDate = "10:00",
-            category = "Категория"
+            formattedDate = "10:00"
         )
         coEvery { getNewsDetailsUseCase(testLink) } returns SealedResult.Success(mockNews)
 
-        // Подготавливаем SavedStateHandle с нужным аргументом
-        val savedStateHandle = SavedStateHandle(mapOf("newsLink" to testLink))
+        // When
+        viewModel.loadNewsDetails(testLink)
 
-        // When: Создаем ViewModel (триггерит init)
-        viewModel = NewsDetailsViewModel(getNewsDetailsUseCase)
-
-        // Then: Проверяем поток состояний
+        // Then
         viewModel.uiStateFlow.test {
-            // 1. Сначала всегда идет Loading (initialValue)
+            // Начальное состояние Loading
             assertEquals(NewsDetailsViewState.Loading, awaitItem())
-
-            // 2. Затем Success с нашими данными
+            
             val state = awaitItem()
             assertTrue(state is NewsDetailsViewState.Success)
             assertEquals(mockNews, (state as NewsDetailsViewState.Success).newsItem)
-
+            
             cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
-    fun `init - when use case fails - emits Error state`() = runTest {
-        // Given: Имитируем ошибку
+    fun `loadNewsDetails - when use case fails - emits Error state`() = runTest {
+        // Given
         val domainError = DataError.Local.NotFound()
         coEvery { getNewsDetailsUseCase(testLink) } returns SealedResult.Failure(domainError)
 
-        val savedStateHandle = SavedStateHandle(mapOf("newsLink" to testLink))
-
         // When
-        viewModel = NewsDetailsViewModel(getNewsDetailsUseCase)
+        viewModel.loadNewsDetails(testLink)
 
         // Then
         viewModel.uiStateFlow.test {
@@ -78,17 +75,29 @@ class NewsDetailsViewModelTest : BaseUnitTest() {
 
             val state = awaitItem()
             assertTrue(state is NewsDetailsViewState.Error)
-            // Здесь можно дополнительно проверить текст ошибки, если маппинг важен
             cancelAndIgnoreRemainingEvents()
         }
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `init - when newsLink is missing - throws exception`() = runTest {
-        // Given: Пустой SavedStateHandle (без ключа "newsLink")
-        val savedStateHandle = SavedStateHandle()
+    @Test
+    fun `goToBrowser - sends GoToBrowser event`() = runTest {
+        viewModel.eventFlow.test {
+            viewModel.goToBrowser(testLink)
+            
+            val event = awaitItem()
+            assertTrue(event is NewsDetailsEvent.GoToBrowser)
+            assertEquals(testLink, (event as NewsDetailsEvent.GoToBrowser).url)
+        }
+    }
 
-        // When: Это должно вызвать checkNotNull и выбросить исключение
-        viewModel = NewsDetailsViewModel(getNewsDetailsUseCase)
+    @Test
+    fun `shareNews - sends ShareNews event`() = runTest {
+        viewModel.eventFlow.test {
+            viewModel.shareNews(testLink)
+            
+            val event = awaitItem()
+            assertTrue(event is NewsDetailsEvent.ShareNews)
+            assertEquals(testLink, (event as NewsDetailsEvent.ShareNews).url)
+        }
     }
 }

@@ -1,10 +1,18 @@
 package com.example.newsapp.di.module
 
 import android.content.Context
-import coil.ImageLoader
-import coil.disk.DiskCache
-import coil.memory.MemoryCache
+import coil3.ImageLoader
+import coil3.disk.DiskCache
+import coil3.memory.MemoryCache
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.request.crossfade
+import coil3.util.DebugLogger
+import coil3.util.Logger
 import com.example.newsapp.AppDispatchers
+import com.example.newsapp.BuildConfig
+import com.example.newsapp.COIL_DISK_CACHE_DIRECTORY_NAME
+import com.example.newsapp.COIL_DISK_CACHE_SIZE_PERCENT
+import com.example.newsapp.COIL_MEMORY_CACHE_SIZE_PERCENT
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,6 +20,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
+import okio.Path.Companion.toOkioPath
 import javax.inject.Singleton
 
 @Module
@@ -20,36 +29,38 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAppDispatchers(): AppDispatchers {
-        return AppDispatchers(
-            main = Dispatchers.Main,
-            default = Dispatchers.Default,
-            io = Dispatchers.IO,
-            unconfined = Dispatchers.Unconfined
-        )
-    }
+    fun provideAppDispatchers(): AppDispatchers = AppDispatchers(
+        main = Dispatchers.Main,
+        default = Dispatchers.Default,
+        io = Dispatchers.IO,
+        unconfined = Dispatchers.Unconfined
+    )
 
     @Provides
     @Singleton
     fun provideImageLoader(
         @ApplicationContext context: Context,
         okHttpClient: OkHttpClient
-    ): ImageLoader {
-        return ImageLoader.Builder(context)
-            .okHttpClient(okHttpClient)
-            .crossfade(true)
-            .respectCacheHeaders(false) // Позволяет Coil кешировать картинки, даже если сервер не прислал заголовки
-            .memoryCache {
-                MemoryCache.Builder(context)
-                    .maxSizePercent(0.20) // Резервируем 20% оперативной памяти под картинки
-                    .build()
+    ): ImageLoader = ImageLoader.Builder(context)
+        .memoryCache {
+            MemoryCache.Builder()
+                .maxSizePercent(context, COIL_MEMORY_CACHE_SIZE_PERCENT)
+                .build()
+        }
+        .diskCache {
+            DiskCache.Builder()
+                .directory(context.cacheDir.resolve(COIL_DISK_CACHE_DIRECTORY_NAME).toOkioPath())
+                .maxSizePercent(COIL_DISK_CACHE_SIZE_PERCENT)
+                .build()
+        }
+        .components {
+            add(OkHttpNetworkFetcherFactory(callFactory = { okHttpClient }))
+        }
+        .crossfade(true)
+        .apply {
+            if (BuildConfig.DEBUG) {
+                logger(DebugLogger(Logger.Level.Verbose))
             }
-            .diskCache {
-                DiskCache.Builder()
-                    .directory(context.cacheDir.resolve("image_cache"))
-                    .maxSizePercent(0.02) // Резервируем место на диске
-                    .build()
-            }
-            .build()
-    }
+        }
+        .build()
 }

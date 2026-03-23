@@ -49,4 +49,8 @@ class NewsDetailsViewModel @Inject constructor(
     fun goToBrowser(url: String) {
         NewsDetailsEvent.GoToBrowser(url = url).send()
     }
+
+    fun shareNews(url: String) {
+        NewsDetailsEvent.ShareNews(url).send()
+    }
 }

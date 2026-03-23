@@ -7,5 +7,5 @@ interface NewsLocalDataSource {
     fun getAllNewsFlow(): Flow<List<NewsItemEntity>>
     suspend fun clearOldNews(timestamp: Long)
     suspend fun updateCache(news: List<NewsItemEntity>)
-    suspend fun getNewsByLink(link: String): NewsItemEntity
+    suspend fun getNewsByLink(link: String): NewsItemEntity?
 }

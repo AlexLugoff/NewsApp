@@ -1,11 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-    kotlin("kapt")
-    alias(libs.plugins.safeargs.kotlin)
 }
 
 android {
@@ -19,13 +18,12 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunner = "com.example.app.HiltTestRunner"
+        testInstrumentationRunner = "com.example.newsapp.HiltTestRunner"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -42,94 +40,81 @@ android {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
+    ksp {
+        arg("dagger.fastInit", "enabled")
+        arg("dagger.hilt.disableModulesHaveInstallInCheck", "false")
     }
     buildFeatures {
-        viewBinding = true
         compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
-
+    // Core & Lifecycle
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.legacy.support.v4)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.fragment.ktx)
-    implementation(libs.androidx.material3)
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.espresso.contrib)
+    implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.recyclerview)
-    kapt(libs.hilt.compiler)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.core.splashscreen)
 
-    implementation(libs.picasso)
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
-    // Test
-    androidTestImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.mockk)
+    // Compose
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.compose.scrollbar)
 
-    androidTestImplementation(libs.turbine)
-    testImplementation(libs.turbine)
-    testImplementation(libs.kotlinx.datetime)
+    // Coil (Image Loading)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
-    // Mocking for Instrumented Tests
-    androidTestImplementation(libs.mockk.android)
-    testImplementation(libs.androidx.room.compiler.processing.testing)
-    testImplementation(libs.junit)
-
-    // Fragment/Activity Test Utilities
-    androidTestImplementation(libs.androidx.fragment.testing)
-    androidTestImplementation(libs.core.ktx)
-
-    androidTestImplementation(libs.androidx.navigation.testing)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation (libs.androidx.espresso.intents)
-    androidTestImplementation(libs.runner)
-    androidTestImplementation(libs.androidx.rules)
-
-    // TikXml
-    implementation(libs.tikxml.annotation)
-    implementation(libs.tikxml.core)
-    implementation(libs.tikxml.retrofit.converter)
-    kapt(libs.tikxml.processor)
-
-    // Hilt Testing
-    androidTestImplementation(libs.dagger.hilt.android.testing)
-
-    // LiveData Testing
-    androidTestImplementation(libs.androidx.core.testing)
-
-    // OkHttp
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
-
-    // Coil
-    implementation(libs.coil)
-
-    // Retrofit
+    // Network & Data
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-
-    // Room
-    implementation(libs.room.runtime)
-    ksp(libs.room.compiler)
-    implementation(libs.room.ktx)
-    implementation(libs.androidx.room.paging)
-
-    //Navigation
-    implementation(libs.navigation.fragment)
-    implementation(libs.navigation.ui)
-
-
-    //Jsoup
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+    implementation(libs.rssparser)
     implementation(libs.jsoup)
 
-    // Timber
+    // Room (Database)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+    implementation(libs.androidx.room.paging)
+
+    // Utils
     implementation(libs.timber)
+    implementation(libs.kotlinx.datetime)
+
+    // Unit Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
+
+    // Instrumented Testing
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.navigation.testing)
+    androidTestImplementation(libs.dagger.hilt.android.testing)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.turbine)
+    androidTestImplementation(libs.mockk.android)
+    
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

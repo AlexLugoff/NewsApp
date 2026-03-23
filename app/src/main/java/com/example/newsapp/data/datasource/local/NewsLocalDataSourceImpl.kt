@@ -17,7 +17,7 @@ class NewsLocalDataSourceImpl @Inject constructor(
         newsDao.updateCache(news)
     }
 
-    override suspend fun getNewsByLink(link: String): NewsItemEntity {
+    override suspend fun getNewsByLink(link: String): NewsItemEntity? {
         return newsDao.getNewsByLink(link)
     }
 }
