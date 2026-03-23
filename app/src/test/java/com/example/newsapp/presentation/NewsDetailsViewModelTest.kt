@@ -6,7 +6,6 @@ import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.usecases.GetNewsDetailsUseCase
 import com.example.newsapp.extensions.SealedResult
-import com.example.newsapp.extensions.toSpannedHtml
 import com.example.newsapp.presentation.news_details.NewsDetailsEvent
 import com.example.newsapp.presentation.news_details.NewsDetailsViewModel
 import com.example.newsapp.presentation.news_details.NewsDetailsViewState
@@ -39,7 +38,7 @@ class NewsDetailsViewModelTest : BaseUnitTest() {
             id = "1",
             link = testLink,
             title = "Test Title",
-            description = "Test Description".toSpannedHtml(),
+            description = "Test Description",
             imageUrl = null,
             formattedDate = "10:00"
         )

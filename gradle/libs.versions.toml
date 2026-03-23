@@ -1,13 +1,11 @@
 [versions]
 agp = "8.13.0"
-coil-version = "2.7.0"
 coilCompose = "3.4.0"
 coreSplashscreen = "1.2.0"
-coreTesting = "2.2.0"
-fragmentTesting = "1.6.2"
 hiltNavigationCompose = "1.3.0"
 kotlin = "2.2.20"
 coreKtx = "1.17.0"
+appcompat = "1.7.1"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espresso-version = "3.7.0"
@@ -19,8 +17,6 @@ composeBom = "2024.09.00"
 ksp-version = "2.2.20-2.0.4"
 hilt-version = "2.57.2"
 rssparser = "6.1.4"
-rules = "1.5.0"
-runnerVersion = "1.5.2"
 saveargs-version = "2.7.5"
 loggingInterceptor = "5.2.1"
 mockk = "1.14.7"
@@ -29,16 +25,9 @@ retrofit_version = "3.0.0"
 room_version = "2.8.3"
 jsoup_version = "1.21.2"
 navigation_version = "2.9.5"
-legacySupportV4 = "1.0.0"
 lifecycleViewmodelKtx = "2.9.4"
-fragmentKtx = "1.8.9"
-picasso_version = "2.71828"
-material3 = "1.4.0"
 timber = "5.0.1"
-roomCompilerProcessingTesting = "2.8.4"
-espressoContrib = "3.7.0"
 material = "1.13.0"
-recyclerview = "1.4.0"
 turbine = "1.2.1"
 navigationCompose = "2.9.7"
 lifecycleViewmodelCompose = "2.10.0"
@@ -47,20 +36,15 @@ compose-scrollbar = "2.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
-androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
-androidx-espresso-intents = { module = "androidx.test.espresso:espresso-intents", version.ref = "espresso-version" }
-androidx-fragment-testing = { module = "androidx.fragment:fragment-testing", version.ref = "fragmentTesting" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navigation_version" }
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "room_version" }
-androidx-rules = { module = "androidx.test:rules", version.ref = "rules" }
-coil = { module = "io.coil-kt:coil", version.ref = "coil-version" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 rssparser = { module = "com.prof18.rssparser:rssparser", version.ref = "rssparser" }
-core-ktx = { module = "androidx.test:core-ktx", version.ref = "rules" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-version" }
@@ -86,23 +70,13 @@ mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp_version" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit_version" }
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit_version" }
-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation_version" }
-navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation_version" }
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup_version" }
-androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
-androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room_version" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room_version" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room_version" }
-picasso = { group = "com.squareup.picasso", name = "picasso", version.ref = "picasso_version" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
-runner = { module = "androidx.test:runner", version.ref = "runnerVersion" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
-androidx-room-compiler-processing-testing = { group = "androidx.room", name = "room-compiler-processing-testing", version.ref = "roomCompilerProcessingTesting" }
-androidx-espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "espressoContrib" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
@@ -117,4 +91,3 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-version" }
 safeargs-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "saveargs-version" }
-

@@ -44,7 +44,7 @@ class NewsDaoTest : BaseDaoTest() {
         )
 
         // When
-        dao.insertNews(listOf(newsOld, newsNew))
+        dao.upsertNews(listOf(newsOld, newsNew))
 
         // Then: Проверяем, что Flow выдает список, где свежая новость (5000L) первая
         dao.getAllNewsFlow().test {
@@ -60,7 +60,7 @@ class NewsDaoTest : BaseDaoTest() {
     fun updateCache_clearsOldAndInsertsNew() = runTest {
         // Given: В базе уже есть старые данные
         val oldNews = NewsItemEntity("old_link", "Old", "D", null, 1000L)
-        dao.insertNews(listOf(oldNews))
+        dao.upsertNews(listOf(oldNews))
 
         // When: Вызываем транзакцию обновления кэша с новыми данными
         val newNews = listOf(
@@ -85,7 +85,7 @@ class NewsDaoTest : BaseDaoTest() {
             NewsItemEntity("border", "T", "D", null, 1999L),   // Должна удалиться
             NewsItemEntity("fresh", "T", "D", null, 2500L)     // Должна остаться
         )
-        dao.insertNews(newsList)
+        dao.upsertNews(newsList)
 
         // When
         dao.clearOldNews(threshold)
@@ -101,13 +101,13 @@ class NewsDaoTest : BaseDaoTest() {
         // Given
         val link = "https://target-link.com"
         val news = NewsItemEntity(link, "Target Title", "D", null, 12345L)
-        dao.insertNews(listOf(news, NewsItemEntity("other", "T", "D", null, 0L)))
+        dao.upsertNews(listOf(news, NewsItemEntity("other", "T", "D", null, 0L)))
 
         // When
         val result = dao.getNewsByLink(link)
 
         // Then
         assertNotNull(result)
-        assertEquals("Target Title", result.title)
+        assertEquals("Target Title", result?.title)
     }
 }

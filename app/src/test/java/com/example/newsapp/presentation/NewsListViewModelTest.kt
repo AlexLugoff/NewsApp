@@ -8,7 +8,6 @@ import com.example.newsapp.domain.usecases.GetNewsFlowUseCase
 import com.example.newsapp.domain.usecases.RefreshNewsUseCase
 import com.example.newsapp.extensions.SealedResult
 import com.example.newsapp.extensions.toReadableText
-import com.example.newsapp.extensions.toSpannedHtml
 import com.example.newsapp.presentation.news.NewsListViewModel
 import com.example.newsapp.presentation.news.NewsListViewState
 import io.mockk.coEvery
@@ -49,8 +48,6 @@ class NewsListViewModelTest : BaseUnitTest() {
 
     @Test
     fun `uiStateFlow - initial state is Loading`() = runTest {
-        // Мы не можем легко эмулировать SealedResult.Loading если его нет в проекте,
-        // поэтому просто проверяем начальное состояние при задержке ответа
         coEvery { refreshNewsUseCase() } coAnswers {
             kotlinx.coroutines.delay(100)
             SealedResult.Success(Unit)
@@ -67,7 +64,7 @@ class NewsListViewModelTest : BaseUnitTest() {
     @Test
     fun `uiStateFlow - success loading news from DB`() = runTest {
         val mockNews = listOf(
-            NewsItem("1", "Title", "".toSpannedHtml(), null, "link", "date")
+            NewsItem("1", "Title", "Description", null, "link", "date")
         )
         coEvery { refreshNewsUseCase() } returns SealedResult.Success(Unit)
         dbFlow.value = mockNews
@@ -83,7 +80,6 @@ class NewsListViewModelTest : BaseUnitTest() {
 
     @Test
     fun `uiStateFlow - error when DB empty and refresh fails`() = runTest {
-        // Используем базовый класс ошибки или доступный наследник
         val networkError = DataError.Network.Unknown() 
         coEvery { refreshNewsUseCase() } returns SealedResult.Failure(networkError)
         dbFlow.value = emptyList()
