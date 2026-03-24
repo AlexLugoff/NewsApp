@@ -32,7 +32,7 @@
 
 ## 📸 Скриншоты
 <p align="left">
-  <img src="screenshots/Screenshot_20260317_201331.png" width="250" />
-  <img src="screenshots/Screenshot_20260317_201355.png" width="250" />
-  <img src="screenshots/Screenshot_20260317_201411.png" width="250" />
+  <img src="screenshots/Screenshot_New_App_1.png" width="250" />
+  <img src="screenshots/Screenshot_New_App_2.png" width="250" />
+  <img src="screenshots/Screenshot_New_App_3.png" width="250" />
 </p>
