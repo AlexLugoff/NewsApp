@@ -1,32 +1,36 @@
-# NewsApp — Агрегатор новостей с поддержкой RSS и Room
+# NewsApp — Агрегатор новостей (RSS + Clean Architecture)
 
-Приложение для чтения новостей из различных источников. Реализовано с акцентом на чистую архитектуру и оффлайн-режим.
+Современное Android-приложение для чтения новостей из различных RSS-источников. Проект построен на стеке Jetpack Compose с соблюдением принципов чистой архитектуры и оффлайн-режима.
 
 ## 🚀 Основные возможности
-* **RSS Parsing:** Загрузка и обработка новостей из кастомных RSS-лент.
-* **Source Management:** Система выбора источников новостей через BottomSheet.
-* **Offline Mode:** Кеширование статей в локальную базу данных для чтения без интернета.
+* **RSS Parsing:** Загрузка и автоматическая обработка новостей из гибко настраиваемых RSS-лент (используется `prof18:rss-parser`).
+* **Source Management:** Управление источниками новостей через удобный интерфейс (включение/выключение конкретных лент).
+* **Offline First:** Кеширование всех статей в локальную базу данных Room. Новости доступны для чтения даже без подключения к интернету.
+* **Smart Cache:** Автоматическая очистка старых новостей по истечении заданного порога времени.
 
-## 🛠 Стек технологий и библиотеки
-* **Language:** Kotlin (Coroutines + Flow)
-* **UI:** XML + ViewBinding
-* **Architecture:** MVVM + MVI + Clean Architecture (Data, Domain, Presentation)
-* **DI:** Hilt (Dagger-Hilt) для внедрения зависимостей
-* **Database:** Room (хранение выбранных источников и статей)
-* **Network:** Retrofit 2 + OkHttp + XML Parsing
-* **Jetpack:** ViewModel, Navigation Component, ViewBinding
+## 🛠 Стек технологий
+* **UI:** Jetpack Compose (Material 3)
+* **Navigation:** Compose Navigation
+* **Image Loading:** Coil 3 (с поддержкой сетевых запросов через OkHttp)
+* **Architecture:** Clean Architecture + MVVM + MVI (State management через StateFlow)
+* **DI:** Hilt (Dagger-Hilt)
+* **Database:** Room (DAO, Entities, Flow integration)
+* **Network:** OkHttp + RSS Parser
+* **Logging:** Timber
+* **Async:** Kotlin Coroutines + Flow (включая `collectAsStateWithLifecycle`)
 
 ## 🏗 Архитектура
-Проект построен по принципам **SOLID** и **Clean Architecture**:
-1. **Data layer:** Репозитории, Room DAO и сетевые сервисы.
-2. **Domain layer:** Use Cases для бизнес-логики (получение списка новостей, фильтрация).
-3. **Presentation layer:** ViewModels с использованием StateFlow для обновления UI.
+Проект строго разделен на слои согласно принципам **SOLID** и **Clean Architecture**:
+1. **Data layer:** Реализация репозиториев, работа с сетевыми источниками и Room. Маппинг сущностей БД в доменные модели.
+2. **Domain layer:** Чистая бизнес-логика. Содержит Use Cases (интеракторы) и интерфейсы репозиториев.
+3. **Presentation layer:** UI на Jetpack Compose. ViewModel используют Use Cases и управляют состоянием экрана (ViewState).
 
 ## 🚀 Особенности реализации
-* Обработка ошибок сети через кастомный Result.
-* Unit-тесты для UseCases и ViewModel.
+* **Generic Result:** Обработка ошибок через кастомный `SealedResult`.
+* **Resource Provider:** Динамическая подгрузка строковых ресурсов в ViewModel через обертку `UiText`.
+* **Testing:** Покрыто Unit-тестами (UseCases, ViewModels) с использованием `MockK` и `Turbine`.
 
-## 📸 Как это выглядит
+## 📸 Скриншоты
 <p align="left">
   <img src="screenshots/Screenshot_20260317_201331.png" width="250" />
   <img src="screenshots/Screenshot_20260317_201355.png" width="250" />

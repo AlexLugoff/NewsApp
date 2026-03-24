@@ -3,8 +3,8 @@ package com.example.newsapp.data.datasource.remote
 import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.extensions.SealedResult
 import com.prof18.rssparser.RssParser
+import com.prof18.rssparser.exception.HttpException
 import com.prof18.rssparser.model.RssChannel
-import retrofit2.HttpException
 import java.io.IOException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -23,7 +23,7 @@ class NewsRemoteDataSourceImpl @Inject constructor(
         } catch (e: HttpException) {
             SealedResult.Failure(
                 DataError.Network.HttpError(
-                    e.code(),
+                    e.code,
                     e.localizedMessage ?: "Http Error"
                 )
             )
