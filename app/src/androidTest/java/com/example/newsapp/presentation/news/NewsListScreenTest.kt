@@ -11,7 +11,6 @@ import com.example.newsapp.R
 import com.example.newsapp.di.module.RepositoryModule
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.repository.NewsRepository
-import com.example.newsapp.extensions.toSpannedHtml
 import com.example.newsapp.presentation.main.MainActivity
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -54,7 +53,7 @@ class NewsListScreenTest {
                 id = "1",
                 link = "https://test.com/1",
                 title = "Первая важная новость",
-                description = "Описание первой новости".toSpannedHtml(),
+                description = "Описание первой новости",
                 imageUrl = null,
                 formattedDate = "10:00"
             )
@@ -80,7 +79,7 @@ class NewsListScreenTest {
                 id = "1",
                 link = "https://test.com/1",
                 title = "Кликабельная новость",
-                description = "Описание".toSpannedHtml(),
+                description = "Описание",
                 imageUrl = null,
                 formattedDate = "10:00"
             )

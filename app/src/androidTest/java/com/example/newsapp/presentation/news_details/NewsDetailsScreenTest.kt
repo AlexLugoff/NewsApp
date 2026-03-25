@@ -16,7 +16,6 @@ import com.example.newsapp.di.module.RepositoryModule
 import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.repository.NewsRepository
 import com.example.newsapp.extensions.SealedResult
-import com.example.newsapp.extensions.toSpannedHtml
 import com.example.newsapp.presentation.main.MainActivity
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -58,7 +57,7 @@ class NewsDetailsScreenTest {
             id = "1",
             link = testLink,
             title = "Заголовок новости",
-            description = "Подробное описание новости".toSpannedHtml(),
+            description = "Подробное описание новости",
             imageUrl = null,
             formattedDate = "16 марта, 12:00"
         )
@@ -84,7 +83,7 @@ class NewsDetailsScreenTest {
     fun backClick_triggersOnBack() {
         // Given
         val testLink = "https://test.com/news1"
-        val mockNews = NewsItem("1", "Title", "Desc".toSpannedHtml(), null, testLink, "date")
+        val mockNews = NewsItem("1", "Title", "Desc", null, testLink, "date")
         coEvery { repository.getNewsDetails(testLink) } returns SealedResult.Success(mockNews)
         val onBackMock = mockk<() -> Unit>(relaxed = true)
 
@@ -110,7 +109,7 @@ class NewsDetailsScreenTest {
     fun shareClick_triggersShareIntent() {
         // Given
         val testLink = "https://test.com/share"
-        val mockNews = NewsItem("1", "Title", "Desc".toSpannedHtml(), null, testLink, "date")
+        val mockNews = NewsItem("1", "Title", "Desc", null, testLink, "date")
         coEvery { repository.getNewsDetails(testLink) } returns SealedResult.Success(mockNews)
 
         Intents.init()
