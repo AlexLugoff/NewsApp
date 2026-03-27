@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.newsapp.R
-import com.example.newsapp.domain.models.NewsItem
+import com.example.newsapp.core.model.NewsItem
 import com.example.newsapp.extensions.toAnnotatedString
 import com.example.newsapp.presentation.common.ErrorMessage
 import com.example.newsapp.presentation.common.LoadingIndicator

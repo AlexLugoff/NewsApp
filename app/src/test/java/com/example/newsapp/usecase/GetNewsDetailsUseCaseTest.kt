@@ -1,7 +1,7 @@
 package com.example.newsapp.usecase
 
 import com.example.newsapp.BaseUnitTest
-import com.example.newsapp.domain.models.NewsItem
+import com.example.newsapp.core.model.NewsItem
 import com.example.newsapp.domain.repository.NewsRepository
 import com.example.newsapp.domain.usecases.GetNewsDetailsUseCase
 import com.example.newsapp.extensions.SealedResult

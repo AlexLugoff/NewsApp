@@ -21,9 +21,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import com.example.newsapp.R
+import com.example.newsapp.core.common.UiText
 import com.example.newsapp.data.exception.DataError
-import com.example.newsapp.presentation.SafeOnClickListener
-import com.example.newsapp.presentation.UiText
 
 fun Context.showShortToast(text: String): Toast {
     return Toast.makeText(this, text, Toast.LENGTH_SHORT).also { it.show() }
@@ -39,10 +38,6 @@ fun Context.showLongToast(text: String): Toast {
 
 fun Context.showLongToast(@StringRes resId: Int, vararg args: Any): Toast {
     return showLongToast(getString(resId, *args))
-}
-
-fun View.setSafeOnClickListener(onClick: (View) -> Unit) {
-    setOnClickListener(SafeOnClickListener { onClick(it) })
 }
 
 var View.isAvailable: Boolean

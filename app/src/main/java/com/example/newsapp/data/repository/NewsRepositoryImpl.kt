@@ -2,6 +2,10 @@ package com.example.newsapp.data.repository
 
 import com.example.newsapp.AppDispatchers
 import com.example.newsapp.NEWS_EXPIRATION_THRESHOLD
+import com.example.newsapp.core.common.SealedResult
+import com.example.newsapp.core.common.fold
+import com.example.newsapp.core.model.NewsItem
+import com.example.newsapp.core.model.NewsSourceItem
 import com.example.newsapp.data.datasource.local.NewsLocalDataSource
 import com.example.newsapp.data.datasource.local.NewsSourceLocalDataSource
 import com.example.newsapp.data.datasource.remote.NewsRemoteDataSource
@@ -11,11 +15,7 @@ import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.data.mappers.toDomain
 import com.example.newsapp.data.mappers.toDomainList
 import com.example.newsapp.data.mappers.toEntityList
-import com.example.newsapp.domain.models.NewsItem
-import com.example.newsapp.domain.models.NewsSourceItem
 import com.example.newsapp.domain.repository.NewsRepository
-import com.example.newsapp.extensions.SealedResult
-import com.example.newsapp.extensions.fold
 import com.prof18.rssparser.model.RssChannel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

@@ -1,7 +1,7 @@
 package com.example.newsapp.presentation.news_details
 
-import com.example.newsapp.domain.models.NewsItem
-import com.example.newsapp.presentation.UiText
+import com.example.newsapp.core.common.UiText
+import com.example.newsapp.core.model.NewsItem
 
 sealed class NewsDetailsViewState {
     object Loading : NewsDetailsViewState()

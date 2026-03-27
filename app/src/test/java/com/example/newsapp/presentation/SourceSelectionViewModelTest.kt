@@ -2,7 +2,7 @@ package com.example.newsapp.presentation
 
 import app.cash.turbine.test
 import com.example.newsapp.BaseUnitTest
-import com.example.newsapp.domain.models.NewsSourceItem
+import com.example.newsapp.core.model.NewsSourceItem
 import com.example.newsapp.domain.usecases.GetNewsSourcesFlowUseCase
 import com.example.newsapp.domain.usecases.ToggleSourceUseCase
 import com.example.newsapp.presentation.source_selection.SourceSelectionViewModel

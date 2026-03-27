@@ -1,7 +1,7 @@
 package com.example.newsapp.data.mappers
 
+import com.example.newsapp.core.model.NewsSourceItem
 import com.example.newsapp.data.db.entities.NewsSourceEntity
-import com.example.newsapp.domain.models.NewsSourceItem
 
 fun NewsSourceEntity.toDomain(): NewsSourceItem {
     return NewsSourceItem(

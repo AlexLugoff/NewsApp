@@ -29,6 +29,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:model"))
+    implementation(project(":core:common"))
+
     // Core & Lifecycle
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -58,6 +61,7 @@ dependencies {
     // Utils
     implementation(libs.timber)
     implementation(libs.kotlinx.datetime)
+    implementation(libs.androidx.compose.foundation)
 
     // Testing
     testImplementation(libs.bundles.unitTests)

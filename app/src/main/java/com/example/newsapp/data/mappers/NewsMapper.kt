@@ -1,9 +1,9 @@
 package com.example.newsapp.data.mappers
 
+import com.example.newsapp.core.common.asDateTimeString
+import com.example.newsapp.core.model.NewsItem
 import com.example.newsapp.data.DateParser
 import com.example.newsapp.data.db.entities.NewsItemEntity
-import com.example.newsapp.domain.models.NewsItem
-import com.example.newsapp.extensions.asDateTimeString
 import com.prof18.rssparser.model.RssChannel
 import timber.log.Timber
 

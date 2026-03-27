@@ -1,6 +1,5 @@
 package com.example.newsapp.presentation.news.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +20,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.newsapp.R
-import com.example.newsapp.domain.models.NewsItem
+import com.example.newsapp.core.model.NewsItem
+import com.example.newsapp.presentation.common.clickableSingle
 
 @Composable
 fun NewsItemCard(
@@ -32,7 +32,7 @@ fun NewsItemCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable(onClick = onClick),
+            .clickableSingle(onClick = onClick),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(modifier = Modifier.padding(12.dp)) {

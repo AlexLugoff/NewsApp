@@ -1,8 +1,5 @@
-package com.example.newsapp.domain.models
+package com.example.newsapp.core.model
 
-import androidx.compose.runtime.Immutable
-
-@Immutable
 data class NewsItem(
     val id: String,
     val title: String,

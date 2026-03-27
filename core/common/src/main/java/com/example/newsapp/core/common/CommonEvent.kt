@@ -1,7 +1,6 @@
-package com.example.newsapp.presentation.common
+package com.example.newsapp.core.common
 
 import androidx.annotation.StringRes
-import com.example.newsapp.presentation.UiText
 
 sealed class CommonEvent {
 

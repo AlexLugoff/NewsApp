@@ -31,6 +31,7 @@ turbine = "1.2.1"
 navigationCompose = "2.9.7"
 materialIconsExtended = "1.7.1"
 compose-scrollbar = "2.2.0"
+foundation = "1.10.6"
 
 [libraries]
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -88,6 +89,7 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room_ve
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 [bundles]
 compose = [
@@ -136,3 +138,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-version" }
 safeargs-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "saveargs-version" }
 room = { id = "androidx.room", version.ref = "room_version" }
+android-library = { id = "com.android.library", version.ref = "agp" }

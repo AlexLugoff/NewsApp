@@ -1,4 +1,4 @@
-package com.example.newsapp.presentation.common
+package com.example.newsapp.core.common
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -41,10 +41,10 @@ abstract class BaseViewModel<ViewState, Event> : ViewModel() {
     }
 
     protected fun logError(t: Throwable) {
-        Timber.tag(this::class.java.simpleName).e(t.stackTraceToString())
+        Timber.Forest.tag(this::class.java.simpleName).e(t.stackTraceToString())
     }
 
     private fun handleError(error: Throwable) {
-        Timber.e("Произошла ошибка в корутине :${error.stackTraceToString()}")
+        Timber.Forest.e("Произошла ошибка в корутине :${error.stackTraceToString()}")
     }
 }

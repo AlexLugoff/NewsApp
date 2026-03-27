@@ -12,8 +12,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.composetraining.ui.theme.NewsTheme
 import com.example.newsapp.R
+import com.example.newsapp.core.model.NewsItem
 import com.example.newsapp.di.module.RepositoryModule
-import com.example.newsapp.domain.models.NewsItem
 import com.example.newsapp.domain.repository.NewsRepository
 import com.example.newsapp.extensions.SealedResult
 import com.example.newsapp.presentation.main.MainActivity

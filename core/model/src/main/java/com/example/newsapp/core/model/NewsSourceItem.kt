@@ -1,4 +1,4 @@
-package com.example.newsapp.domain.models
+package com.example.newsapp.core.model
 
 data class NewsSourceItem(
     val id: Int,
