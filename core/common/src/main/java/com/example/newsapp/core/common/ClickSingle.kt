@@ -1,4 +1,4 @@
-package com.example.newsapp.presentation.common
+package com.example.newsapp.core.common
 
 import android.os.SystemClock
 import androidx.compose.foundation.Indication

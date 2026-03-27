@@ -1,4 +1,4 @@
-package com.example.newsapp.data.exception
+package com.example.newsapp.core.common
 
 sealed interface DataError {
 

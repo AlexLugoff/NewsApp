@@ -1,14 +1,14 @@
 package com.example.newsapp.presentation.news
 
 import androidx.lifecycle.viewModelScope
-import com.example.newsapp.TIMEOUT_PAUSE
+import com.example.newsapp.core.common.TIMEOUT_PAUSE
 import com.example.newsapp.core.common.BaseViewModel
 import com.example.newsapp.core.common.CommonEvent
 import com.example.newsapp.core.common.UiText
 import com.example.newsapp.core.common.onFailure
+import com.example.newsapp.core.common.toReadableText
 import com.example.newsapp.domain.usecases.GetNewsFlowUseCase
 import com.example.newsapp.domain.usecases.RefreshNewsUseCase
-import com.example.newsapp.extensions.toReadableText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow

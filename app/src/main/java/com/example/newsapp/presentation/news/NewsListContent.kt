@@ -17,10 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import com.example.newsapp.R
-import com.example.newsapp.presentation.common.EmptyState
-import com.example.newsapp.presentation.common.ErrorMessage
-import com.example.newsapp.presentation.common.LoadingIndicator
-import com.example.newsapp.presentation.common.NewsAppBar
+import com.example.newsapp.core.common.EmptyState
+import com.example.newsapp.core.common.ErrorMessage
+import com.example.newsapp.core.common.LoadingIndicator
+import com.example.newsapp.core.common.NewsAppBar
 import com.example.newsapp.presentation.news.components.NewsList
 import com.example.newsapp.presentation.source_selection.SourceSelectionBottomSheetScreen
 

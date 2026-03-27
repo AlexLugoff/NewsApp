@@ -3,9 +3,9 @@ package com.example.newsapp.presentation
 import app.cash.turbine.test
 import com.example.newsapp.BaseUnitTest
 import com.example.newsapp.core.model.NewsItem
-import com.example.newsapp.data.exception.DataError
+import com.example.newsapp.core.common.DataError
+import com.example.newsapp.core.common.SealedResult
 import com.example.newsapp.domain.usecases.GetNewsDetailsUseCase
-import com.example.newsapp.extensions.SealedResult
 import com.example.newsapp.presentation.news_details.NewsDetailsEvent
 import com.example.newsapp.presentation.news_details.NewsDetailsViewModel
 import com.example.newsapp.presentation.news_details.NewsDetailsViewState

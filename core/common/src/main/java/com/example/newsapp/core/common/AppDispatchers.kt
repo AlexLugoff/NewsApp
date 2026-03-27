@@ -1,9 +1,9 @@
-package com.example.newsapp
+package com.example.newsapp.core.common
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.MainCoroutineDispatcher
 
-open class AppDispatchers(
+data class AppDispatchers(
     val main: MainCoroutineDispatcher,
     val default: CoroutineDispatcher,
     val io: CoroutineDispatcher,

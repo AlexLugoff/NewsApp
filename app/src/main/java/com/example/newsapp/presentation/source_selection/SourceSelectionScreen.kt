@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.newsapp.R
+import com.example.newsapp.core.common.showLongToast
 import com.example.newsapp.core.model.NewsSourceItem
-import com.example.newsapp.extensions.showLongToast
 import com.example.newsapp.presentation.source_selection.components.SourceItem
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -3,7 +3,7 @@ package com.example.newsapp.domain.repository
 import com.example.newsapp.core.common.SealedResult
 import com.example.newsapp.core.model.NewsItem
 import com.example.newsapp.core.model.NewsSourceItem
-import com.example.newsapp.data.exception.DataError
+import com.example.newsapp.core.common.DataError
 import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {

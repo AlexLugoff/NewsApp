@@ -19,5 +19,6 @@ android {
 
 dependencies {
     api(libs.bundles.lifecycle)
+    api(libs.bundles.compose)
     implementation(libs.timber)
 }

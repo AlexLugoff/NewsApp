@@ -1,4 +1,4 @@
-package com.example.newsapp
+package com.example.newsapp.core.common
 
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.days

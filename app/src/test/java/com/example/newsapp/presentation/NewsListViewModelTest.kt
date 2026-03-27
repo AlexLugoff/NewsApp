@@ -3,11 +3,12 @@ package com.example.newsapp.presentation
 import app.cash.turbine.test
 import com.example.newsapp.BaseUnitTest
 import com.example.newsapp.core.model.NewsItem
-import com.example.newsapp.data.exception.DataError
+import com.example.newsapp.core.common.DataError
+import com.example.newsapp.core.common.SealedResult
 import com.example.newsapp.domain.usecases.GetNewsFlowUseCase
 import com.example.newsapp.domain.usecases.RefreshNewsUseCase
-import com.example.newsapp.extensions.SealedResult
-import com.example.newsapp.extensions.toReadableText
+
+import com.example.newsapp.core.common.toReadableText
 import com.example.newsapp.presentation.news.NewsListViewModel
 import com.example.newsapp.presentation.news.NewsListViewState
 import io.mockk.coEvery

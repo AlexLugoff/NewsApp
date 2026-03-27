@@ -1,10 +1,10 @@
 package com.example.newsapp.di.module
 
 import com.example.newsapp.BuildConfig
-import com.example.newsapp.CONNECT_TIMEOUT
-import com.example.newsapp.READ_TIMEOUT
-import com.example.newsapp.WRITE_TIMEOUT
-import com.example.newsapp.timeUnit
+import com.example.newsapp.core.common.CONNECT_TIMEOUT
+import com.example.newsapp.core.common.READ_TIMEOUT
+import com.example.newsapp.core.common.WRITE_TIMEOUT
+import com.example.newsapp.core.common.timeUnit
 import com.prof18.rssparser.RssParser
 import com.prof18.rssparser.RssParserBuilder
 import dagger.Module

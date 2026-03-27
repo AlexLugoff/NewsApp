@@ -20,8 +20,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.newsapp.R
+import com.example.newsapp.core.common.clickableSingle
 import com.example.newsapp.core.model.NewsItem
-import com.example.newsapp.presentation.common.clickableSingle
 
 @Composable
 fun NewsItemCard(

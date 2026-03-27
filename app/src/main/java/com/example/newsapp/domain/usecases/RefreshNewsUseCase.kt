@@ -1,7 +1,7 @@
 package com.example.newsapp.domain.usecases
 
 import com.example.newsapp.core.common.SealedResult
-import com.example.newsapp.data.exception.DataError
+import com.example.newsapp.core.common.DataError
 import com.example.newsapp.domain.repository.NewsRepository
 import javax.inject.Inject
 

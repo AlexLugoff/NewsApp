@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.newsapp.INTENT_TYPE
+import com.example.newsapp.core.common.INTENT_TYPE
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

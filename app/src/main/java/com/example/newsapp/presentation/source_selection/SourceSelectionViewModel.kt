@@ -2,7 +2,7 @@ package com.example.newsapp.presentation.source_selection
 
 import androidx.lifecycle.viewModelScope
 import com.example.newsapp.R
-import com.example.newsapp.TIMEOUT_PAUSE
+import com.example.newsapp.core.common.TIMEOUT_PAUSE
 import com.example.newsapp.core.common.BaseViewModel
 import com.example.newsapp.core.common.UiText
 import com.example.newsapp.core.model.NewsSourceItem

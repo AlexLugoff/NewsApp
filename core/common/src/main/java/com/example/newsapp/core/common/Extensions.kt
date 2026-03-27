@@ -1,4 +1,4 @@
-package com.example.newsapp.extensions
+package com.example.newsapp.core.common
 
 import android.content.Context
 import android.graphics.Typeface
@@ -20,9 +20,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import com.example.newsapp.R
-import com.example.newsapp.core.common.UiText
-import com.example.newsapp.data.exception.DataError
 
 fun Context.showShortToast(text: String): Toast {
     return Toast.makeText(this, text, Toast.LENGTH_SHORT).also { it.show() }
@@ -67,24 +64,28 @@ fun DataError.toReadableText(): UiText {
             this.message
         )
 
-        is DataError.Network.UnknownHost -> message?.let {
-            UiText.StringResource(
-                R.string.error_message_unknown_host,
-                this.message
-            )
-        } ?: UiText.StringResource(R.string.error_unknown_host)
+        is DataError.Network.UnknownHost -> {
+            val msg = this.message
+            if (msg != null) {
+                UiText.StringResource(R.string.error_message_unknown_host, msg)
+            } else {
+                UiText.StringResource(R.string.error_unknown_host)
+            }
+        }
 
         is DataError.Parser.InvalidFormat -> UiText.StringResource(
             R.string.error_parser,
             this.message
         )
 
-        is DataError.Network.Unknown -> message?.let {
-            UiText.StringResource(
-                R.string.error_unknown_message,
-                this.message
-            )
-        } ?: UiText.StringResource(R.string.error_unknown)
+        is DataError.Network.Unknown -> {
+            val msg = this.message
+            if (msg != null) {
+                UiText.StringResource(R.string.error_unknown_message, msg)
+            } else {
+                UiText.StringResource(R.string.error_unknown)
+            }
+        }
 
         is DataError.Network.ConnectionTimeout -> UiText.StringResource(
             R.string.error_message_connection_timeout

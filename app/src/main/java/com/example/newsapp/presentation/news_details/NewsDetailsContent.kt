@@ -38,11 +38,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.newsapp.R
+import com.example.newsapp.core.common.ErrorMessage
+import com.example.newsapp.core.common.LoadingIndicator
+import com.example.newsapp.core.common.NewsAppBar
+import com.example.newsapp.core.common.toAnnotatedString
 import com.example.newsapp.core.model.NewsItem
-import com.example.newsapp.extensions.toAnnotatedString
-import com.example.newsapp.presentation.common.ErrorMessage
-import com.example.newsapp.presentation.common.LoadingIndicator
-import com.example.newsapp.presentation.common.NewsAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -6,9 +6,9 @@ import com.example.newsapp.data.datasource.local.NewsSourceLocalDataSource
 import com.example.newsapp.data.datasource.remote.NewsRemoteDataSource
 import com.example.newsapp.data.db.entities.NewsItemEntity
 import com.example.newsapp.data.db.entities.NewsSourceEntity
-import com.example.newsapp.data.exception.DataError
+import com.example.newsapp.core.common.DataError
+import com.example.newsapp.core.common.SealedResult
 import com.example.newsapp.data.repository.NewsRepositoryImpl
-import com.example.newsapp.extensions.SealedResult
 import com.prof18.rssparser.model.RssChannel
 import com.prof18.rssparser.model.RssItem
 import io.mockk.coEvery

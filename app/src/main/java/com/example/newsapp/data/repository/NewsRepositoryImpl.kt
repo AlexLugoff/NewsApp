@@ -1,7 +1,8 @@
 package com.example.newsapp.data.repository
 
-import com.example.newsapp.AppDispatchers
-import com.example.newsapp.NEWS_EXPIRATION_THRESHOLD
+import com.example.newsapp.core.common.NEWS_EXPIRATION_THRESHOLD
+import com.example.newsapp.core.common.AppDispatchers
+import com.example.newsapp.core.common.DataError
 import com.example.newsapp.core.common.SealedResult
 import com.example.newsapp.core.common.fold
 import com.example.newsapp.core.model.NewsItem
@@ -11,7 +12,6 @@ import com.example.newsapp.data.datasource.local.NewsSourceLocalDataSource
 import com.example.newsapp.data.datasource.remote.NewsRemoteDataSource
 import com.example.newsapp.data.db.entities.NewsItemEntity
 import com.example.newsapp.data.db.entities.NewsSourceEntity
-import com.example.newsapp.data.exception.DataError
 import com.example.newsapp.data.mappers.toDomain
 import com.example.newsapp.data.mappers.toDomainList
 import com.example.newsapp.data.mappers.toEntityList
