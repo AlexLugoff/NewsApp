@@ -1,23 +1,16 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    id("newsapp.android.application")
+    id("newsapp.android.compose")
+    id("newsapp.android.hilt")
+    id("newsapp.android.room")
+    id("newsapp.android.kotlin.serialization")
 }
 
 android {
     namespace = "com.example.newsapp"
-    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.newsapp"
-        minSdk = 29
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
-
         testInstrumentationRunner = "com.example.newsapp.HiltTestRunner"
     }
 
@@ -30,22 +23,8 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
 
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-        }
-    }
-    ksp {
-        arg("dagger.fastInit", "enabled")
-        arg("dagger.hilt.disableModulesHaveInstallInCheck", "false")
-    }
     buildFeatures {
-        compose = true
         buildConfig = true
     }
 }
@@ -59,17 +38,13 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.core.splashscreen)
 
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    // Hilt & Navigation
     implementation(libs.androidx.hilt.navigation.compose)
 
-    // Compose
-    implementation(platform(libs.androidx.compose.bom))
+    // Compose (Базовые вещи в плагине, здесь специфичные)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
@@ -86,10 +61,7 @@ dependencies {
     implementation(libs.rssparser)
     implementation(libs.jsoup)
 
-    // Room (Database)
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
+    // Room (Зависимости уже в плагине, здесь только Paging)
     implementation(libs.androidx.room.paging)
 
     // Utils
@@ -103,7 +75,6 @@ dependencies {
     testImplementation(libs.turbine)
 
     // Instrumented Testing
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -114,6 +85,5 @@ dependencies {
     androidTestImplementation(libs.turbine)
     androidTestImplementation(libs.mockk.android)
     
-    debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
