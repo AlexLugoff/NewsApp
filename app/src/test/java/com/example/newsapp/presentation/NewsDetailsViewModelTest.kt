@@ -2,10 +2,10 @@ package com.example.newsapp.presentation
 
 import app.cash.turbine.test
 import com.example.newsapp.BaseUnitTest
-import com.example.newsapp.core.model.NewsItem
 import com.example.newsapp.core.common.DataError
 import com.example.newsapp.core.common.SealedResult
-import com.example.newsapp.domain.usecases.GetNewsDetailsUseCase
+import com.example.newsapp.core.domain.usecase.GetNewsDetailsUseCase
+import com.example.newsapp.core.model.NewsItem
 import com.example.newsapp.presentation.news_details.NewsDetailsEvent
 import com.example.newsapp.presentation.news_details.NewsDetailsViewModel
 import com.example.newsapp.presentation.news_details.NewsDetailsViewState
@@ -51,11 +51,11 @@ class NewsDetailsViewModelTest : BaseUnitTest() {
         viewModel.uiStateFlow.test {
             // Начальное состояние Loading
             assertEquals(NewsDetailsViewState.Loading, awaitItem())
-            
+
             val state = awaitItem()
             assertTrue(state is NewsDetailsViewState.Success)
             assertEquals(mockNews, (state as NewsDetailsViewState.Success).newsItem)
-            
+
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -83,7 +83,7 @@ class NewsDetailsViewModelTest : BaseUnitTest() {
     fun `goToBrowser - sends GoToBrowser event`() = runTest {
         viewModel.eventFlow.test {
             viewModel.goToBrowser(testLink)
-            
+
             val event = awaitItem()
             assertTrue(event is NewsDetailsEvent.GoToBrowser)
             assertEquals(testLink, (event as NewsDetailsEvent.GoToBrowser).url)
@@ -94,7 +94,7 @@ class NewsDetailsViewModelTest : BaseUnitTest() {
     fun `shareNews - sends ShareNews event`() = runTest {
         viewModel.eventFlow.test {
             viewModel.shareNews(testLink)
-            
+
             val event = awaitItem()
             assertTrue(event is NewsDetailsEvent.ShareNews)
             assertEquals(testLink, (event as NewsDetailsEvent.ShareNews).url)

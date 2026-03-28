@@ -2,13 +2,12 @@ package com.example.newsapp.presentation
 
 import app.cash.turbine.test
 import com.example.newsapp.BaseUnitTest
-import com.example.newsapp.core.model.NewsItem
 import com.example.newsapp.core.common.DataError
 import com.example.newsapp.core.common.SealedResult
-import com.example.newsapp.domain.usecases.GetNewsFlowUseCase
-import com.example.newsapp.domain.usecases.RefreshNewsUseCase
-
 import com.example.newsapp.core.common.toReadableText
+import com.example.newsapp.core.domain.usecase.GetNewsFlowUseCase
+import com.example.newsapp.core.domain.usecase.RefreshNewsUseCase
+import com.example.newsapp.core.model.NewsItem
 import com.example.newsapp.presentation.news.NewsListViewModel
 import com.example.newsapp.presentation.news.NewsListViewState
 import io.mockk.coEvery
@@ -41,7 +40,7 @@ class NewsListViewModelTest : BaseUnitTest() {
     @Test
     fun `init - starts refreshing news`() = runTest {
         coEvery { refreshNewsUseCase() } returns SealedResult.Success(Unit)
-        
+
         NewsListViewModel(getNewsFlowUseCase, refreshNewsUseCase)
 
         coVerify { refreshNewsUseCase() }
@@ -53,7 +52,7 @@ class NewsListViewModelTest : BaseUnitTest() {
             kotlinx.coroutines.delay(100)
             SealedResult.Success(Unit)
         }
-        
+
         val viewModel = NewsListViewModel(getNewsFlowUseCase, refreshNewsUseCase)
 
         viewModel.uiStateFlow.test {
@@ -81,7 +80,7 @@ class NewsListViewModelTest : BaseUnitTest() {
 
     @Test
     fun `uiStateFlow - error when DB empty and refresh fails`() = runTest {
-        val networkError = DataError.Network.Unknown() 
+        val networkError = DataError.Network.Unknown()
         coEvery { refreshNewsUseCase() } returns SealedResult.Failure(networkError)
         dbFlow.value = emptyList()
 
@@ -105,7 +104,7 @@ class NewsListViewModelTest : BaseUnitTest() {
         }
 
         val viewModel = NewsListViewModel(getNewsFlowUseCase, refreshNewsUseCase)
-        
+
         // Попытка вызвать второй раз
         viewModel.refreshNews()
 

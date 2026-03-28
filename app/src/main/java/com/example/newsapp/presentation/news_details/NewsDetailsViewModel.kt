@@ -3,10 +3,10 @@ package com.example.newsapp.presentation.news_details
 import androidx.lifecycle.viewModelScope
 import com.example.newsapp.R
 import com.example.newsapp.core.common.BaseViewModel
+import com.example.newsapp.core.common.DataError
 import com.example.newsapp.core.common.UiText
 import com.example.newsapp.core.common.fold
-import com.example.newsapp.core.common.DataError
-import com.example.newsapp.domain.usecases.GetNewsDetailsUseCase
+import com.example.newsapp.core.domain.usecase.GetNewsDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

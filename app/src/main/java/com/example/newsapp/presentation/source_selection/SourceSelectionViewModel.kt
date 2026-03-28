@@ -2,12 +2,12 @@ package com.example.newsapp.presentation.source_selection
 
 import androidx.lifecycle.viewModelScope
 import com.example.newsapp.R
-import com.example.newsapp.core.common.TIMEOUT_PAUSE
 import com.example.newsapp.core.common.BaseViewModel
+import com.example.newsapp.core.common.TIMEOUT_PAUSE
 import com.example.newsapp.core.common.UiText
+import com.example.newsapp.core.domain.usecase.GetNewsSourcesFlowUseCase
+import com.example.newsapp.core.domain.usecase.ToggleSourceUseCase
 import com.example.newsapp.core.model.NewsSourceItem
-import com.example.newsapp.domain.usecases.GetNewsSourcesFlowUseCase
-import com.example.newsapp.domain.usecases.ToggleSourceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted

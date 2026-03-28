@@ -8,7 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.composetraining.ui.theme.NewsTheme
-import com.example.newsapp.domain.usecases.ClearOldNewsUseCase
+import com.example.newsapp.core.domain.usecase.ClearOldNewsUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

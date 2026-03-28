@@ -2,9 +2,10 @@ package com.example.newsapp.presentation
 
 import app.cash.turbine.test
 import com.example.newsapp.BaseUnitTest
+import com.example.newsapp.core.common.UiText
+import com.example.newsapp.core.domain.usecase.GetNewsSourcesFlowUseCase
+import com.example.newsapp.core.domain.usecase.ToggleSourceUseCase
 import com.example.newsapp.core.model.NewsSourceItem
-import com.example.newsapp.domain.usecases.GetNewsSourcesFlowUseCase
-import com.example.newsapp.domain.usecases.ToggleSourceUseCase
 import com.example.newsapp.presentation.source_selection.SourceSelectionViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -26,7 +27,7 @@ class SourceSelectionViewModelTest : BaseUnitTest() {
     lateinit var toggleSourceUseCase: ToggleSourceUseCase
 
     private lateinit var viewModel: SourceSelectionViewModel
-    
+
     private val sourcesFlow = MutableStateFlow<List<NewsSourceItem>>(emptyList())
 
     @Before
@@ -76,10 +77,13 @@ class SourceSelectionViewModelTest : BaseUnitTest() {
         // When & Then
         viewModel.errorEvent.test {
             viewModel.toggleSource(source)
-            
+
             val error = awaitItem()
             assertTrue(error is UiText.StringResource)
-            assertEquals(com.example.newsapp.R.string.error_source_parser, (error as UiText.StringResource).id)
+            assertEquals(
+                com.example.newsapp.R.string.error_source_parser,
+                (error as UiText.StringResource).id
+            )
             // Проверяем, что сообщение об ошибке передано в аргументы UiText
             assertEquals(exceptionMessage, error.args[0])
         }

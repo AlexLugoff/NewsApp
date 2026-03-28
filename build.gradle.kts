@@ -1,4 +1,14 @@
 // Top-level build file
 plugins {
-    // Пусто или только те плагины, которые не вынесены в build-logic (например, detekt или ktlint)
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+}
+
+subprojects {
+    configurations.all {
+        resolutionStrategy {
+            force("com.squareup:javapoet:1.13.0")
+        }
+    }
 }
