@@ -1,4 +1,4 @@
-package com.example.newsapp.core.common
+package com.example.newsapp.core.ui.component
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.CenterAlignedTopAppBar

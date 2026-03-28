@@ -1,4 +1,4 @@
-package com.example.newsapp.core.common
+package com.example.newsapp.core.common.util
 
 import java.time.Instant
 import java.time.LocalDateTime

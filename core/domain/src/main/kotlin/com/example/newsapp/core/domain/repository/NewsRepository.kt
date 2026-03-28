@@ -1,9 +1,9 @@
 package com.example.newsapp.core.domain.repository
 
-import com.example.newsapp.core.common.SealedResult
+import com.example.newsapp.core.common.result.SealedResult
 import com.example.newsapp.core.model.NewsItem
 import com.example.newsapp.core.model.NewsSourceItem
-import com.example.newsapp.core.common.DataError
+import com.example.newsapp.core.common.error.DataError
 import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {

@@ -12,8 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.newsapp.core.common.clickableSingle
 import com.example.newsapp.core.model.NewsSourceItem
+import com.example.newsapp.core.ui.modifier.clickableSingle
 
 @Composable
 fun SourceItem(

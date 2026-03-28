@@ -9,10 +9,10 @@ import coil3.request.crossfade
 import coil3.util.DebugLogger
 import coil3.util.Logger
 import com.example.newsapp.BuildConfig
-import com.example.newsapp.core.common.COIL_DISK_CACHE_DIRECTORY_NAME
-import com.example.newsapp.core.common.COIL_DISK_CACHE_SIZE_PERCENT
-import com.example.newsapp.core.common.COIL_MEMORY_CACHE_SIZE_PERCENT
-import com.example.newsapp.core.common.AppDispatchers
+import com.example.newsapp.core.common.util.COIL_DISK_CACHE_DIRECTORY_NAME
+import com.example.newsapp.core.common.util.COIL_DISK_CACHE_SIZE_PERCENT
+import com.example.newsapp.core.common.util.COIL_MEMORY_CACHE_SIZE_PERCENT
+import com.example.newsapp.core.common.dispatchers.AppDispatchers
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,6 +1,6 @@
 package com.example.newsapp.core.data.mappers
 
-import com.example.newsapp.core.common.asDateTimeString
+import com.example.newsapp.core.common.util.asDateTimeString
 import com.example.newsapp.core.model.NewsItem
 import com.example.newsapp.core.data.DateParser
 import com.example.newsapp.core.database.entities.NewsItemEntity

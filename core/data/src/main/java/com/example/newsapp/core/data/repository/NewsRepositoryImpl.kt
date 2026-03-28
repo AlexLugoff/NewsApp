@@ -1,10 +1,10 @@
 package com.example.newsapp.core.data.repository
 
-import com.example.newsapp.core.common.AppDispatchers
-import com.example.newsapp.core.common.DataError
-import com.example.newsapp.core.common.NEWS_EXPIRATION_THRESHOLD
-import com.example.newsapp.core.common.SealedResult
-import com.example.newsapp.core.common.fold
+import com.example.newsapp.core.common.dispatchers.AppDispatchers
+import com.example.newsapp.core.common.error.DataError
+import com.example.newsapp.core.common.util.NEWS_EXPIRATION_THRESHOLD
+import com.example.newsapp.core.common.result.SealedResult
+import com.example.newsapp.core.common.result.fold
 import com.example.newsapp.core.data.mappers.toDomain
 import com.example.newsapp.core.data.mappers.toDomainList
 import com.example.newsapp.core.data.mappers.toEntityList

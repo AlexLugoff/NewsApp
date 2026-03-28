@@ -2,8 +2,8 @@ package com.example.newsapp.core.database.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.newsapp.core.common.DATABASE_FILE_PATH
-import com.example.newsapp.core.common.DATABASE_NAME
+import com.example.newsapp.core.common.util.DATABASE_FILE_PATH
+import com.example.newsapp.core.common.util.DATABASE_NAME
 import com.example.newsapp.core.database.AppDatabase
 import com.example.newsapp.core.database.dao.NewsDao
 import com.example.newsapp.core.database.dao.NewsSourceDao

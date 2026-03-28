@@ -31,6 +31,7 @@ android {
 dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:common"))
+    implementation(project(":core:ui"))
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
 
@@ -44,21 +45,12 @@ dependencies {
     // Hilt & Navigation
     implementation(libs.androidx.hilt.navigation.compose)
 
-    // Compose (Base in plugin, rest in bundle)
+    // Compose
     implementation(libs.bundles.compose)
 
     // Image Loading
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
-
-    // Network & Data
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
-    implementation(libs.rssparser)
-    implementation(libs.jsoup)
-
-    // Room
-    implementation(libs.androidx.room.paging)
 
     // Utils
     implementation(libs.timber)

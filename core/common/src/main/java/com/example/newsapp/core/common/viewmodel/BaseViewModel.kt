@@ -1,4 +1,4 @@
-package com.example.newsapp.core.common
+package com.example.newsapp.core.common.viewmodel
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -19,10 +19,6 @@ abstract class BaseViewModel<ViewState, Event> : ViewModel() {
     private val _eventFlow = MutableSharedFlow<Event>(extraBufferCapacity = 1)
     val eventFlow = _eventFlow.asSharedFlow()
 
-    // Общие события (Toast, Dialogs)
-    private val _commonEventFlow = MutableSharedFlow<CommonEvent>(extraBufferCapacity = 1)
-    val commonEventFlow = _commonEventFlow.asSharedFlow()
-
     protected val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         if (throwable is CancellationException) return@CoroutineExceptionHandler
         handleError(throwable)
@@ -30,10 +26,6 @@ abstract class BaseViewModel<ViewState, Event> : ViewModel() {
 
     protected fun Event.send() {
         _eventFlow.tryEmit(this)
-    }
-
-    protected fun CommonEvent.send() {
-        _commonEventFlow.tryEmit(this)
     }
 
     protected fun ViewState.update() {

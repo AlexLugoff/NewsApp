@@ -1,16 +1,9 @@
-package com.example.newsapp.core.common
+package com.example.newsapp.core.ui.util
 
-import android.content.Context
 import android.graphics.Typeface
-import android.os.Build
-import android.text.Html
-import android.text.Spanned
 import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import android.text.style.UnderlineSpan
-import android.view.View
-import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
@@ -20,41 +13,9 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-
-fun Context.showShortToast(text: String): Toast {
-    return Toast.makeText(this, text, Toast.LENGTH_SHORT).also { it.show() }
-}
-
-fun Context.showShortToast(@StringRes resId: Int, vararg args: Any): Toast {
-    return showShortToast(getString(resId, *args))
-}
-
-fun Context.showLongToast(text: String): Toast {
-    return Toast.makeText(this, text, Toast.LENGTH_LONG).also { it.show() }
-}
-
-fun Context.showLongToast(@StringRes resId: Int, vararg args: Any): Toast {
-    return showLongToast(getString(resId, *args))
-}
-
-var View.isAvailable: Boolean
-    get() = isEnabled && isClickable
-    set(value) {
-        isEnabled = value
-        isClickable = value
-        alpha = if (value) 1.0F else 0.4F
-    }
-
-fun String?.toSpannedHtml(): Spanned {
-    val source = this.orEmpty()
-
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        Html.fromHtml(source, Html.FROM_HTML_MODE_COMPACT)
-    } else {
-        @Suppress("DEPRECATION")
-        Html.fromHtml(source)
-    }
-}
+import com.example.newsapp.core.common.error.DataError
+import com.example.newsapp.core.common.R
+import com.example.newsapp.core.common.util.toSpannedHtml
 
 fun DataError.toReadableText(): UiText {
     return when (this) {
@@ -67,7 +28,10 @@ fun DataError.toReadableText(): UiText {
         is DataError.Network.UnknownHost -> {
             val msg = this.message
             if (msg != null) {
-                UiText.StringResource(R.string.error_message_unknown_host, msg)
+                UiText.StringResource(
+                    R.string.error_message_unknown_host,
+                    msg
+                )
             } else {
                 UiText.StringResource(R.string.error_unknown_host)
             }
@@ -81,7 +45,10 @@ fun DataError.toReadableText(): UiText {
         is DataError.Network.Unknown -> {
             val msg = this.message
             if (msg != null) {
-                UiText.StringResource(R.string.error_unknown_message, msg)
+                UiText.StringResource(
+                    R.string.error_unknown_message,
+                    msg
+                )
             } else {
                 UiText.StringResource(R.string.error_unknown)
             }

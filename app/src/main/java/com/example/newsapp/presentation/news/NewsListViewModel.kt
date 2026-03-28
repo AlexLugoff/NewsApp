@@ -1,14 +1,13 @@
 package com.example.newsapp.presentation.news
 
 import androidx.lifecycle.viewModelScope
-import com.example.newsapp.core.common.TIMEOUT_PAUSE
-import com.example.newsapp.core.common.BaseViewModel
-import com.example.newsapp.core.common.CommonEvent
-import com.example.newsapp.core.common.UiText
-import com.example.newsapp.core.common.onFailure
-import com.example.newsapp.core.common.toReadableText
+import com.example.newsapp.core.common.result.onFailure
+import com.example.newsapp.core.common.util.TIMEOUT_PAUSE
+import com.example.newsapp.core.common.viewmodel.BaseViewModel
 import com.example.newsapp.core.domain.usecase.GetNewsFlowUseCase
 import com.example.newsapp.core.domain.usecase.RefreshNewsUseCase
+import com.example.newsapp.core.ui.util.UiText
+import com.example.newsapp.core.ui.util.toReadableText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -70,14 +69,10 @@ class NewsListViewModel @Inject constructor(
                 if (uiStateFlow.value.currentNews.isEmpty()) {
                     _errorState.value = errorText
                 } else {
-                    CommonEvent.ShowLongToast(uiText = errorText).send()
+                    NewsListEvent.ShowErrorMessage(errorText).send()
                 }
             }
             _isRefreshing.value = false
         }
-    }
-
-    fun onNewsItemClick(newsLink: String) {
-        NewsListEvent.NavigateToNewsDetails(newsLink).send()
     }
 }

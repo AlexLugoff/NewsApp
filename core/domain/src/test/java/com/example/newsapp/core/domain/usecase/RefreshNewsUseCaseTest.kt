@@ -2,7 +2,7 @@ package com.example.newsapp.core.domain.usecase
 
 import com.example.newsapp.core.domain.BaseUnitTest
 import com.example.newsapp.core.domain.repository.NewsRepository
-import com.example.newsapp.core.common.SealedResult
+import com.example.newsapp.core.common.result.SealedResult
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK

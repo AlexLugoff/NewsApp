@@ -2,10 +2,10 @@ package com.example.newsapp.presentation
 
 import app.cash.turbine.test
 import com.example.newsapp.BaseUnitTest
-import com.example.newsapp.core.common.UiText
 import com.example.newsapp.core.domain.usecase.GetNewsSourcesFlowUseCase
 import com.example.newsapp.core.domain.usecase.ToggleSourceUseCase
 import com.example.newsapp.core.model.NewsSourceItem
+import com.example.newsapp.core.ui.util.UiText
 import com.example.newsapp.presentation.source_selection.SourceSelectionViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify

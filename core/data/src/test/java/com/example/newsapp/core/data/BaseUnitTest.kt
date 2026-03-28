@@ -1,6 +1,6 @@
 package com.example.newsapp.core.data
 
-import com.example.newsapp.core.common.AppDispatchers
+import com.example.newsapp.core.common.dispatchers.AppDispatchers
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import kotlinx.coroutines.ExperimentalCoroutinesApi

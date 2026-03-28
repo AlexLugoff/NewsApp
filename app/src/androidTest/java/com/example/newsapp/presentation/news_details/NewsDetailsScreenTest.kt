@@ -12,7 +12,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.composetraining.ui.theme.NewsTheme
 import com.example.newsapp.R
-import com.example.newsapp.core.common.SealedResult
+import com.example.newsapp.core.common.result.SealedResult
 import com.example.newsapp.core.data.di.RepositoryModule
 import com.example.newsapp.core.domain.repository.NewsRepository
 import com.example.newsapp.core.model.NewsItem

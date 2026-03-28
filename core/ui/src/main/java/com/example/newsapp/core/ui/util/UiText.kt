@@ -1,4 +1,4 @@
-package com.example.newsapp.core.common
+package com.example.newsapp.core.ui.util
 
 import android.content.Context
 import androidx.annotation.PluralsRes

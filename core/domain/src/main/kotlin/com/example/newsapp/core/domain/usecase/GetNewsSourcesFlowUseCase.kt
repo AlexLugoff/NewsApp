@@ -1,6 +1,6 @@
 package com.example.newsapp.core.domain.usecase
 
-import com.example.newsapp.core.common.AppDispatchers
+import com.example.newsapp.core.common.dispatchers.AppDispatchers
 import com.example.newsapp.core.domain.repository.NewsRepository
 import com.example.newsapp.core.model.NewsSourceItem
 import kotlinx.coroutines.flow.Flow

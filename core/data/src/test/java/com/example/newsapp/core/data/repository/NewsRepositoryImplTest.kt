@@ -1,8 +1,8 @@
 package com.example.newsapp.core.data.repository
 
 import com.example.newsapp.core.data.BaseUnitTest
-import com.example.newsapp.core.common.DataError
-import com.example.newsapp.core.common.SealedResult
+import com.example.newsapp.core.common.error.DataError
+import com.example.newsapp.core.common.result.SealedResult
 import com.example.newsapp.core.database.datasource.NewsLocalDataSource
 import com.example.newsapp.core.database.datasource.NewsSourceLocalDataSource
 import com.example.newsapp.core.database.entities.NewsItemEntity

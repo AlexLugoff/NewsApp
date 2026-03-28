@@ -1,9 +1,9 @@
 package com.example.newsapp.core.network.di
 
-import com.example.newsapp.core.common.CONNECT_TIMEOUT
-import com.example.newsapp.core.common.READ_TIMEOUT
-import com.example.newsapp.core.common.WRITE_TIMEOUT
-import com.example.newsapp.core.common.timeUnit
+import com.example.newsapp.core.common.util.CONNECT_TIMEOUT
+import com.example.newsapp.core.common.util.READ_TIMEOUT
+import com.example.newsapp.core.common.util.WRITE_TIMEOUT
+import com.example.newsapp.core.common.util.timeUnit
 import com.example.newsapp.core.network.BuildConfig
 import com.prof18.rssparser.RssParser
 import com.prof18.rssparser.RssParserBuilder

@@ -15,6 +15,7 @@ dependencies {
     implementation(project(":core:network"))
 
     implementation(libs.rssparser)
+    implementation(libs.jsoup)
     implementation(libs.timber)
     implementation(libs.kotlinx.datetime)
 
