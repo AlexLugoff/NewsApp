@@ -1,34 +1,42 @@
-# NewsApp — Агрегатор новостей (RSS + Clean Architecture)
+# NewsApp — Современный агрегатор новостей (RSS + Clean Architecture)
 
-Современное Android-приложение для чтения новостей из различных RSS-источников. Проект построен на стеке Jetpack Compose с соблюдением принципов чистой архитектуры и оффлайн-режима.
+Современное Android-приложение для чтения новостей из различных RSS-источников, построенное на передовом стеке технологий 2025 года. Проект следует принципам Clean Architecture и ориентирован на Offline-first опыт.
 
 ## 🚀 Основные возможности
-* **RSS Parsing:** Загрузка и автоматическая обработка новостей из гибко настраиваемых RSS-лент (используется `prof18:rss-parser`).
-* **Source Management:** Управление источниками новостей через удобный интерфейс (включение/выключение конкретных лент).
-* **Offline First:** Кеширование всех статей в локальную базу данных Room. Новости доступны для чтения даже без подключения к интернету.
-* **Smart Cache:** Автоматическая очистка старых новостей по истечении заданного порога времени.
+* **RSS Engine:** Загрузка и обработка новостей из гибко настраиваемых RSS-лент.
+* **Source Management:** Управление источниками новостей (включение/выключение конкретных лент) через BottomSheet.
+* **Offline First:** Полное кеширование статей в локальную базу данных Room.
+* **Smart Cache:** Автоматическая фоновая очистка старых новостей.
+* **Modern UI:** Полная поддержка Edge-to-Edge и динамических цветов (Material You).
 
-## 🛠 Стек технологий
-* **UI:** Jetpack Compose (Material 3)
-* **Navigation:** Compose Navigation
-* **Image Loading:** Coil 3 (с поддержкой сетевых запросов через OkHttp)
-* **Architecture:** Clean Architecture + MVVM + MVI (State management через StateFlow)
-* **DI:** Hilt (Dagger-Hilt)
-* **Database:** Room (DAO, Entities, Flow integration)
-* **Network:** OkHttp + RSS Parser
-* **Logging:** Timber
-* **Async:** Kotlin Coroutines + Flow (включая `collectAsStateWithLifecycle`)
+## 🛠 Стек технологий (2025 Edition)
+* **Core:** Kotlin 2.3.20 + Gradle 9.4.1
+* **UI:** Jetpack Compose (Material 3 v1.4.0)
+* **Architecture:** Clean Architecture + MVVM + MVI
+* **DI:** Hilt (Dagger-Hilt v2.59.2)
+* **Asynchronous:** Kotlin Coroutines & Flow (StateFlow, SharedFlow)
+* **Database:** Room v2.8.4 (с поддержкой KSP)
+* **Image Loading:** Coil 3.4.0 (OkHttp engine)
+* **Parsing:** Prof18 RSS Parser v6.1.5 + Jsoup 1.22.1
+* **Navigation:** Type-safe Compose Navigation v2.9.7
+* **Testing:** MockK, Turbine, JUnit 4, Espresso
 
-## 🏗 Архитектура
-Проект строго разделен на слои согласно принципам **SOLID** и **Clean Architecture**:
-1. **Data layer:** Реализация репозиториев, работа с сетевыми источниками и Room. Маппинг сущностей БД в доменные модели.
-2. **Domain layer:** Чистая бизнес-логика. Содержит Use Cases (интеракторы) и интерфейсы репозиториев.
-3. **Presentation layer:** UI на Jetpack Compose. ViewModel используют Use Cases и управляют состоянием экрана (ViewState).
+## 🏗 Модульная структура
+Проект разделен на независимые слои для обеспечения масштабируемости и тестируемости:
+* **`:app`** — Точка входа, DI граф и навигация.
+* **`:core:model`** — Чистые Kotlin-модели (Shared).
+* **`:core:domain`** — Бизнес-логика и Use Cases.
+* **`:core:data`** — Репозитории и источники данных.
+* **`:core:network`** — RSS парсинг и сетевые запросы.
+* **`:core:database`** — Локальное хранилище (Room).
+* **`:core:ui`** — Общие компоненты, темы и ресурсы.
+* **`:feature:*`** — Изолированные экраны (NewsList, Details, Sources).
 
-## 🚀 Особенности реализации
-* **Generic Result:** Обработка ошибок через кастомный `SealedResult`.
-* **Resource Provider:** Динамическая подгрузка строковых ресурсов в ViewModel через обертку `UiText`.
-* **Testing:** Покрыто Unit-тестами (UseCases, ViewModels) с использованием `MockK` и `Turbine`.
+## 🎨 Дизайн и Темы
+Приложение использует продвинутую систему тем:
+* **Material You:** Автоматическая адаптация цветов под обои пользователя (Android 12+).
+* **Surface Container:** Использование современных ролей поверхностей M3 для лучшего визуального разделения.
+* **Edge-to-Edge:** Весь контент отображается "под" системными панелями для максимального погружения.
 
 ## 📸 Скриншоты
 <p align="left">

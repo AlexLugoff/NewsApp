@@ -64,7 +64,4 @@ dependencies {
     testImplementation(project(":core:testing"))
     androidTestImplementation(project(":core:testing"))
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    
-    // Workaround for Hilt/JavaPoet issue
-    implementation("com.squareup:javapoet:1.13.0")
 }

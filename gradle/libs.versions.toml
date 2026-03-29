@@ -1,10 +1,10 @@
 [versions]
-agp = "8.13.0"
+agp = "9.1.0"
 coilCompose = "3.4.0"
 coreSplashscreen = "1.2.0"
 hiltNavigationCompose = "1.3.0"
-kotlin = "2.2.20"
-coreKtx = "1.17.0"
+kotlin = "2.3.20"
+coreKtx = "1.18.0"
 appcompat = "1.7.1"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -12,27 +12,27 @@ espresso-version = "3.7.0"
 kotlinxCoroutinesTest = "1.10.2"
 kotlinxDatetime = "0.7.1"
 lifecycle = "2.10.0"
-activityCompose = "1.12.0"
-composeBom = "2024.09.00"
-ksp-version = "2.2.20-2.0.4"
-hilt-version = "2.57.2"
-rssparser = "6.1.4"
-saveargs-version = "2.7.5"
-loggingInterceptor = "5.2.1"
-mockk = "1.14.7"
-okhttp_version = "5.2.1"
-room_version = "2.8.3"
-jsoup_version = "1.21.2"
-navigation_version = "2.9.5"
-lifecycleViewmodelKtx = "2.9.4"
+activityCompose = "1.13.0"
+composeBom = "2026.03.01"
+ksp-version = "2.3.6"
+hilt-version = "2.59.2"
+rssparser = "6.1.5"
+saveargs-version = "2.9.7"
+loggingInterceptor = "5.3.2"
+mockk = "1.14.9"
+okhttp_version = "5.3.2"
+room_version = "2.8.4"
+jsoup_version = "1.22.1"
+navigation_version = "2.9.7"
+lifecycleViewmodelKtx = "2.10.0"
 timber = "5.0.1"
 material = "1.13.0"
 turbine = "1.2.1"
 navigationCompose = "2.9.7"
-materialIconsExtended = "1.7.1"
+materialIconsExtended = "1.7.8"
 compose-scrollbar = "2.2.0"
 foundation = "1.10.6"
-jetbrainsKotlinJvm = "2.2.20"
+jetbrainsKotlinJvm = "2.3.20"
 javaxInject = "1"
 
 [libraries]
@@ -72,6 +72,7 @@ androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "u
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "materialIconsExtended" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 compose-scrollbar = { group = "com.github.nanihadesuka", name = "LazyColumnScrollbar", version.ref = "compose-scrollbar" }
@@ -101,6 +102,7 @@ compose = [
     "androidx-compose-ui",
     "androidx-compose-ui-graphics",
     "androidx-compose-material3",
+    "androidx-compose-material-icons-core",
     "androidx-compose-material-icons-extended",
     "androidx-navigation-compose",
     "androidx-lifecycle-viewmodel-compose",
