@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -9,10 +10,6 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
-    }
-    plugins {
-        id("com.google.devtools.ksp") version "2.2.20-2.0.4"
-        id("org.jetbrains.kotlin.android") version "2.2.20" apply false
     }
 }
 dependencyResolutionManagement {
@@ -26,4 +23,14 @@ dependencyResolutionManagement {
 
 rootProject.name = "NewsApp"
 include(":app")
- 
+include(":core:model")
+include(":core:common")
+include(":core:database")
+include(":core:network")
+include(":core:data")
+include(":core:domain")
+include(":core:ui")
+include(":core:testing")
+include(":feature:news")
+include(":feature:details")
+include(":feature:sources")

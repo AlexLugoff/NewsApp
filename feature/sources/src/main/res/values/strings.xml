@@ -1,0 +1,4 @@
+<resources>
+    <string name="news_sources_title">Источники новостей</string>
+    <string name="error_parser">Ошибка обработки данных: %1$s</string>
+</resources>

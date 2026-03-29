@@ -1,0 +1,42 @@
+package com.example.newsapp.core.common.viewmodel
+
+import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import timber.log.Timber
+import kotlin.coroutines.cancellation.CancellationException
+
+abstract class BaseViewModel<ViewState, Event> : ViewModel() {
+
+    private val _uiStateFlow = MutableStateFlow<ViewState?>(null)
+    open val uiStateFlow: StateFlow<ViewState?> = _uiStateFlow.asStateFlow()
+
+    // Разовые события экрана (Navigation, UI logic)
+    private val _eventFlow = MutableSharedFlow<Event>(extraBufferCapacity = 1)
+    val eventFlow = _eventFlow.asSharedFlow()
+
+    protected val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        if (throwable is CancellationException) return@CoroutineExceptionHandler
+        handleError(throwable)
+    }
+
+    protected fun Event.send() {
+        _eventFlow.tryEmit(this)
+    }
+
+    protected fun ViewState.update() {
+        _uiStateFlow.value = this
+    }
+
+    protected fun logError(t: Throwable) {
+        Timber.Forest.tag(this::class.java.simpleName).e(t.stackTraceToString())
+    }
+
+    private fun handleError(error: Throwable) {
+        Timber.Forest.e("Произошла ошибка в корутине :${error.stackTraceToString()}")
+    }
+}
