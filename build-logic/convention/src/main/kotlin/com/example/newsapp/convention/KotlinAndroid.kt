@@ -1,6 +1,7 @@
 package com.example.newsapp.convention
 
-import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.withType
@@ -8,9 +9,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 internal fun Project.configureKotlinAndroid(
-    commonExtension: CommonExtension<*, *, *, *, *, *>,
+    extension: ApplicationExtension,
 ) {
-    commonExtension.apply {
+    extension.apply {
         compileSdk = 36
 
         defaultConfig {
@@ -23,6 +24,29 @@ internal fun Project.configureKotlinAndroid(
         }
     }
 
+    configureKotlin()
+}
+
+internal fun Project.configureKotlinAndroid(
+    extension: LibraryExtension,
+) {
+    extension.apply {
+        compileSdk = 36
+
+        defaultConfig {
+            minSdk = 29
+        }
+
+        compileOptions {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
+        }
+    }
+
+    configureKotlin()
+}
+
+private fun Project.configureKotlin() {
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
