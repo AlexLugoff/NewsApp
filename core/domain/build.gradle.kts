@@ -12,5 +12,5 @@ dependencies {
     implementation(libs.javax.inject)
     implementation(libs.kotlinx.coroutines.core)
 
-    testImplementation(libs.bundles.unitTests)
+    testImplementation(project(":core:testing"))
 }

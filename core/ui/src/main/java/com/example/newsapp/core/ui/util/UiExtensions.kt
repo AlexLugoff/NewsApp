@@ -14,8 +14,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import com.example.newsapp.core.common.error.DataError
-import com.example.newsapp.core.common.R
 import com.example.newsapp.core.common.util.toSpannedHtml
+import com.example.newsapp.core.ui.R
 
 fun DataError.toReadableText(): UiText {
     return when (this) {

@@ -19,5 +19,5 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.kotlinx.datetime)
 
-    testImplementation(libs.bundles.unitTests)
+    testImplementation(project(":core:testing"))
 }

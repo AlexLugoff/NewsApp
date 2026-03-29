@@ -12,6 +12,6 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:common"))
 
-    testImplementation(libs.bundles.unitTests)
-    androidTestImplementation(libs.bundles.androidTests)
+    testImplementation(project(":core:testing"))
+    androidTestImplementation(project(":core:testing"))
 }

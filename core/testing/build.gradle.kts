@@ -1,0 +1,15 @@
+plugins {
+    id("newsapp.android.library")
+}
+
+android {
+    namespace = "com.example.newsapp.core.testing"
+}
+
+dependencies {
+    api(project(":core:common"))
+    
+    api(libs.bundles.unitTests)
+    api(libs.bundles.androidTests)
+    api(libs.mockk)
+}

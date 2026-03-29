@@ -34,6 +34,9 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
+    implementation(project(":feature:news"))
+    implementation(project(":feature:details"))
+    implementation(project(":feature:sources"))
 
     // Core & Lifecycle
     implementation(libs.androidx.core.ktx)
@@ -58,8 +61,8 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
 
     // Testing
-    testImplementation(libs.bundles.unitTests)
-    androidTestImplementation(libs.bundles.androidTests)
+    testImplementation(project(":core:testing"))
+    androidTestImplementation(project(":core:testing"))
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     
     // Workaround for Hilt/JavaPoet issue
