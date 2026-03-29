@@ -1,21 +1,28 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Базовые правила для Android
+-keepattributes *Annotation*, Signature, InnerClasses, EnclosingMethod
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Kotlin Serialization (R8 обычно справляется сам, но для надежности)
+-keepclassmembers class ** {
+    *** Companion;
+    *** $serializer;
+}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Hilt / Dagger
+-keep class dagger.hilt.** { *; }
+-keep class com.google.dagger.** { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Coil
+-keep class coil3.** { *; }
+
+# Timber (не удаляем логи в release, если нужно - можно настроить удаление)
+-keep class timber.log.** { *; }
+
+# Модели данных (Keep all models to avoid serialization issues)
+-keep class com.example.newsapp.core.model.** { *; }
+-keep class com.example.newsapp.core.network.model.** { *; }
+-keep class com.example.newsapp.core.database.entity.** { *; }
+
+# Ускорение сборки (отключаем некоторые проверки R8)
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-dontwarn org.checkerframework.**
