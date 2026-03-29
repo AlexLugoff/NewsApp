@@ -10,15 +10,11 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply("com.android.application")
-                apply("org.jetbrains.kotlin.android")
             }
 
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
                 defaultConfig.targetSdk = 36
-
-                defaultConfig.versionCode = 1
-                defaultConfig.versionName = "1.0"
             }
         }
     }
