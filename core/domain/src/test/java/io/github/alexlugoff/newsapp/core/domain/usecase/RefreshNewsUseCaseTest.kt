@@ -1,0 +1,40 @@
+package io.github.alexlugoff.newsapp.core.domain.usecase
+
+import io.github.alexlugoff.newsapp.core.common.result.SealedResult
+import io.github.alexlugoff.newsapp.core.domain.repository.NewsRepository
+import io.github.alexlugoff.newsapp.core.testing.BaseUnitTest
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.impl.annotations.MockK
+import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Test
+
+class RefreshNewsUseCaseTest : BaseUnitTest() {
+
+    @MockK
+    lateinit var repository: NewsRepository
+
+    private lateinit var useCase: RefreshNewsUseCase
+
+    @Before
+    override fun setup() {
+        super.setup()
+        useCase = RefreshNewsUseCase(repository)
+    }
+
+    @Test
+    fun `invoke - returns result from repository`() = runTest {
+        // Given
+        val expectedResult = SealedResult.Success(Unit)
+        coEvery { repository.refreshNews() } returns expectedResult
+
+        // When
+        val result = useCase.invoke()
+
+        // Then
+        assertEquals(expectedResult, result)
+        coVerify(exactly = 1) { repository.refreshNews() }
+    }
+}

@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.newsapp"
+    namespace = "io.github.alexlugoff.newsapp"
 
     defaultConfig {
-        applicationId = "com.example.newsapp"
-        testInstrumentationRunner = "com.example.newsapp.HiltTestRunner"
+        applicationId = "io.github.alexlugoff.newsapp"
+        testInstrumentationRunner = "io.github.alexlugoff.newsapp.HiltTestRunner"
     }
 
     buildTypes {
