@@ -2,7 +2,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.example.newsapp.buildlogic"
+group = "io.github.alexlugoff.newsapp.buildlogic"
 
 dependencies {
     implementation(libs.android.gradle.plugin)
@@ -19,36 +19,36 @@ gradlePlugin {
         register("androidApplication") {
             id = "newsapp.android.application"
             implementationClass =
-                "com.example.newsapp.convention.AndroidApplicationConventionPlugin"
+                "io.github.alexlugoff.newsapp.convention.AndroidApplicationConventionPlugin"
         }
         register("androidLibrary") {
             id = "newsapp.android.library"
-            implementationClass = "com.example.newsapp.convention.AndroidLibraryConventionPlugin"
+            implementationClass = "io.github.alexlugoff.newsapp.convention.AndroidLibraryConventionPlugin"
         }
         register("androidFeature") {
             id = "newsapp.android.feature"
-            implementationClass = "com.example.newsapp.convention.AndroidFeatureConventionPlugin"
+            implementationClass = "io.github.alexlugoff.newsapp.convention.AndroidFeatureConventionPlugin"
         }
         register("androidCompose") {
             id = "newsapp.android.compose"
-            implementationClass = "com.example.newsapp.convention.AndroidComposeConventionPlugin"
+            implementationClass = "io.github.alexlugoff.newsapp.convention.AndroidComposeConventionPlugin"
         }
         register("androidHilt") {
             id = "newsapp.android.hilt"
-            implementationClass = "com.example.newsapp.convention.AndroidHiltConventionPlugin"
+            implementationClass = "io.github.alexlugoff.newsapp.convention.AndroidHiltConventionPlugin"
         }
         register("androidRoom") {
             id = "newsapp.android.room"
-            implementationClass = "com.example.newsapp.convention.AndroidRoomConventionPlugin"
+            implementationClass = "io.github.alexlugoff.newsapp.convention.AndroidRoomConventionPlugin"
         }
         register("androidKotlinSerialization") {
             id = "newsapp.android.kotlin.serialization"
             implementationClass =
-                "com.example.newsapp.convention.AndroidKotlinSerializationConventionPlugin"
+                "io.github.alexlugoff.newsapp.convention.AndroidKotlinSerializationConventionPlugin"
         }
         register("jvmLibrary") {
             id = "newsapp.jvm.library"
-            implementationClass = "com.example.newsapp.convention.JvmLibraryConventionPlugin"
+            implementationClass = "io.github.alexlugoff.newsapp.convention.JvmLibraryConventionPlugin"
         }
     }
 }

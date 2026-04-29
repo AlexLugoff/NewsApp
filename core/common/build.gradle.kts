@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.newsapp.core.common"
+    namespace = "io.github.alexlugoff.newsapp.core.common"
 }
 
 dependencies {

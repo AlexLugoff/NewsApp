@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.newsapp.feature.details"
+    namespace = "io.github.alexlugoff.newsapp.feature.details"
 }
 
 dependencies {

@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.newsapp.core.network"
+    namespace = "io.github.alexlugoff.newsapp.core.network"
 }
 
 dependencies {
