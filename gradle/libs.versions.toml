@@ -1,9 +1,9 @@
 [versions]
-agp = "9.1.0"
+agp = "9.2.0"
 coilCompose = "3.4.0"
 coreSplashscreen = "1.2.0"
 hiltNavigationCompose = "1.3.0"
-kotlin = "2.3.20"
+kotlin = "2.3.21"
 coreKtx = "1.18.0"
 appcompat = "1.7.1"
 junit = "4.13.2"
@@ -11,28 +11,28 @@ junitVersion = "1.3.0"
 espresso-version = "3.7.0"
 kotlinxCoroutinesTest = "1.10.2"
 kotlinxDatetime = "0.7.1"
+kotlinxSerializationJson = "1.11.0"
 lifecycle = "2.10.0"
 activityCompose = "1.13.0"
-composeBom = "2026.03.01"
-ksp-version = "2.3.6"
+composeBom = "2026.04.01"
+ksp-version = "2.3.7"
 hilt-version = "2.59.2"
 rssparser = "6.1.5"
-saveargs-version = "2.9.7"
 loggingInterceptor = "5.3.2"
 mockk = "1.14.9"
 okhttp_version = "5.3.2"
 room_version = "2.8.4"
-jsoup_version = "1.22.1"
-navigation_version = "2.9.7"
+jsoup_version = "1.22.2"
+navigation_version = "2.9.8"
 lifecycleViewmodelKtx = "2.10.0"
 timber = "5.0.1"
 material = "1.13.0"
 turbine = "1.2.1"
-navigationCompose = "2.9.7"
+navigationCompose = "2.9.8"
 materialIconsExtended = "1.7.8"
 compose-scrollbar = "2.2.0"
-foundation = "1.10.6"
-jetbrainsKotlinJvm = "2.3.20"
+foundation = "1.11.0"
+jetbrainsKotlinJvm = "2.3.21"
 javaxInject = "1"
 
 [libraries]
@@ -52,6 +52,7 @@ androidx-navigation-testing = { module = "androidx.navigation:navigation-testing
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "room_version" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 rssparser = { module = "com.prof18.rssparser:rssparser", version.ref = "rssparser" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -142,7 +143,6 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-version" }
-safeargs-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "saveargs-version" }
 room = { id = "androidx.room", version.ref = "room_version" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }

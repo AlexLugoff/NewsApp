@@ -2,6 +2,7 @@ plugins {
     id("newsapp.android.library")
     id("newsapp.android.compose")
     id("newsapp.android.hilt")
+    id("newsapp.android.kotlin.serialization")
 }
 
 android {

@@ -21,3 +21,5 @@ const val COIL_DISK_CACHE_DIRECTORY_NAME = "image_cache"
 const val COIL_DISK_CACHE_SIZE_PERCENT = 0.02
 
 const val INTENT_TYPE = "text/plain"
+
+const val DEEP_LINK_BASE_PATH = "newsapp://details"

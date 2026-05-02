@@ -9,8 +9,8 @@ import org.gradle.kotlin.dsl.dependencies
 class AndroidRoomConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply("androidx.room")
-            pluginManager.apply("com.google.devtools.ksp")
+            pluginManager.apply(libs.findPlugin("room").get().get().pluginId)
+            pluginManager.apply(libs.findPlugin("ksp").get().get().pluginId)
 
             extensions.configure<RoomExtension> {
                 // Путь к схеме БД для миграций
@@ -18,8 +18,7 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-                add("implementation", libs.findLibrary("room-runtime").get())
-                add("implementation", libs.findLibrary("room-ktx").get())
+                add("implementation", libs.findBundle("room").get())
                 add("ksp", libs.findLibrary("room-compiler").get())
             }
         }
